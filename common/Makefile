@@ -21,6 +21,7 @@ all: $(TARGETS)
 
 libcommon.a: $(OBJS)
 	test -d ../release || mkdir -p ../release
+	test -d ../lib || mkdir -p ../lib
 	ar -r $@ $^
 	cp $@ $(RELEASE_DIR)
 	cp $@ $(LIB_DIR)

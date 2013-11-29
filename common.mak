@@ -5,7 +5,7 @@ CXX = g++ -g
 
 LINK = g++ -g
 
-TS_DIR = /home/shenyizhong/workshop/projects/tinyserver
+TS_DIR = /home/shenyizhong/workshop/projects/tinyserver-code/trunk
 TS_INCLUDE = $(TS_DIR)/include
 
 LFLAGS = -L$(LIB_DIR)
