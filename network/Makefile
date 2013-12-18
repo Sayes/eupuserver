@@ -1,6 +1,6 @@
 
 
-OBJS = src/netcommon.o src/threadlock.o src/euputhread.o
+OBJS = src/netcommon.o src/threadlock.o src/euputhread.o src/epollthread.o
 
 
 include ../common.mak

@@ -1,7 +1,7 @@
 /*
  * =====================================================================================
  *
- *       Filename:  eupuepollthread.cpp
+ *       Filename:  epollthread.cpp
  *
  *    Description:  
  *
@@ -16,5 +16,34 @@
  * =====================================================================================
  */
 
-#include "eupuepollthread.h>
+#include "epollthread.h"
+
+CEpollThread::CEpollThread()
+{
+
+}
+
+CEpollThread::~CEpollThread()
+{
+
+}
+
+bool CEpollThread::Stop()
+{
+	return false;
+}
+
+void CEpollThread::Run()
+{
+
+}
+
+void CEpollThread::Reset()
+{
+}
+
+bool CEpollThread::StartUp()
+{
+	return false;
+}
 
