@@ -24,8 +24,11 @@ protected:
 	static void* ThreadFun(void *arg);
 	virtual void run() = 0;
 
-private:
+protected:
 	pthread_t m_pid;
+	sigset_t m_waitSig;
+	bool m_bOperate;
+	bool m_bIsExist;
 };
 
 

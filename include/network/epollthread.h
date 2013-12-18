@@ -34,6 +34,9 @@ private:
 	void doSendMessage(SOCKET_KEY* pkey);
 	bool doListen();
 
+	void doEpollEvent();
+	void doSystemEvent();
+
 private:
 	int m_epollfd;
 	int m_listenfd;
@@ -41,7 +44,7 @@ private:
 	int m_keepalivetimeout;		//connection timeout time
 	int m_keepaliveinterval;	//send keepalive message to server time interval
 	time_t m_checkkeepalivetime;
-	time_t m_lastkeeplivetime;
+	time_t m_lastkeepalivetime;
 
 	string m_serverip;
 	unsigned int m_serverport;
