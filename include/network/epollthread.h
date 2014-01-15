@@ -31,11 +31,16 @@ private:
 	bool addClientToEpoll(SOCKET_SET* psocket);
 	bool doAccept(int fd);
 	void doRecvMessage(SOCKET_KEY* pkey);
-	void doSendMessage(SOCKET_KEY* pkey);
+	int doSendMessage(SOCKET_KEY* pkey);
 	bool doListen();
 
 	void doEpollEvent();
 	void doSystemEvent();
+    void closeClient(int fd, time_t conntime);
+    void doKeepaliveTimeout();
+    void doSendkeepaliveToServer();
+
+    time_t getIndex();
 
 private:
 	int m_epollfd;

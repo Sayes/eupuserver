@@ -87,11 +87,6 @@ CEpollThread::~CEpollThread()
 	}
 }
 
-bool CEpollThread::Stop()
-{
-	return false;
-}
-
 // the thread work function, it will wait for the continue signal
 // otherwise it will be pause
 void CEpollThread::Run()
@@ -111,6 +106,14 @@ void CEpollThread::Reset()
 bool CEpollThread::StartUp()
 {
 	return false;
+}
+
+time_t CEpollThread::getIndex()
+{
+    m_Index++;
+    if (m_Index == 0xFFFFFFFF)
+        m_Index = 1;
+    return m_Index;
 }
 
 void CEpollThread::doEpollEvent()
@@ -141,7 +144,58 @@ void CEpollThread::doEpollEvent()
 					}
 					continue;
 				}
+
+                
 			}
 		}
 	}
+}
+
+
+bool CEpollThread::Stop()
+{
+    return false;
+}
+
+void CEpollThread::doKeepaliveTimeout()
+{
+
+}
+
+void CEpollThread::doSendkeepaliveToServer()
+{
+    time_t curtime = time(NULL);
+    if (curtime - m_lastkeepalivetime < m_keepaliveinterval)
+    {
+        return;
+    }
+
+    m_lastkeepalivetime = time(NULL);
+
+}
+
+bool CEpollThread::doListen()
+{
+    bool bret = false;
+    return bret;
+}
+
+bool CEpollThread::doAccept(int fd)
+{
+    return true;
+}
+
+void CEpollThread::doRecvMessage(SOCKET_KEY* key)
+{
+
+}
+
+int CEpollThread::doSendMessage(SOCKET_KEY* key)
+{
+    return 0; 
+}
+
+bool CEpollThread::parsePacketToRecvQueue(SOCKET_SET* psocket, char* buf, int buflen)
+{
+    return true;
 }
