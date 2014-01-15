@@ -2,6 +2,7 @@
 #define __EUPUTHREAD_H__
 
 #include <pthread.h>
+#include <signal.h>
 
 class CEupuThread {
 public:
