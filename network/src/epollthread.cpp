@@ -21,20 +21,20 @@
 
 CEpollThread::CEpollThread()
 : CEupuThread()
+, m_epollfd(-1)
+, m_listenfd(-1)
+, m_listenkey(NULL)
+, m_maxepollsize(5000)
+, m_keepalivetimeout(120)
+, m_keepaliveinterval(60)
+, m_serverport(0)
+, m_events(NULL)
+, m_recvbuffer(NULL)
+, m_recvbuflen(0)
+, m_Index(0)
 {
-	m_epollfd = -1;
-	m_listenfd = -1;
-	m_listenkey = NULL;
-	m_maxepollsize = 5000;
-	m_keepalivetimeout = 120;
-	m_keepaliveinterval = 60;
 	m_checkkeepalivetime = time(NULL);
 	m_lastkeepalivetime = time(NULL);
-	m_serverport = 0;
-	m_events = NULL;
-	m_recvbuffer = NULL;
-	m_recvbuflen = 0;
-	m_Index = 0;
 }
 
 CEpollThread::~CEpollThread()
@@ -145,8 +145,29 @@ void CEpollThread::doEpollEvent()
 					continue;
 				}
 
-                
+               doRecvMessage(pkey);
 			}
+            else if (m_events[i].events && EPOLLOUT)
+            {
+                if (doSendMessage(pkey) < 0)
+                {
+                    closeClient(pkey->fd, pkey->connect_time);
+                }
+                else
+                {
+                    struct epoll_event wev;
+                    wev.events = EPOLLIN | EPOLLET;
+                    wev.data.ptr = pkey;
+                    if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, pkey->fd, &wev) < 0)
+                    {
+                        closeClient(pkey->fd, pkey->connect_time);
+                    }
+                }
+            }
+            else
+            {
+                closeClient(pkey->fd, pkey->connect_time);
+            }
 		}
 	}
 }

@@ -22,7 +22,7 @@ public:
 	virtual bool isstarted();
 
 protected:
-	static void* ThreadFun(void *arg);
+	static void* ThreadFunc(void *arg);
 	virtual void run() = 0;
 
 protected:
