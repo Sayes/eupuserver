@@ -25,3 +25,4 @@ endif
 .cpp.o:; $(CXX) $(CFLAGS) -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" $< -o $@
 .c.o:; $(CXX) $(CFLAGS) $< -o $@
 
+

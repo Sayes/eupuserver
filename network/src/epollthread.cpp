@@ -168,7 +168,11 @@ void CEpollThread::doEpollEvent()
             {
                 closeClient(pkey->fd, pkey->connect_time);
             }
-		}
+		}//end for
+
+        if (m_recvlist.size() > 0)
+        {
+        }
 	}
 }
 
