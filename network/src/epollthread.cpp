@@ -18,6 +18,8 @@
 
 #include <sys/epoll.h>
 #include "epollthread.h"
+#include "sysqueue.h"
+#include "globalmgr.h"
 
 CEpollThread::CEpollThread()
 : CEupuThread()
@@ -170,8 +172,11 @@ void CEpollThread::doEpollEvent()
             }
 		}//end for
 
+        //// end handle epoll events /////
+
         if (m_recvlist.size() > 0)
         {
+            CSysQueue<NET_DATA>* precvlist = CGlobalMgr::getInstance()->getRecvQueue();
         }
 	}
 }
