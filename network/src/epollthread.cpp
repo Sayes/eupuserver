@@ -19,6 +19,7 @@
 #include <sys/epoll.h>
 #include "epollthread.h"
 #include "sysqueue.h"
+#include "common.h"
 #include "globalmgr.h"
 
 CEpollThread::CEpollThread()
@@ -228,4 +229,9 @@ int CEpollThread::doSendMessage(SOCKET_KEY* key)
 bool CEpollThread::parsePacketToRecvQueue(SOCKET_SET* psocket, char* buf, int buflen)
 {
     return true;
+}
+
+void CEpollThread::closeClient(int fd, time_t conntime)
+{
+
 }

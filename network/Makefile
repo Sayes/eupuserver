@@ -8,7 +8,7 @@ include ../common.mak
 RELEASE_DIR = ../release
 LIB_DIR = ../lib
 
-CFLAGS += -DOS_LINUX $(LIB_CFLAGS) -I$(TS_INCLUDE)/protocol
+CFLAGS += -DOS_LINUX $(LIB_CFLAGS)
 
 LDFLAGS += -L$(RELEASE_DIR)
 TARGETS = libnetwork.so

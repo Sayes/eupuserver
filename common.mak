@@ -15,7 +15,7 @@ os_type = $(shell uname -s)
 ifeq ($(os_type), Linux)
 LDFLAGS = -shared -m32
 CFLAGS = -O0 -g3 -Wall -c -fmessage-length=0 -m32 -I.
-LIB_CFLAGS = -I$(TS_INCLUDE)/common -I$(TS_INCLUDE)/network
+LIB_CFLAGS = -I$(TS_INCLUDE)/common -I$(TS_INCLUDE)/network -I$(TS_INCLUDE)/logger -I$(TS_INCLUDE)/protocol
 
 MAKE = make
 endif
