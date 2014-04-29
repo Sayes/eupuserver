@@ -5,6 +5,41 @@
 
 using namespace std;
 
+typedef struct log_cfg {
+    string filename;
+    string filenum;
+    string filepath;
+    string filepath;
+    string filedataext;
+    string filechkext;
+}LOG_CFG;
+
+typedef struct st_global_cfg {
+    char db_hostname[256];
+    UINT db_hostport;
+    char db_username[256];
+    char db_userpssw[256];
+    char db_database[256];
+
+    UINT que_savetime;
+    UINT ping_timer;
+    UINT update_interval;
+    UINT db_maxconnects;
+    UINT keepalive_timer;
+    UINT loglevel;
+    UINT update_people_timer;
+
+    unsigned short listen_port;
+    string listen_ip;
+    UINT send_queue_size;
+    UINT recv_queue_size;
+    UINT work_threads;
+    UINT epoll_max_size;
+
+    UINT maxsendbuf;
+    UINT maxrecvbuf;
+}st_global_cfg;
+
 struct __CONNECT_SERVER__ {
 	string name;
 	string host;
@@ -20,5 +55,54 @@ struct __CONNECT_SERVER__ {
 };
 
 typedef __CONNECT_SERVER__*	PCONNECT_SERVER;
+
+struct __MEM_SERVER__ {
+    string host;
+    unsigned short port;
+    unsigned int weight;
+};
+
+typedef struct __MEM_SERVER__* PMEM_SERVER;
+
+class CGlobalConfig {
+public:
+    static CGlobalConfig* getInstance();
+    static void release();
+
+    char* GetDbHostName();
+    UINT GetDbHostPort();
+    char* GetDbUserName();
+    char* GetDbUserPssw();
+    char* GetDbDatabase();
+    UINT GetMemPoolCount();
+
+    const vector<PMEM_SERVER>* GetMemcacheServers()
+    {
+        return &m_memlst;    
+    }
+
+    UINT GetQueueTimer();
+    UINT GetPingTimer();
+    UINT GetDbMaxConnects();
+    UINT GetUpdateInterval();
+    UINT GetKeepaliveTimer();
+    UINT GetUpdatePeopleTimer();
+    UINT GetLogLevel();
+
+protected:
+    CGlobalConfig();
+    virtual ~CGlobalConfig();
+
+private:
+    LOG_CFG onlinetime;
+    LOG_CFG onlinecount;
+    LOG_CFG onlinetotal;
+
+    UINT mem_pool;
+    vector<PMEM_SERVER> m_memlst;
+
+    st_global_cfg m_cfg;
+    static CGlobalConfig* m_pInstance;
+};
 
 #endif//__GLOBALCONFIG_H__
