@@ -9,7 +9,6 @@ typedef struct log_cfg {
     string filename;
     string filenum;
     string filepath;
-    string filepath;
     string filedataext;
     string filechkext;
 }LOG_CFG;
