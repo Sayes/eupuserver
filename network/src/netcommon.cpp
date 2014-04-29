@@ -6,7 +6,7 @@
  *    Description:  :
  *
  *        Version:  1.0
- *        Created:  2013年11月24日 20时22分34秒
+ *        Created:  2013
  *       Revision:  none
  *       Compiler:  gcc
  *
