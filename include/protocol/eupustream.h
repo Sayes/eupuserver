@@ -169,10 +169,32 @@ class CEupuStream
         return -1;
     }
 
-    int InputString(BYTE* buf, INT32 buflen, char* szDst, INT32 dstbuflen)
+    int InputString(BYTE* buf, INT32 buflen, char* szDst, INT32& dstbuflen)
     {
         INT32 nLen = 0;
+        unsigned int nStrLen = 0;
 
+        if (buflen < sizeof(INT32))
+            return -1;
+
+        memcpy((BYTE*)&nStrLen, buf, sizeof(INT32));
+        unsigned int tmp = ntohl(nStrLen);
+
+        if (buflen < sizeof(INT32) + tmp)
+            return -1;
+
+        if (dstbuflen < tmp + 1)
+            return -2;
+
+        nLen += sizeof(INT32);
+
+        memcpy(szDst, buf + sizeof(INT32), tmp);
+        nLen += tmp;
+
+        szDst[tmp] = '\0';
+        dstbuflen = tmp + 1;
+
+        return nLen;
     }
 };
 
