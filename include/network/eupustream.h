@@ -8,12 +8,10 @@
 #ifndef _EUPUSTREAM_H_
 #define _EUPUSTREAM_H_
 
-#ifdef OS_LINUX
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include "globaldef.h"
-#endif
 
 #include <string>
 #define INT32 int
@@ -69,7 +67,7 @@ class CEupuStream
     string cmnNtoA(unsigned int ip)
     {
         char buf[100];
-        struct addr_in addr;
+        struct in_addr addr;
         memset(&addr, 0, sizeof(addr));
         addr.s_addr = htonl(ip);
         const char* p = inet_ntop(AF_INET, (void*)&addr, buf, (socklen_t)sizeof(buf));
@@ -81,7 +79,7 @@ class CEupuStream
     
     virtual void Debug() = 0;
 
-    template<class T>OutputValue(BYTE* buf, INT32 buflen, T value)
+    template<class T> int OutputValue(BYTE* buf, INT32 buflen, T value)
     {
         INT32 nLen = sizeof(value);
         if (nLen > buflen)
@@ -112,7 +110,7 @@ class CEupuStream
             }
             else
             {
-                unsigned __uint64_t tmp = hl64ton(value);
+                __uint64_t tmp = hl64ton(value);
                 memcpy(buf, &tmp, nLen);
             }
             return nLen;
@@ -127,12 +125,12 @@ class CEupuStream
         if (nStrLen + (UINT)sizeof(INT32) > buflen)
             return -1;
 
-        UINT ntmp = htonl(nStrLen);
-        memcpy(buf, &ntmp, sizeof(INT32));
+        UINT tmp = htonl(nStrLen);
+        memcpy(buf, &tmp, sizeof(INT32));
         nLen += sizeof(INT32);
 
         memcpy(buf + sizeof(INT32), szDst, nStrLen);
-        nLen += nStrlen;
+        nLen += nStrLen;
         return nLen; 
     }
 
@@ -145,15 +143,16 @@ class CEupuStream
         if (nLen == sizeof(BYTE))
         {
         }
-        else (nLen == sizeof(USHORT))
+        else if(nLen == sizeof(USHORT))
         {
         }
-        else (nLen == sizeof(INT32))
+        else if(nLen == sizeof(INT32))
         {
         }
-        else (nLen == sizeof(INT64))
+        else if(nLen == sizeof(INT64))
         {
         }
+        return -1;
     }
 };
 
