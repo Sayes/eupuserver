@@ -1,10 +1,3 @@
-/*************************************************************************
-	> File Name: eupustream.h
-	> Author: ma6174
-	> Mail: ma6174@163.com 
-	> Created Time: 2014年04月28日 星期一 23时18分53秒
- ************************************************************************/
-
 #ifndef _EUPUSTREAM_H_
 #define _EUPUSTREAM_H_
 
@@ -142,17 +135,44 @@ class CEupuStream
 
         if (nLen == sizeof(BYTE))
         {
+            memcpy(&value, buf, nLen);
+            return nLen;
         }
         else if(nLen == sizeof(USHORT))
         {
+            USHORT tmp = 0;
+            memcpy(&tmp, buf, nLen);
+            value = (T)ntohs(tmp);
+            return nLen;
         }
         else if(nLen == sizeof(INT32))
         {
+            UINT tmp = 0;
+            memcpy(&tmp, buf, nLen);
+            value = (T)ntohl(tmp);
+            return nLen;
         }
         else if(nLen == sizeof(INT64))
         {
+            if (is_big_endian())
+            {
+                memcpy(&value, buf, nLen);
+            }
+            else
+            {
+                __uint64_t tmp = 0;
+                memcpy(&tmp, buf, nLen);
+                value = (T)ntohl64(tmp);
+            }
+            return nLen;
         }
         return -1;
+    }
+
+    int InputString(BYTE* buf, INT32 buflen, char* szDst, INT32 dstbuflen)
+    {
+        INT32 nLen = 0;
+
     }
 };
 
