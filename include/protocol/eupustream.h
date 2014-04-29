@@ -7,14 +7,12 @@
 #include "globaldef.h"
 
 #include <string>
-#define INT32 int
-#define __int64 INT64
 
 using namespace std;
 
 class CEupuStream
 {
-    public:
+public:
     CEupuStream();
     virtual ~CEupuStream();
 
@@ -28,13 +26,13 @@ class CEupuStream
         return false;
     }
 
-    __uint64_t hl64ton(__uint64_t host)
+    __uint64_t hl64ton(__uint64_t hostvalue)
     {
         __uint64_t ret = 0;
         unsigned int high, low;
 
-        low = host & 0xFFFFFFFF;
-        high = (host >> 32) & 0xFFFFFFFF;
+        low = hostvalue & 0xFFFFFFFF;
+        high = (hostvalue >> 32) & 0xFFFFFFFF;
         low = htonl(low);
         high = htonl(high);
         ret = low;
@@ -43,12 +41,12 @@ class CEupuStream
         return ret;
     }
 
-    __uint64_t ntohl64(__uint64_t host)
+    __uint64_t ntohl64(__uint64_t netvalue)
     {
         __uint64_t ret = 0;
         unsigned int high, low;
-        low = host & 0xFFFFFFFF;
-        high = (host >> 32) & 0xFFFFFFFF;
+        low = netvalue & 0xFFFFFFFF;
+        high = (netvalue >> 32) & 0xFFFFFFFF;
         low = ntohl(low);
         high = ntohl(high);
         ret = low;
@@ -67,9 +65,8 @@ class CEupuStream
         return string(p);
     }
 
-    virtual bool In(BYTE* pSrc, UINT& len) = 0;
-    virtual bool Out(BYTE* pDst, UINT& len) = 0;
-    
+    virtual bool In(BYTE* pSrc, UINT& nLen) = 0;
+    virtual bool Out(BYTE* pDst, UINT& nLen) = 0;
     virtual void Debug() = 0;
 
     template<class T> int OutputValue(BYTE* buf, INT32 buflen, T value)
@@ -111,10 +108,10 @@ class CEupuStream
         return -1;
     }
 
-    int OutputString(BYTE* buf, INT32 buflen, char* szDst)
+    int OutputString(BYTE* buf, INT32 buflen, char* szSrc)
     {
         INT32 nLen = 0;
-        UINT nStrLen = strlen(szDst);
+        UINT nStrLen = strlen(szSrc);
         if (nStrLen + (UINT)sizeof(INT32) > buflen)
             return -1;
 
@@ -122,12 +119,12 @@ class CEupuStream
         memcpy(buf, &tmp, sizeof(INT32));
         nLen += sizeof(INT32);
 
-        memcpy(buf + sizeof(INT32), szDst, nStrLen);
+        memcpy(buf + sizeof(INT32), szSrc, nStrLen);
         nLen += nStrLen;
         return nLen; 
     }
 
-    template<class T> int InputValue(BYTE* buf, UINT buflen, T value)
+    template<class T> int InputValue(BYTE* buf, UINT buflen, T& value)
     {
         INT32 nLen = sizeof(value);
         if (nLen > buflen)

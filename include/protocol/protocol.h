@@ -4,18 +4,104 @@
 #include "globaldef.h"
 #include "eupustream.h"
 
-struct MessageHead : CEupuStream
+struct NetMessageHead : public CEupuStream
 {
-    public:
-        bool In(BYTE* src, UINT& len)
-        {
-            return false;
-        }
+    USHORT uMessageSize;
+    USHORT uMainID;
+    BYTE bAssistantID;
+    BYTE bHandleCode;
+    BYTE bReserve;
+public:
+    NetMessageHead()
+    {
+        uMessageSize = 0;
+        uMainID = 0;
+        bAssistantID = 0;
+        bHandleCode = 0;
+        bReserve = 0;
+    }
 
-        bool Out(BYTE* dst, UINT& len)
-        {
+    void Debug()
+    {
+    }
+
+    inline bool Out(BYTE* pDest, UINT& nLen)
+    {
+        if (pDest == NULL)
             return false;
-        }
+
+        INT32 nret = 0;
+        INT32 buflen = nLen;
+        INT32 ntmp = 0;
+
+        nret = OutputValue(pDest + ntmp, buflen - ntmp, uMessageSize);
+        if (nret < 0)
+            return false;
+
+        ntmp += nret;
+        nret = OutputValue(pDest + ntmp, buflen - ntmp, uMainID);
+        if (nret < 0)
+            return false;
+
+        ntmp += nret;
+        nret = OutputValue(pDest + ntmp, buflen - ntmp, bAssistantID);
+        if (nret < 0)
+            return false;
+
+        ntmp += nret;
+        nret = OutputValue(pDest + ntmp, buflen - ntmp, bHandleCode);
+        if (nret < 0)
+            return false;
+
+        ntmp += nret;
+        nret = OutputValue(pDest + ntmp, buflen - ntmp, bReserve);
+        if (nret < 0)
+            return false;
+
+        ntmp += nret;
+
+        nLen = ntmp;
+        return true;
+    }
+
+    inline bool In(BYTE* pSrc, UINT& nLen)
+    {
+        if (pSrc == NULL)
+            return false;
+
+        INT32 nret = 0;
+        INT32 buflen = nLen;
+        INT32 ntmp = 0;
+
+        nret = InputValue(pSrc + ntmp, buflen - ntmp, uMessageSize); 
+        if (nret < 0)
+            return false;
+        ntmp += nret;
+
+        nret = InputValue(pSrc + ntmp, buflen - ntmp, uMainID);
+        if (nret < 0)
+            return false;
+        ntmp += nret;
+
+        nret = InputValue(pSrc + ntmp, buflen - ntmp, bAssistantID);
+        if (nret < 0)
+            return false;
+        ntmp += nret;
+
+        nret = InputValue(pSrc + ntmp, buflen - ntmp, bHandleCode);
+        if (nret < 0)
+            return false;
+        ntmp += nret;
+
+        nret = InputValue(pSrc + ntmp, buflen - ntmp, bReserve);
+        if (nret < 0)
+            return false;
+        ntmp += nret;
+        
+        nLen = ntmp;
+        return true;
+    }
+
 };
 
 #endif//_PROTOCOL_H_
