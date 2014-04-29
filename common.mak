@@ -5,10 +5,11 @@ CXX = g++ -g
 
 LINK = g++ -g
 
-LOG4CXX_INCLUDE_PATH = /usr/local/log4cxx
-TS_DIR = /home/syz/tinyserver-code/trunk
+LOG4CXX_INCLUDE_PATH = /usr/local/log4cxx/include
+#TS_DIR = /home/syz/tinyserver-code/trunk
+TS_DIR = /home/shenyizhong/workshop/projects/tinyserver-code/trunk
 TS_INCLUDE = $(TS_DIR)/include
-
+LIB_DIR = $(TS_DIR)/lib
 LFLAGS = -L$(LIB_DIR)
 
 os_type = $(shell uname -s)

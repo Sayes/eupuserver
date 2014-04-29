@@ -34,7 +34,7 @@ public:
 
     static bool CheckDate(INT32 year, INT32 month, INT32 day);
 
-    static LONG GetFileSize(char* strFileName);
+    //static LONG GetFileSize(char* strFileName);
 
     static UINT GetCPUComsuming();
     static UINT GetMemComsuming();

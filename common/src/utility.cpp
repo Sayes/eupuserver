@@ -363,6 +363,7 @@ bool cUtility::CheckDate(INT32 year, INT32 month, INT32 day)
     }
 }
 
+/*
 LONG cUtility::GetFileSize(char* strFileName)
 {
     if (strFileName == NULL)
@@ -376,8 +377,8 @@ LONG cUtility::GetFileSize(char* strFileName)
     }
 
     return (long)f_stat.st_size;
-
 }
+*/
 
 int cUtility::Base64Decode(unsigned char *szSrc, unsigned char* szDst, int SrcSize)
 {
@@ -431,7 +432,7 @@ INT64 cUtility::getLongDotNet(unsigned char* bb, int index)
 
 short cUtility::getShortDotNet(BYTE* b, int index)
 {
-    return (short) (((b[index + 1] << 8) | b[index] & 0xff));
+    return (short) (((b[index + 1] << 8) | (b[index] & 0xff) ));
 }
 
 string& cUtility::ReplaceAll(string& str, const char* old_value, const char* new_value)
