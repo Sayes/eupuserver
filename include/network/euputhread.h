@@ -15,13 +15,14 @@ public:
 	}
 
 	virtual bool start();
-	virtual bool pause();
+	virtual void pause();
 	virtual bool continues();
 	virtual bool stop();
 	virtual void reset() = 0;
 	virtual bool isstarted();
 
 protected:
+    void SetmaskSIGUSR1();
 	static void* ThreadFunc(void *arg);
 	virtual void run() = 0;
 
