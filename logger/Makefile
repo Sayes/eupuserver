@@ -10,7 +10,7 @@ include ../common.mak
 
 # RELEASE dir definition
 RELEASE_DIR = ../release
-CFLAGS += -I$(LOG4CXX_INCLUDE_PATH) -I$(TS_INCLUDE)/common -I$(TS_INCLUDE)/logger
+CFLAGS += -I$(LOG4CXX_INCLUDE_PATH) $(LIB_CFLAGS)
 LDFLAGS += -L${RELEASE_DIR}
 
 TARGETS = libeupulogger.so
@@ -19,7 +19,7 @@ all: $(TARGETS)
 
 libeupulogger.so: $(OBJS)
 	test -d ../release || mkdir -p ../release
-	$(LINK) $(LDFLAGS) -o $@ $^ -lcommon -llog4cxx
+	$(LINK) $(LDFLAGS) -o $@ $^ -llog4cxx -lcommon
 	cp $@ ${RELEASE_DIR}
 
 

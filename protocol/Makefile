@@ -11,7 +11,7 @@ include ../common.mak
 RELEASE_DIR = ../release
 LIB_DIR = ../lib
 
-CFLAGS += -DOS_LINUX -I$(TS_INCLUDE)/ $(LIB_CFLAGS)
+CFLAGS += -DOS_LINUX $(LIB_CFLAGS)
 
 TARGETS = libprotocol.a
 
