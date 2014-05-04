@@ -23,7 +23,7 @@
 
 using namespace std;
 
-unsigned int fgNtoA(const char* ip)
+unsigned int fgAtoN(const char* ip)
 {
 	struct in_addr addr = {0};
 	if (inet_pton(AF_INET, ip, &addr) < 0)
@@ -33,7 +33,7 @@ unsigned int fgNtoA(const char* ip)
 	return addr.s_addr;
 }
 
-string fgAtoN(unsigned int ip)
+string fgNtoA(unsigned int ip)
 {
 	char buf[100];
 	struct in_addr addr = {0};
