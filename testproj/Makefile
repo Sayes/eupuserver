@@ -17,7 +17,7 @@ LIB_DIR = ../lib
 
 CFLAGS += -I$(LOG4CXX_INCLUDE_PATH) $(LIB_CFLAGS)
 
-LDFLAGS += -L$(RELEASE_DIR)
+LDFLAGS += -L$(RELEASE_DIR) -L/usr/local/apr/lib
 
 TARGETS = TestProj 
 
@@ -25,8 +25,7 @@ all: $(TARGETS)
 
 TestProj: $(OBJS)
 	test -d ../release || mkdir -p ../release
-	$(LINK) $(LDFLAGS) -o $@ $^ -Wreturn-type
-#-lcommon -leupulogger -lprotocol -lnetwork -llog4cxx 
+	$(LINK) $(LDFLAGS) -o $@ $^ -Wreturn-type -lcommon -leupulogger -lprotocol -lnetwork -llog4cxx -lapr-1 -laprutil-1
 	cp $@ ${RELEASE_DIR}
 
 clean:
