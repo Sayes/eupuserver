@@ -4,7 +4,7 @@
 // See file LICENSE for detail or copy at http://jsoncpp.sourceforge.net/LICENSE
 
 #ifndef JSON_JSON_H_INCLUDED
-# define JSON_JSON_H_INCLUDED
+#define JSON_JSON_H_INCLUDED
 
 # include "autolink.h"
 # include "value.h"

@@ -8,7 +8,7 @@ include ../common.mak
 # RELEASE dir definition
 RELEASE_DIR = ../release
 
-CFLAGS += -DOS_LINUX -I$(LOG4CXX_INCLUDE_PATH) $(LIB_CFLAGS) -I$(TS_INCLUDE)/logger -I$(TS_INCLUDE)/common -I$(TS_INCLUDE)/protocol -I$(TS_INCLUDE)/network 
+CFLAGS += -DOS_LINUX -I$(LOG4CXX_INCLUDE_PATH) $(LIB_CFLAGS)
 LDFLAGS = -L$(RELEASE_DIR) -L/usr/local/apr/lib -m32
 
 TARGETS = testproj 
@@ -17,7 +17,7 @@ all: $(TARGETS)
 
 testproj: $(OBJS)
 	test -d ../release || mkdir -p ../release
-	$(LINK) $(LDFLAGS) -o $@ $^ -lpthread -lcommon -leupulogger -lprotocol -lnetwork -llog4cxx -lapr-1 -laprutil-1 
+	$(LINK) $(LDFLAGS) -o $@ $^ -lpthread -lcommon -leupulogger -lprotocol -lnetwork -llog4cxx -lapr-1 -laprutil-1 -lexpat -ljson
 	cp $@ ${RELEASE_DIR}
 
 
