@@ -52,9 +52,9 @@ private:
     static CEupuLogger4System* m_pLogger;
 };
 
-#define LOGSETLEVEL cLogger4System::Logger()->SetLogLevel
-#define LOGSETDEBUG cLogger4System::Logger()->SetDebugMode
-#define LOG cLogger4System::Logger()->WriteLog
-#define LOGHEX cLogger4System::Logger()->WriteHex
+#define LOGSETLEVEL CEupuLogger4System::Logger()->SetLogLevel
+#define LOGSETDEBUG CEupuLogger4System::Logger()->SetDebugMode
+#define LOG CEupuLogger4System::Logger()->WriteLog
+#define LOGHEX CEupuLogger4System::Logger()->WriteHex
 
 #endif//_EUPULOGGER4SYSTEM_H_

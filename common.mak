@@ -20,7 +20,7 @@ LFLAGS = -L$(LIB_DIR)
 
 LDFLAGS = -shared -m32
 CFLAGS = -O0 -g3 -Wall -c -fmessage-length=0 -m32 -I. -L/usr/lib
-LIB_CFLAGS = -I$(TS_INCLUDE)/common -I$(TS_INCLUDE)/network -I$(TS_INCLUDE)/logger -I$(TS_INCLUDE)/protocol
+LIB_CFLAGS = -I$(TS_INCLUDE) -I$(TS_INCLUDE)/common -I$(TS_INCLUDE)/network -I$(TS_INCLUDE)/logger -I$(TS_INCLUDE)/protocol
 
 MAKE = make
 

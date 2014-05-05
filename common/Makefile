@@ -2,7 +2,7 @@
 
 
 
-OBJS = src/common.o src/exceptionhandle.o src/utility.o 
+OBJS = src/common.o src/exceptionhandle.o src/utility.o src/globalconfig.o
 
 
 include ../common.mak

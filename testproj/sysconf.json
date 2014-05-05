@@ -1,0 +1,12 @@
+{
+"listen_port" : 3601,
+"listen_ip" : "10.10.40.177",
+"work_threads" : 5,
+"update_interval" : 60,
+"keepalive_timer" : 120,
+"ping_timer" : 3600,
+"log_level" : 4,
+"send_queue_size" : 100,
+"recv_queue_size" : 15000,
+"epoll_max_size" : 10000
+}

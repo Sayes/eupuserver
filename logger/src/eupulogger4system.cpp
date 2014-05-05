@@ -149,7 +149,7 @@ void CEupuLogger4System::WriteLog(const char *filename, int line, LOGLEVEL level
 	if (level > m_Level)
 	{
 		//level lower
-		return;
+		//return;
 	}
 
 	memset(msgbuf, 0, sizeof(msgbuf));
@@ -165,7 +165,7 @@ void CEupuLogger4System::WriteLog(const char *filename, int line, LOGLEVEL level
 	va_end(arglist);
 
 	//get the log string
-  snprintf(buf, sizeof(buf), "%04d/%02d/%02d %02d:%02d:%02d:%06u [0x%08x, 0x%08x] <%-5s> (%s, %06d) %s",  
+    snprintf(buf, sizeof(buf), "%04d/%02d/%02d %02d:%02d:%02d:%06u [0x%08x, 0x%08x] <%-5s> (%s, %06d) %s",  
            tme.tm_year+1900, tme.tm_mon+1, tme.tm_mday, tme.tm_hour, tme.tm_min, tme.tm_sec, (unsigned int)tmv.tv_usec,
            (int)getpid(), (int)pthread_self(), GetLogLevelStr(level), filename, line, msgbuf);
 
@@ -173,7 +173,21 @@ void CEupuLogger4System::WriteLog(const char *filename, int line, LOGLEVEL level
 	//{
 //		cout << buf;
 //	}
-	Error(m_ErrPtr, buf);
+
+    switch (level)
+    {
+        case LL_DEBUG:
+            Debug(m_BugPtr, buf);
+            break;
+        case LL_ERROR:
+            Error(m_ErrPtr, buf);
+            break;
+        default:
+            Error(m_ErrPtr, buf);
+            break;
+
+    }
+
 }
 
 void CEupuLogger4System::WriteMonitorLog(UINT type, UINT mainid, UINT assiantid, UINT action, const char *username, const char *domain)
