@@ -1,20 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  common.cpp
- *
- *    Description:  
- *
- *        Version:  1.0
- *        Created:  2013年11月24日 17时53分42秒
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
- *
- * =====================================================================================
- */
 
 #include <signal.h>
 #include <sys/resource.h>
@@ -42,7 +25,7 @@ string fgNtoA(unsigned int ip)
 	return string(p);
 }
  
-void deamonize()
+void deamonize1()
 {
 	pid_t pid;
 	pid_t sid;

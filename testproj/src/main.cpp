@@ -1,15 +1,23 @@
-#include <string>
 #include <fstream>
+#include "json/json.h"
 #include "common.h"
 #include "globaldef.h"
 #include "globalconfig.h"
 #include "eupulogger4system.h"
-#include "json/json.h"
+
 using namespace std;
+
+bool initSystem()
+{
+    return 0;
+}
+
+void exitSystem()
+{
+}
 
 int main(int argc, char* argv[])
 {
-    //CEupuLogger4System::CreateInstance(".");
 
     LOGSETLEVEL((LOGLEVEL)1);
 
@@ -17,19 +25,25 @@ int main(int argc, char* argv[])
 
     LOG(_INFO_, "main() start");
 
-    //CGlobalConfig* pConfig = CGlobalConfig()->getInstance();
-    //if (!pConfig->InitSysConfig("sysconf.json"))
+    CGlobalConfig* pConfig = CGlobalConfig::getInstance();
+    if (!pConfig->initSysConfig("sysconf.json"))
     {
         LOG(_DEBUG_, "init config failed");
     }
 
-    LOG(_ERROR_, "sigh!");
-    //unsigned int ping_timer = pConfig->GetPingTimer();
+    daemonize1();
 
-    //char szErrMsg[256];
-    //sprintf(szErrMsg, "%d", ping_timer);
+    unsigned int ping_timer = pConfig->GetPingTimer();
 
-    //LOG(_DEBUG_, szErrMsg);
+    do {
+        if (!initSystem())
+        {
+            break;
+        }
+
+    } while (0);
+
+    exitSystem();
 
     return 0;
 }

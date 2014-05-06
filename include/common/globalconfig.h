@@ -131,6 +131,7 @@ public:
     bool initSysConfig(const std::string& path);
     bool initDbConfig(const std::string& path);
     bool initLogConfig(const std::string& path);
+
 protected:
     CGlobalConfig();
     virtual ~CGlobalConfig();

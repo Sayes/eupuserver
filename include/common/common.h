@@ -4,7 +4,7 @@
 #include <string>
 using std::string;
 
-void daemonize();
+void daemonize1();
 string fgNtoA(unsigned int ip);
 unsigned int fgAtoN(const char* ip);
 
