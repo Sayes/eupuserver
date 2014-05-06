@@ -148,8 +148,8 @@ void CEpollThread::doEpollEvent()
 					continue;
 				}
 
-               doRecvMessage(pkey);
-			}
+                doRecvMessage(pkey);
+            }
             else if (m_events[i].events && EPOLLOUT)
             {
                 if (doSendMessage(pkey) < 0)
