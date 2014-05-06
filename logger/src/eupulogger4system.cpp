@@ -149,7 +149,7 @@ void CEupuLogger4System::WriteLog(const char *filename, int line, LOGLEVEL level
 	if (level > m_Level)
 	{
 		//level lower
-		//return;
+		return;
 	}
 
 	memset(msgbuf, 0, sizeof(msgbuf));
@@ -174,19 +174,7 @@ void CEupuLogger4System::WriteLog(const char *filename, int line, LOGLEVEL level
 //		cout << buf;
 //	}
 
-    switch (level)
-    {
-        case LL_DEBUG:
-            Debug(m_BugPtr, buf);
-            break;
-        case LL_ERROR:
-            Error(m_ErrPtr, buf);
-            break;
-        default:
-            Error(m_ErrPtr, buf);
-            break;
-
-    }
+    Error(m_ErrPtr, buf);
 
 }
 

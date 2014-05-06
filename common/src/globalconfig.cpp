@@ -109,3 +109,29 @@ bool CGlobalConfig::initSysConfig(const std::string& path)
 
     return true;
 }
+
+UINT CGlobalConfig::GetQueueTimer()
+{
+    //TODO
+    return 0; 
+}
+
+UINT CGlobalConfig::GetPingTimer()
+{
+    return m_cfg.ping_timer;
+}
+
+UINT CGlobalConfig::GetUpdateInterval()
+{
+    return m_cfg.update_interval;
+}
+
+UINT CGlobalConfig::GetKeepaliveTimer()
+{
+    return m_cfg.keepalive_timer;
+}
+
+UINT CGlobalConfig::GetLogLevel()
+{
+    return m_cfg.loglevel;
+}

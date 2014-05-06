@@ -80,6 +80,46 @@ public:
         return &m_memlst;    
     }
 
+    UINT GetListenPort()
+    {
+        return m_cfg.listen_port;
+    }
+
+    std::string GetListenIp()
+    {
+        return m_cfg.listen_ip;
+    }
+
+    UINT GetSendQueueSize()
+    {
+        return m_cfg.send_queue_size;
+    }
+
+    UINT GetRecvQueueSize()
+    {
+        return m_cfg.recv_queue_size;
+    }
+
+    UINT GetWorkThreads()
+    {
+        return m_cfg.work_threads;
+    }
+
+    UINT GetEpollMaxSize()
+    {
+        return m_cfg.epoll_max_size;
+    }
+
+    UINT GetSocketSendBuf()
+    {
+        return m_cfg.maxsendbuf;
+    }
+
+    UINT GetSocketRecvBuf()
+    {
+        return m_cfg.maxrecvbuf;
+    }
+
     UINT GetQueueTimer();
     UINT GetPingTimer();
     UINT GetDbMaxConnects();
