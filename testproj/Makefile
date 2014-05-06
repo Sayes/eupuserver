@@ -17,7 +17,7 @@ all: $(TARGETS)
 
 testproj: $(OBJS)
 	test -d ../release || mkdir -p ../release
-	$(LINK) $(LDFLAGS) -o $@ $^ -lpthread -lapr-1 -laprutil-1 -lexpat -llog4cxx -lcommon -leupulogger -ljson -lprotocol -lnetwork
+	$(LINK) $(LDFLAGS) -o $@ $^ -lnetwork -lprotocol -leupulogger -llog4cxx -lcommon -ljson -lapr-1 -laprutil-1  
 	cp $@ ${RELEASE_DIR}
 
 

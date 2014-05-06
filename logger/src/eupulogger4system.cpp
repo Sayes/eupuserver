@@ -171,12 +171,13 @@ void CEupuLogger4System::WriteLog(const char *filename, int line, LOGLEVEL level
 
 	//if (m_IsDebug)
 	//{
-//		cout << buf;
-//	}
+    //  cout << buf;
+    //}
 
     Error(m_ErrPtr, buf);
 
 }
+
 
 void CEupuLogger4System::WriteMonitorLog(UINT type, UINT mainid, UINT assiantid, UINT action, const char *username, const char *domain)
 {

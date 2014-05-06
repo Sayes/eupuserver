@@ -1,8 +1,8 @@
 #include <fstream>
 #include "json/json.h"
-#include "common.h"
 #include "globaldef.h"
 #include "globalconfig.h"
+#include "common.h"
 #include "eupulogger4system.h"
 
 using namespace std;
@@ -31,7 +31,8 @@ int main(int argc, char* argv[])
         LOG(_DEBUG_, "init config failed");
     }
 
-    daemonize1();
+    daemonize();
+    fgNtoA(2000);
 
     unsigned int ping_timer = pConfig->GetPingTimer();
 

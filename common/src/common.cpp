@@ -2,7 +2,7 @@
 #include <signal.h>
 #include <sys/resource.h>
 #include "globaldef.h"
-#include "common.h"
+//#include "common.h"
 
 using namespace std;
 
@@ -25,7 +25,7 @@ string fgNtoA(unsigned int ip)
 	return string(p);
 }
  
-void deamonize1()
+void deamonize()
 {
 	pid_t pid;
 	pid_t sid;
@@ -86,5 +86,4 @@ void deamonize1()
 	}
 
 	signal(SIGPIPE, SIG_IGN);
-	return;
 }

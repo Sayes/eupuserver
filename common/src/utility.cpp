@@ -3,7 +3,6 @@
 //#include  <sys/times.h>
 #include  <stdio.h>
 #include  <stdlib.h>
-//
 
 //time_t cUtility::timep(0);
 //struct tm* cUtility::p(0);

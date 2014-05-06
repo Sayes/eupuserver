@@ -1,24 +1,6 @@
-/*
- * =====================================================================================
- *
- *       Filename:  netcommon.cpp
- *
- *    Description:  :
- *
- *        Version:  1.0
- *        Created:  2013
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
- *
- * =====================================================================================
- */
-
-#include <globaldef.h>
-#include <common.h>
+#include "globaldef.h"
 #include "netcommon.h"
+#include "common.h"
 
 SOCKET_SET* initSocketset(int fd, time_t conntime, const string& peerip, unsigned short peerport, int ntype)
 {

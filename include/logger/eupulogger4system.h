@@ -31,7 +31,7 @@ public:
     void Fatal4Sys(char* strFatal);
     void Error4Sys(char* strError);
     void Debug4Sys(char* strDebug);
-    void WriteMonitorLog(UINT type, UINT mainid, UINT assiantid, UINT action, const char *username, const char *domain);
+    //void WriteMonitorLog(UINT type, UINT mainid, UINT assiantid, UINT action, const char *username, const char *domain);
     void WriteLog(const char *filename, int line, LOGLEVEL level, const char *fmt, ...);
     void SetDebugMode(bool bdebug);
     void WriteHex(const char *filename, int line, LOGLEVEL level, const char *title, const char *buf, int buflen);
@@ -46,7 +46,7 @@ protected:
     LoggerPtr m_FtlPtr;
     LoggerPtr m_BugPtr;
     string m_strTmp;
-    bool   m_IsDebug;
+    bool m_IsDebug;
     LOGLEVEL m_Level;
 private:
     static CEupuLogger4System* m_pLogger;

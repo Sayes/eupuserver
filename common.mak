@@ -15,8 +15,8 @@ LIB_DIR = $(TS_DIR)/lib
 
 LFLAGS = -L$(LIB_DIR)
 
-#os_type = $(shell uname -s)
-#ifeq ($(os_type), Linux)
+os_type = $(shell uname -s)
+ifeq ($(os_type), Linux)
 
 LDFLAGS = -shared -m32
 CFLAGS = -O0 -g3 -Wall -c -fmessage-length=0 -m32 -I. -L/usr/lib
@@ -24,7 +24,7 @@ LIB_CFLAGS = -I$(TS_INCLUDE) -I$(TS_INCLUDE)/common -I$(TS_INCLUDE)/network -I$(
 
 MAKE = make
 
-#endif
+endif
 
 
 .SUFFIXES:

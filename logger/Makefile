@@ -19,7 +19,7 @@ all: $(TARGETS)
 
 libeupulogger.so: $(OBJS)
 	test -d ../release || mkdir -p ../release
-	$(LINK) $(LDFLAGS) -o $@ $^ -llog4cxx -lcommon
+	$(LINK) $(LDFLAGS) -o $@ $^
 	cp $@ ${RELEASE_DIR}
 
 
