@@ -76,9 +76,4 @@ private:
 
 
 
-
-
-
-
-
 #endif//__EUPUEPOLLTHREAD_H__

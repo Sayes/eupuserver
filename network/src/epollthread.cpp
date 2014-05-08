@@ -3,6 +3,7 @@
 #include "sysqueue.h"
 #include "common.h"
 #include "globalmgr.h"
+#include "eupulogger4system.h"
 
 CEpollThread::CEpollThread()
 : CEupuThread()
@@ -190,11 +191,95 @@ void CEpollThread::doSendkeepaliveToServer()
 bool CEpollThread::doListen()
 {
     bool bret = false;
+
+    sockaddr_in serv_addr;
+    m_listenfd = socket(AF_INET, SOCK_STREAM, 0);
+
+    do {
+        if (m_listenfd < 0)
+        {
+            LOG(_ERROR_, "CEpollThread::doListen() create listen socket error");
+            break;
+        }
+
+        serv_addr.sin_family = AF_INET;
+        serv_addr.sin_port = htons(m_serverport);
+        if (m_serverip.empty())
+        {
+            serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+        }
+        else
+        {
+            serv_addr.sin_addr.s_addr = fgAtoN(m_serverip.c_str());
+        }
+
+        int tmp = 1;
+        if (setsockopt(m_listenfd, SOL_SOCKET, SO_REUSEADDR, &tmp, sizeof(tmp)) < 0)
+        {
+            LOG(_ERROR_, "CEpollThread::doListen() setsockopt(m_listenfd...) error");
+            break;
+        }
+
+        if (!setNonBlock(m_listenfd))
+        {
+            LOG(_ERROR_, "CEpollThread::doLIsten() setNonBlock(m_listenfd) error");
+            break;
+        }
+
+        if (bind(m_listenfd, (sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
+        {
+            LOG(_ERROR_, "CEpollThread::doListen() bind(m_listenfd...) error");
+            break;
+        }
+
+        if (listen(m_listenfd, 4096) < 0) //max pending queue
+        {
+            LOG(_ERROR_, "CEpollThread::doListen() listen(m_listenfd...) error");
+            break;
+        }
+
+        m_listenkey = new SOCKET_KEY;
+        if (!m_listenkey)
+        {
+            LOG(_ERROR_, "CEpollThread::doListen() new SOCKET_KEY error");
+            exit(-1);
+        }
+
+        m_listenkey->fd = m_listenfd;
+        m_listenkey->connect_time = getIndex();
+
+        struct epoll_event ev;
+        ev.data.ptr = m_listenkey;
+        ev.events = EPOLLIN | EPOLLET;
+
+        if (epoll_ctl(m_epollfd, EPOLL_CTL_ADD, m_listenfd, &ev) < 0)
+        {
+            LOG(_ERROR_, "CEpollThread::doListen() epoll_ctl(m_epollfd...) error");
+            break;
+        }
+
+        LOG(_INFO_, "CEpollThread::doListen() successed, listen and add to epoll poll, m_listenfd=%d, m_epollfd=%d ", m_listenfd, m_epollfd);
+        bret = true;
+
+    } while (false);
+
     return bret;
 }
 
 bool CEpollThread::doAccept(int fd)
 {
+    struct sockaddr_in addr = {0};
+    socklen_t addrlen = sizeof(addr);
+    int connfd = -1;
+
+    while (true)
+    {
+        addrlen = sizeof(addr);
+        memset(&addr, 0, addrlen);
+        connfd = accept(fd, (sockaddr*)&addr, &addrlen);
+
+    }
+    //TODO
     return true;
 }
 
