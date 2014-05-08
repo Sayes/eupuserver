@@ -37,8 +37,11 @@ private:
 	void doEpollEvent();
 	void doSystemEvent();
     void closeClient(int fd, time_t conntime);
+    void createClientCloseMsg(SOCKET_SET* pkey);
+    bool createConnectServerMsg(SOCKET_SET* pkey);
     void doKeepaliveTimeout();
     void doSendkeepaliveToServer();
+    void deleteSendMsgFromSendMap(int fd);
 
     time_t getIndex();
 

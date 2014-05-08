@@ -278,8 +278,102 @@ bool CEpollThread::doAccept(int fd)
         memset(&addr, 0, addrlen);
         connfd = accept(fd, (sockaddr*)&addr, &addrlen);
 
+        if (connfd < 0)
+        {
+            if (errno != EAGAIN)
+            {
+                LOG(_ERROR_, "CEpollThread::doAccept(fd) accept(fd) error, fd=%d, errno=%s", fd, strerror(errno));
+            }
+            return true;
+        }
+
+        string peerip = fgNtoA(ntohl(addr.sin_addr.s_addr));
+        unsigned short port = ntohs(addr.sin_port);
+
+        if (!setNonBlock(connfd))
+        {
+            LOG(_ERROR_, "CEpollThread::doAccept(fd) setNonBlock(fd) error, fd=%d, peerip=%s, port=%d", fd, peerip.c_str(), port);
+            close(connfd);
+            continue;
+        }
+
+        if (setsockopt(connfd, SOL_SOCKET, SO_SNDBUF, &m_sendbufsize, sizeof(m_sendbufsize)) < 0)
+        {
+            LOG(_ERROR_, "CEpollThread::doAccept(fd) setsockopt(connfd...) error, connfd=%d, peerip=%s, port=%d, error=%s", connfd, peerip.c_str(), port, strerror(errno));
+            close(connfd);
+            continue;
+        }
+
+        if (setsockopt(connfd, SOL_SOCKET, SO_RCVBUF, &m_readbufsize, sizeof(m_readbufsize)) < 0)
+        {
+            LOG(_ERROR_, "CEpollThread::doAccept(fd) setsockopt(connfd...) error, connfd=%d, peerip=%s, port=%d, error=%s", connfd, peerip.c_str(), port, strerror(errno));
+            close(connfd);
+            continue;
+        }
+
+        int opt = 1;
+        if (setsockopt(connfd, IPPROTO_TCP, TCP_NODELAY, &opt, sizeof(opt)) < 0)
+        {
+            LOG(_ERROR_, "CEpollThread::doAccept(fd) setsockopt(connfd...) error, connfd=%d, peerip=%s, port=%d, error=%s", connfd, peerip.c_str(), port, strerror(errno));
+            close(connfd);
+            continue;
+        }
+
+        SOCKET_SET* psocket = initSocketset(connfd, getIndex(), peerip, port, CLIENT_TYPE);
+
+        if (!psocket)
+        {
+            LOG(_ERROR_, "CEpollThread::doAccept(fd) initSocketset(connfd...) error, connfd=%d, peerip=%s, port=%d, error=%s", connfd, peerip.c_str(), port, strerror(errno));
+            close(connfd);
+            continue;
+        }
+
+        if (!createConnectServerMsg(psocket))
+        {
+            LOG(_ERROR_, "CEpollThread::doAccept(fd) createConnectServerMsg(psocket) error, connfd=%d, conntime=%u, peerip=%s, port=%d, type=%d",
+                psocket->key->fd, psocket->key->connect_time, GETNULLSTR(psocket->peer_ip), psocket->peer_port, psocket->type);
+            delete psocket;
+            close(connfd);
+            continue;
+        }
+
+        if (!addClientToEpoll(psocket))
+        {
+            LOG(_ERROR_, "CEpollThread::doAccept(fd) addClientToEpoll(psocket) error, connfd=%d, conntime=%u, peerip=%s, port=%d, type=%d",
+                psocket->key->fd, psocket->key->connect_time, GETNULLSTR(psocket->peer_ip), psocket->peer_port, psocket->type);
+            delete psocket;
+            close(connfd);
+            continue;
+        }
     }
-    //TODO
+
+    return true;
+}
+
+bool CEpollThread::addClientToEpoll(SOCKET_SET* psocket)
+{
+    if (psocket == NULL || psocket->key == NULL)
+    {
+        LOG(_ERROR_, "CEpollThread::addClientToEpoll() error"); 
+        return false;
+    }
+
+    struct epoll_event ev = {0};
+    ev.events = EPOLLIN | EPOLLET;
+    ev.data.ptr = psocket->key;
+
+    if (epoll_ctl(m_epollfd, EPOLL_CTL_ADD, psocket->key->fd, &ev) < 0)
+    {
+        LOG(_ERROR_, "CEpollThread::addClientToEpoll() epoll_ctl() error, fd=%d, error=%s", psocket->key->fd, strerror(errno));
+        return false;
+    }
+
+    if (!addSocketToMap(psocket))
+    {
+        LOG(_ERROR_, "CEpollThread::addClientToEpoll() addSocketToMap() error, fd=%d, peerip=%s, port=%d", psocket->key->fd, GETNULLSTR(psocket->peer_ip), psocket->peer_port);
+        return false;
+    }
+
     return true;
 }
 
