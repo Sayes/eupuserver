@@ -1,10 +1,9 @@
 #ifndef _EXCEPTIONHANDLE_H_INCLUDED
 #define _EXCEPTIONHANDLE_H_INCLUDED
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <execinfo.h>
-#include <signal.h>
-
+#include <csignal>
 #include <exception>
 #include <iostream>
 #include <string>

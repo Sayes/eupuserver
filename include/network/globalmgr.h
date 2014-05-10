@@ -44,6 +44,11 @@ class CGlobalMgr {
         CSysQueue<NET_EVENT>* getEventQueue();
         CSysQueue<NET_DATA>* getRecvQueue();
 
+        map<int, list<NET_DATA*>* > * getBakSendMap()
+        {
+            return m_pbaksendmap;
+        }
+
     private:
         map<int, list<NET_DATA*> *> m_sendmap[2];
         map<int, list<NET_DATA*> *>* m_pcursendmap;
