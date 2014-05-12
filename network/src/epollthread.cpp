@@ -665,17 +665,115 @@ void CEpollThread::closeClient(int fd, time_t conntime)
     }
 }
 
-void CEpollThread::createClientCloseMsg(SOCKET_SET* key)
+void CEpollThread::createClientCloseMsg(SOCKET_SET* psocket)
 {
+    if (psocket == NULL || psocket->key == NULL)
+    {
+        LOG(_ERROR_, "CEpollThread::createClientCloseMsg() error, param psocket == NULL");
+        return;
+    }
+
+    char buf[MAX_SEND_SIZE];
+    UINT buflen = sizeof(buf);
+    memset(buf, 0, buflen);
+
+    MP_Server_DisConnected msg;
+    msg.m_nServer = psocket->type;
+    if (!msg.Out((BYTE*)buf, buflen))
+    {
+        LOG(_ERROR_, "CEpollThread::createClientCloseMsg() error, msg.Out(buf, buflen) failed, fd=%d, time=%u, type=%d", psocket->key->fd, psocket->key->connect_time, psocket->type);
+        return;
+    }
+
+    NET_DATA* pdata = new NET_DATA;
+    if (!pdata)
+    {
+        LOG(_ERROR_, "CEpollThread::createClientCloseMsg() error, create NET_DATA failed, fd=%d, time=%u, type=%d", psocket->key->fd, psocket->key->connect_time, psocket->type);
+        exit(-1);
+    }
+
+    if (!pdata->init(psocket->key->fd, psocket->key->connect_time, psocket->peer_ip, psocket->peer_port, psocket->type, buflen))
+    {
+        LOG(_ERROR_, "CEpollThread::createClientCloseMsg() error, pdata->init(fd...) failed, fd=%d, time=%u, type=%d", psocket->key->fd, psocket->key->connect_time, psocket->type);
+        delete pdata;
+        pdata = NULL;
+        return;
+    }
+
+    memcpy(pdata->pdata, buf, buflen);
+    pdata->data_len = buflen;
+    m_recvlist.push_back(pdata);
 }
 
 bool CEpollThread::addSocketToMap(SOCKET_SET* psocket)
 {
+    if (psocket == NULL || psocket->key == NULL || psocket->key->fd < 0)
+    {
+        LOG(_ERROR_, "CEpollThread::addSocketToMap() error, param psocket == NULL");
+        return false;
+    }
+
+    if (m_maxepollsize <= m_socketmap.size())
+    {
+        LOG(_ERROR_, "CEpollThread::addSocketToMap() error, the epoll poll is full, fd=%d, peerip=%s, port=%d", psocket->key->fd, GETNULLSTR(psocket->peer_ip), psocket->peer_port);
+        return false;
+    }
+
+    map<int, SOCKET_SET*>::iterator iter = m_socketmap.find(psocket->key->fd);
+    if (iter != m_socketmap.end())
+    {
+        if (iter->second && iter->second->key)
+        {
+            LOG(_WARN_, "CEpollThread::addSocketToMap() error, found timeout connect, fd=%d, peerip=%s, port=%d", psocket->key->fd, GETNULLSTR(psocket->peer_ip), psocket->peer_port);
+        }
+        else
+        {
+            LOG(_WARN_, "CEpollThread::addSocketToMap() error, found timeout connect, socket == NULL");
+        }
+
+        if (iter->second != NULL)
+        {
+            delete iter->second;
+            iter->second = NULL;
+        }
+
+        m_socketmap.erase(iter);
+    }
+
+    m_socketmap.insert(map<int, SOCKET_SET*>::value_type(psocket->key->fd, psocket));
+    return true;
     return false;
 }
 
 void CEpollThread::deleteSendMsgFromSendMap(int fd)
 {
+    if (fd < 0)
+    {
+        LOG(_ERROR_, "CEpollThread::deleteSendMsgFromSendMap(int fd) error, invalid fd");
+        return;
+    }
+
+    map<int, list<NET_DATA*>*>* psendmap = CGlobalMgr::getInstance()->getBakSendMap();
+    map<int, list<NET_DATA*>*>::iterator itersend = psendmap->find(fd);
+
+    if (itersend != psendmap->end())
+    {
+        if (itersend->second != NULL)
+        {
+            list<NET_DATA*>::iterator iterdata = itersend->second->begin();
+            for (; iterdata != itersend->second->end(); ++iterdata)
+            {
+                delete *iterdata;
+            }
+            itersend->second->clear();
+            delete itersend->second;
+            itersend->second = NULL;
+        }
+        psendmap->erase(itersend);
+    }
+
+    return;
+
 }
 
 void CEpollThread::doSystemEvent()
