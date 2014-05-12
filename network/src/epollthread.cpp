@@ -555,12 +555,113 @@ int CEpollThread::doSendMessage(SOCKET_KEY* key)
 
 bool CEpollThread::parsePacketToRecvQueue(SOCKET_SET* psocket, char* buf, int buflen)
 {
+    if (!psocket || !psocket->key)
+    {
+        LOG(_ERROR_, "CEpollThread::parsePacketToRecvQueue() error, param is null");
+        return false;
+    }
+
+    if (buf == NULL || buflen <= 0)
+    {
+        LOG(_ERROR_, "CEpollThread::parsePackageToRecvQueue() error, buflen < 0");
+        return false;
+    }
+
+    LOG(_DEBUG_, "recv message:", buf, buflen);
+
+    int curpos = 0;
+
+    while (curpos < buflen)
+    {
+        if (buflen - curpos < NET_HEAD_SIZE)
+        {
+            memcpy(psocket->part_buf, buf, buflen - curpos);
+            psocket->part_len = buflen - curpos;
+            return true;
+        }
+
+        unsigned short nmsgsize = *((unsigned short *)(buf + curpos));
+        unsigned short nlen = ntohs(nmsgsize);
+
+        if (nlen > MAX_SEND_SIZE || nlen < NET_HEAD_SIZE)
+        {
+            LOG(_ERROR_, "CEpollThread::parsePacketToRecvQueue() error, invalid message length, fd=%d, peerip=%s, port=%d, len=%d",
+                    psocket->key->fd, GETNULLSTR(psocket->peer_ip), psocket->peer_port, nlen);
+            return false;
+        }
+
+        if (nlen > buflen - curpos)
+        {
+            memcpy(psocket->part_buf, buf, buflen - curpos);
+            psocket->part_len = buflen - curpos;
+            return true;
+        }
+
+        NET_DATA* pdata = new NET_DATA;
+        if (!pdata)
+        {
+            LOG(_ERROR_, "CEpollThread::parsePacketToRecvQueue() error, create NET_DATA failed, fd=%d, peerip=%s, port=%d",
+                    psocket->key->fd, GETNULLSTR(psocket->peer_ip), psocket->peer_port);
+            LOGHEX(_DEBUG_, "recv message:", buf, buflen);
+            exit(-1);
+        }
+
+        if (!pdata->init(psocket->key->fd, psocket->key->connect_time, psocket->peer_ip, psocket->peer_port, psocket->type, nlen))
+        {
+            LOG(_ERROR_, "CEpollThread::parsePacketToRecvQueue() error, NET_DATA::init() failed, fd=%d, peerip=%s, port=%d",
+                    psocket->key->fd, GETNULLSTR(psocket->peer_ip), psocket->peer_port);
+            LOGHEX(_DEBUG_, "recv message:", buf, buflen);
+            delete pdata;
+            pdata = NULL;
+            return false;
+        }
+
+        memcpy(pdata->pdata, buf + curpos, nlen);
+        pdata->data_len = nlen;
+        m_recvlist.push_back(pdata);
+        curpos += nlen;
+
+    }//end while
     return true;
 }
 
 void CEpollThread::closeClient(int fd, time_t conntime)
 {
+    if (fd < 0)
+    {
+        LOG(_ERROR_, "CEpollThread::closeClient() error, fd < 0");
+        return;
+    }
 
+    if (epoll_ctl(m_epollfd, EPOLL_CTL_DEL, fd, NULL) < 0)
+    {
+        LOG(_ERROR_, "CEpollThread::closeClient() error, delete socket from epoll failed, fd=%d, error=%s", fd, strerror(errno));
+    }
+
+    map<int, SOCKET_SET*>::iterator iter = m_socketmap.find(fd);
+    close(fd);
+    if (iter == m_socketmap.end())
+    {
+        LOG(_ERROR_, "CEpollThread::closeClient() error, can't find socket in map, fd=%d", fd);
+    }
+    else
+    {
+        if (iter->second != NULL)
+        {
+            if (iter->second->type > CLIENT_TYPE)
+            {
+                CGlobalMgr::getInstance()->setServerSocket(-1, 0, "", 0, iter->second->type);
+            }
+            createClientCloseMsg(iter->second);
+            delete iter->second;
+            iter->second = NULL;
+        }
+        else
+        {
+            LOG(_ERROR_, "CEpollThread::closeClient(), the found socket is NULL");
+        }
+        m_socketmap.erase(iter);
+    }
 }
 
 void CEpollThread::createClientCloseMsg(SOCKET_SET* key)

@@ -40,6 +40,7 @@ typedef __int8_t INT8;
 typedef __int32_t INT32;
 
 #define	MAX_SEND_SIZE	2048
+#define NET_HEAD_SIZE   7
 
 
 #endif//__GLOBAL_DEF__
