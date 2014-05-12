@@ -4,6 +4,7 @@
 #include "common.h"
 #include "globalmgr.h"
 #include "eupulogger4system.h"
+#include "sprotocol.h"
 
 CEpollThread::CEpollThread()
 : CEupuThread()
