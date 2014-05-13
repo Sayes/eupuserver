@@ -1,8 +1,12 @@
-
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <signal.h>
+#include <fcntl.h>
 #include <sys/resource.h>
-#include "globaldef.h"
-//#include "common.h"
+#include <iostream>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include "common.h"
 
 using namespace std;
 
@@ -24,8 +28,8 @@ string fgNtoA(unsigned int ip)
 	const char* p = inet_ntop(AF_INET, (void*)&addr, buf, (socklen_t)sizeof(buf));
 	return string(p);
 }
- 
-void deamonize()
+
+void daemonize()
 {
 	pid_t pid;
 	pid_t sid;
