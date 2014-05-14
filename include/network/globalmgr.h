@@ -35,6 +35,7 @@ public:
     void clean();
 
     void createServerConnect(int ntype);
+    bool createCloseConnectEvent(int fd, time_t conntime);
     bool createMsgToSendList(int fd, time_t conntime, const string& ip, USHORT port, int ntype,  USHORT mainid, USHORT assistantid, BYTE code, BYTE reserve, CEupuStream* stream, UINT nlen);
     bool addMsgToSendList(NET_DATA* pdata);
     bool sendMsgToServer(int ntype, USHORT mainid, USHORT assistantid, BYTE code, BYTE reserve, CEupuStream* pstream, UINT nlen, bool blocked = true);

@@ -68,69 +68,74 @@ public:
     static CGlobalConfig* getInstance();
     static void release();
 
-    char* GetDbHostName();
-    UINT GetDbHostPort();
-    char* GetDbUserName();
-    char* GetDbUserPssw();
-    char* GetDbDatabase();
-    UINT GetMemPoolCount();
+    char* getDbHostName();
+    UINT getDbHostPort();
+    char* getDbUserName();
+    char* getDbUserPssw();
+    char* getDbDatabase();
+    UINT getMemPoolCount();
 
-    const vector<PMEM_SERVER>* GetMemcacheServers()
+    const vector<PMEM_SERVER>* getMemcacheServers()
     {
         return &m_memlst;    
     }
 
-    UINT GetListenPort()
+    UINT getListenPort()
     {
         return m_cfg.listen_port;
     }
 
-    std::string GetListenIp()
+    std::string getListenIp()
     {
         return m_cfg.listen_ip;
     }
 
-    UINT GetSendQueueSize()
+    UINT getSendQueueSize()
     {
         return m_cfg.send_queue_size;
     }
 
-    UINT GetRecvQueueSize()
+    UINT getRecvQueueSize()
     {
         return m_cfg.recv_queue_size;
     }
 
-    UINT GetWorkThreads()
+    UINT getWorkThreads()
     {
         return m_cfg.work_threads;
     }
 
-    UINT GetEpollMaxSize()
+    UINT getEpollMaxSize()
     {
         return m_cfg.epoll_max_size;
     }
 
-    UINT GetSocketSendBuf()
+    UINT getSocketSendBuf()
     {
         return m_cfg.maxsendbuf;
     }
 
-    UINT GetSocketRecvBuf()
+    UINT getSocketRecvBuf()
     {
         return m_cfg.maxrecvbuf;
     }
 
-    UINT GetQueueTimer();
-    UINT GetPingTimer();
-    UINT GetDbMaxConnects();
-    UINT GetUpdateInterval();
-    UINT GetKeepaliveTimer();
-    UINT GetUpdatePeopleTimer();
-    UINT GetLogLevel();
+    UINT getQueueTimer();
+    UINT getPingTimer();
+    UINT getDbMaxConnects();
+    UINT getUpdateInterval();
+    UINT getKeepaliveTimer();
+    UINT getUpdatePeopleTimer();
+    UINT getLogLevel();
 
     bool initSysConfig(const std::string& path);
     bool initDbConfig(const std::string& path);
     bool initLogConfig(const std::string& path);
+
+    PCONNECT_SERVER getMainServer();
+    PCONNECT_SERVER getDistributeServer();
+    PCONNECT_SERVER getUserCenterServer();
+    PCONNECT_SERVER getLogServer();
 
 protected:
     CGlobalConfig();

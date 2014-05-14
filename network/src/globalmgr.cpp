@@ -141,8 +141,8 @@ bool CGlobalMgr::addMsgToSendList(NET_DATA* pmsg)
 bool CGlobalMgr::init()
 {
     LOG(_INFO_, "CGlobalMgr::init() start");
-    m_nMaxSendList = CGlobalConfig::getInstance()->GetSendQueueSize();
-    m_recvlist.setQueueSize(CGlobalConfig::getInstance()->GetRecvQueueSize());
+    m_nMaxSendList = CGlobalConfig::getInstance()->getSendQueueSize();
+    m_recvlist.setQueueSize(CGlobalConfig::getInstance()->getRecvQueueSize());
 
     return true;
 }
@@ -390,5 +390,135 @@ void CGlobalMgr::switchSendMap()
 
 void CGlobalMgr::createServerConnect(int ntype)
 {
+    m_serverlock.Lock();
+
+    PCONNECT_SERVER pserver = NULL;
+    NET_DATA* pdata = NULL;
+
+    switch (ntype)
+    {
+        case MAINSVR_TYPE:
+        {
+            pserver = CGlobalConfig::getInstance()->getMainServer();
+            pdata = &m_mainkey;
+            break;
+        }
+        case DISSVR_TYPE:
+        {
+            pserver = CGlobalConfig::getInstance()->getDistributeServer();
+            pdata = &m_distributekey;
+            break;
+        }
+        case USERCENTERSVR_TYPE:
+        {
+            pserver = CGlobalConfig::getInstance()->getUserCenterServer();
+            pdata = &m_usercenterkey;
+            break;
+        }
+        case LOGSVR_TYPE:
+        {
+            pserver = CGlobalConfig::getInstance()->getLogServer();
+            pdata = &m_logkey;
+            break;
+        }
+        default:
+        {
+            LOG(_ERROR_, "CGlobalMgr::createServerConnect() error, invalid server type, type=%d", ntype);
+            break;
+        }
+    }//end switch
+
+    if (pserver == NULL)
+    {
+        LOG(_ERROR_, "CGlobalMgr::createServerConnect() error, not found config option for server, type=%d", ntype);
+        m_serverlock.UnLock();
+        return;
+    }
+
+    if (pdata->fd >= 0)
+    {
+        m_serverlock.UnLock();
+        return;
+    }
+
+    m_serverlock.UnLock();
+
+    int fd = doNonblockConnect(pserver, 3, CGlobalConfig::getInstance()->getListenIp());
+
+    if (fd < 0)
+    {
+        LOG(_ERROR_, "CGlobalMgr::createServerConnect() error, doNonblockConnect() failed");
+        return;
+    }
+
+    time_t conntime = time(NULL);
+    SOCKET_SET* psocket = initSocketset(fd, conntime, pserver->host, pserver->port, ntype);
+
+    if (psocket == NULL)
+    {
+        LOG(_ERROR_, "CGlobalMgr::createServerConnect() error, initSocketset() failed");
+        close(fd);
+        exit(-1);
+    }
+
+    NET_EVENT* pevent = new NET_EVENT;
+    if (pevent == NULL)
+    {
+        LOG(_ERROR_, "CGlobalMgr::createServerConnect() error, new NET_EVENT failed");
+        close(fd);
+        delete psocket;
+        psocket = NULL;
+        exit(-1);
+    }
+
+    setServerSocket(fd, conntime, pserver->host, pserver->port, ntype);
+
+    pevent->eventid = ADD_CLIENT;
+    pevent->data = (char*)psocket;
+
+
+    if (!m_eventlist.inQueue(pevent, false))
+    {
+        LOG(_ERROR_, "CGlobalMgr::createServerConnect() error, EventQueue->inQueue() failed");
+        close(fd);
+        delete psocket;
+        psocket = NULL;
+        delete pevent;
+        pevent = NULL;
+    }
 }
 
+bool CGlobalMgr::createCloseConnectEvent(int fd, time_t conntime)
+{
+    SOCKET_KEY* pkey = new SOCKET_KEY;
+    NET_EVENT* pevent = new NET_EVENT;
+
+    if (pkey == NULL || pevent == NULL)
+    {
+        LOG(_ERROR_, "CGlobalMgr::createCloseConnectEvent() error, new SOCKET_KEY || new NET_EVENT failed");
+        if (pkey)
+            delete pkey;
+        pkey = NULL;
+        if (pevent)
+            delete pevent;
+        pevent = NULL;
+        return false;
+    }
+
+    pkey->fd = fd;
+    pkey->connect_time = conntime;
+
+    pevent->eventid = CLOSE_CLIENT;
+    pevent->data = (char*)pkey;
+
+    if (!m_eventlist.inQueue(pevent, false))
+    {
+        LOG(_ERROR_, "CGlobalMgr::createCloseConnectEvent() error, m_eventlist.inQueue() failed");
+        delete pkey;
+        pkey = NULL;
+        delete pevent;
+        pevent = NULL;
+        return false;
+    }
+    return true;
+}

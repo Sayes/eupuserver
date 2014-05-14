@@ -117,7 +117,7 @@ int send_msg(int fd, char* buf, int &nlen)
 	return nRet;
 }
 
-int doNonBlockConnect(PCONNECT_SERVER pserver, int timeout, const string& localip)
+int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& localip)
 {
 	if (!pserver)
 		return -1;

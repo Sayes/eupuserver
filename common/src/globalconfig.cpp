@@ -110,28 +110,49 @@ bool CGlobalConfig::initSysConfig(const std::string& path)
     return true;
 }
 
-UINT CGlobalConfig::GetQueueTimer()
+UINT CGlobalConfig::getQueueTimer()
 {
     //TODO
     return 0; 
 }
 
-UINT CGlobalConfig::GetPingTimer()
+UINT CGlobalConfig::getPingTimer()
 {
     return m_cfg.ping_timer;
 }
 
-UINT CGlobalConfig::GetUpdateInterval()
+UINT CGlobalConfig::getUpdateInterval()
 {
     return m_cfg.update_interval;
 }
 
-UINT CGlobalConfig::GetKeepaliveTimer()
+UINT CGlobalConfig::getKeepaliveTimer()
 {
     return m_cfg.keepalive_timer;
 }
 
-UINT CGlobalConfig::GetLogLevel()
+UINT CGlobalConfig::getLogLevel()
 {
     return m_cfg.loglevel;
 }
+
+PCONNECT_SERVER getMainServer()
+{
+    return NULL;
+}
+
+PCONNECT_SERVER getDistributeServer()
+{
+    return NULL;
+}
+
+PCONNECT_SERVER getUserCenterServer()
+{
+    return NULL;
+}
+
+PCONNECT_SERVER getLogServer()
+{
+    return NULL;
+}
+

@@ -145,6 +145,6 @@ bool setNonBlock(int fd);
 int recv_msg(int fd, char* buf, int& nlen);
 int send_msg(int fd, char* buf, int& nlen);
 
-int doNonBlockConnect(PCONNECT_SERVER pServer, int timeout = 3, const string& localip = "");
+int doNonblockConnect(PCONNECT_SERVER pServer, int timeout = 3, const string& localip = "");
 
 #endif//__NETCOMMON_H__
