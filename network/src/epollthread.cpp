@@ -847,11 +847,53 @@ void CEpollThread::doSystemEvent()
                     break;
                 }
         }
-    }
+    }//end while
+    pevent->UnLock();
 }
 
 bool CEpollThread::createConnectServerMsg(SOCKET_SET* psocket)
 {
+    if (psocket == NULL || psocket->key == NULL)
+    {
+        LOG(_ERROR_, "CEpollThread::createConnectServerMsg() error, param SOCKET_SET* is NULL");
+        return false;
+    }
+
+
+    char buf[MAX_SEND_SIZE];
+    UINT buflen = sizeof(buf);
+    memset(buf, 0, buflen);
+
+    MP_Server_Connected msg;
+    msg.m_nServer = psocket->type;
+
+    if (!msg.Out((BYTE*)buf, buflen))
+    {
+        LOG(_ERROR_, "CEpollThread::createConnectServerMsg() error, msg.Out() failed, fd=%d, conn_time=%u, peer_ip=%s, port=%d",
+                psocket->key->fd, psocket->key->connect_time, GETNULLSTR(psocket->peer_ip), psocket->peer_port);
+        return false;
+    }
+
+    NET_DATA* pdata = new NET_DATA;
+    if (pdata == NULL)
+    {
+        LOG(_ERROR_, "CEpollThread::createConnectServerMsg() error, net NET_DATA failed, fd=%d, conn_time=%u, peer_ip=%s, port=%d",
+                psocket->key->fd, psocket->key->connect_time, GETNULLSTR(psocket->peer_ip), psocket->peer_port);
+        exit(-1);
+    }
+
+    if (!pdata->init(psocket->key->fd, psocket->key->connect_time, psocket->peer_ip, psocket->peer_port, psocket->type, buflen))
+    {
+        LOG(_ERROR_, "CEpollThread::createConnectServerMsg() error, NET_DATA init() failed, fd=%d, conn_time=%u, peer_ip=%s, port=%d",
+                psocket->key->fd, psocket->key->connect_time, psocket->peer_ip, psocket->peer_port);
+        delete pdata;
+        pdata = NULL;
+        return false;
+    }
+
+    memcpy(pdata->pdata, buf, buflen);
+    pdata->data_len = buflen;
+    m_recvlist.push_back(pdata);
     return false;
 }
 
