@@ -23,6 +23,7 @@ public:
 
     void Debug()
     {
+        //TODO
     }
 
     inline bool Out(BYTE* pDest, UINT& nLen)

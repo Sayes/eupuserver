@@ -1,12 +1,11 @@
 #ifndef _EUPUSTREAM_H_
 #define _EUPUSTREAM_H_
 
+#include <string>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include "globaldef.h"
-
-#include <string>
 
 using namespace std;
 

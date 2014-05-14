@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  threadlock.cpp
- *
- *    Description:  
- *
- *        Version:  1.0
- *        Created:  2013年11月30日 01时18分37秒
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
- *
- * =====================================================================================
- */
-
 #include "threadlock.h"
 
 CThreadLock::CThreadLock()

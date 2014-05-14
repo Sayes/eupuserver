@@ -1,7 +1,7 @@
 #
 # Makefile of common class library for Solaris
 #
-OBJS = src/eupulogger.o src/eupulogger4management.o src/eupulogger4system.o	
+OBJS = src/eupulogger.o src/eupulogger4system.o	
  
 #  
 # include standard include file

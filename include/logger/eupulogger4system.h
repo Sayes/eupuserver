@@ -16,8 +16,8 @@ typedef enum {
 #define _INFO_ __FILE__,__LINE__,LL_INFO
 #define _DEBUG_ __FILE__,__LINE__,LL_DEBUG
 
-#define GETNULLPTR(s) (s)==NULL || strlen((s)) <= 0 ?"NULL":(s)
-#define GETNULLSTR(s) (s).empty()?"NULL":(s).c_str()
+#define GETNULLPTR(s) (s) == NULL || strlen((s)) <= 0 ? "NULL":(s)
+#define GETNULLSTR(s) (s).empty() ? "NULL":(s).c_str()
 
 class CEupuLogger4System : public CEupuLogger
 {

@@ -1,9 +1,9 @@
 #ifndef _EXCEPTIONHANDLE_H_INCLUDED
 #define _EXCEPTIONHANDLE_H_INCLUDED
 
-#include <cstdlib>
+#include <stdlib.h>
 #include <execinfo.h>
-#include <csignal>
+#include <signal.h>
 #include <exception>
 #include <iostream>
 #include <string>
@@ -20,7 +20,6 @@
 
 //#define __endcatch }
 
-///////////////////////////////////////////////////////////
 class ExceptionTracer
 {
 public:
@@ -37,8 +36,6 @@ public:
         free(symbols);
     }
 };
-
-///////////////////////////////////////////////////////////
 
 template<class SignalException> class SignalTranslator
 {
@@ -63,7 +60,6 @@ public:
     }
 };
 
-///////////////////////////////////////////////////////////
 class SegmentationFault : public std::exception//,public ExceptionTracer
 {
 

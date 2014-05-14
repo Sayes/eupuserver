@@ -1,18 +1,18 @@
 #ifndef __GLOBAL_DEF__
 #define __GLOBAL_DEF__
 
-#include <cstdio>
-#include <cstdlib>
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
+#include <memory.h>
 #include <fcntl.h>
-#include <ctime>
-#include <cerrno>
-//#include <sys/ctypes>
+#include <time.h>
+#include <errno.h>
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
-#include <arpa/inet.h>
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -21,7 +21,6 @@
 #include <deque>
 #include <map>
 #include <list>
-#include <memory.h>
 #include <limits>
 
 using namespace std;

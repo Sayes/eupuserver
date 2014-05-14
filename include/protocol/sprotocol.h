@@ -21,7 +21,9 @@ struct MP_Server_Connected : public CEupuStream {
 
     void Debug()
     {
+        //TODO
     }
+
     bool Out(BYTE* pDest, UINT& nlen)
     {
         INT32 ntmp = 0;
@@ -82,6 +84,7 @@ struct MP_Server_DisConnected : public CEupuStream {
 
     void Debug()
     {
+        //TODO
     }
 
     bool Out(BYTE* pDest, UINT& nlen)

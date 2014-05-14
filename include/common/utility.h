@@ -1,8 +1,8 @@
 #ifndef _UTILITY_H_
 #define _UTILITY_H_
 
-#include "globaldef.h"
 #include  <sys/times.h>
+#include "globaldef.h"
 
 typedef struct tm tm;
 class cUtility
@@ -70,7 +70,7 @@ public:
     static UINT str2Time(string strTm);
     static UINT64 GenerateKeyByIPAndPort(UINT uIp, UINT uPort);
     static time_t FormatTime(char * szTime);
-    ulong static DiffTime(time_t tTime);//与当前时间计算时间差 
+    ulong static DiffTime(time_t tTime);
     static int abs(int a);
 
 protected:
