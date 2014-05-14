@@ -136,22 +136,22 @@ UINT CGlobalConfig::getLogLevel()
     return m_cfg.loglevel;
 }
 
-PCONNECT_SERVER getMainServer()
+PCONNECT_SERVER CGlobalConfig::getMainServer()
 {
     return NULL;
 }
 
-PCONNECT_SERVER getDistributeServer()
+PCONNECT_SERVER CGlobalConfig::getDistributeServer()
 {
     return NULL;
 }
 
-PCONNECT_SERVER getUserCenterServer()
+PCONNECT_SERVER CGlobalConfig::getUserCenterServer()
 {
     return NULL;
 }
 
-PCONNECT_SERVER getLogServer()
+PCONNECT_SERVER CGlobalConfig::getLogServer()
 {
     return NULL;
 }

@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
     daemonize();
     fgNtoA(2000);
 
-    unsigned int ping_timer = pConfig->GetPingTimer();
+    unsigned int ping_timer = pConfig->getPingTimer();
 
     do {
         if (!initSystem())
