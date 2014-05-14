@@ -7,7 +7,7 @@ LINK = g++ -g
 
 LOG4CXX_INCLUDE_PATH = /usr/local/log4cxx/include
 
-TS_DIR = /home/syz/tinyserver-code/trunk
+TS_DIR = /home/syz/eupuserver-code/trunk
 #TS_DIR = /home/shenyizhong/workshop/projects/tinyserver-code/trunk
 
 TS_INCLUDE = $(TS_DIR)/include
