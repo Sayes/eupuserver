@@ -49,7 +49,7 @@ cUtility::~cUtility()
 string cUtility::Int2String(int num)
 {
     char tmp[100];
-    bzero(tmp, sizeof(tmp));
+    memset(tmp, 0, sizeof(tmp));
     snprintf(tmp, sizeof(tmp),"%d", num);
     return string(tmp);
 }
@@ -57,7 +57,7 @@ string cUtility::Int2String(int num)
 string cUtility::uInt2String(UINT num)
 {
     char tmp[100];
-    bzero(tmp, sizeof(tmp));
+    memset(tmp, 0, sizeof(tmp));
     snprintf(tmp, sizeof(tmp), "%u", num);
     return string(tmp);
 }
@@ -320,13 +320,13 @@ LONG cUtility::GetFileLines(char* szFileName)
     }
 
     char str[ 4096 ];
-    bzero(str, sizeof(str));
+    memset(str, 0, sizeof(str));
     LONG cnt = 0;
 
     while (fgets(str, 4096, fp) != NULL)
     {
         cnt++;
-        bzero(str, sizeof(str));
+        memset(str, 0, sizeof(str));
     }
 
     fclose(fp);

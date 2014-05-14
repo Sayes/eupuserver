@@ -9,15 +9,15 @@
 #include "globalconfig.h"
 
 #define	CLOSE_CLIENT	100
-#define ADD_CLIENT	101
+#define ADD_CLIENT	    101
 
-#define	LISTEN_TYPE	0
-#define	CLIENT_TYPE	1
+#define	LISTEN_TYPE	    0
+#define	CLIENT_TYPE	    1
 #define	MAINSVR_TYPE	2
-#define	DISSVR_TYPE	3
+#define	DISSVR_TYPE	    3
 #define	USERCENTERSVR_TYPE	4
-#define	CENTER_TYPE	5
-#define	LOGSVR_TYPE	6
+#define	CENTER_TYPE	    5
+#define	LOGSVR_TYPE	    6
 
 
 using namespace std;
@@ -49,9 +49,9 @@ typedef struct socket_set {
 		if (!pkey)
 			return false;
 
+		key = pkey;
 		peer_ip = ip;
 		peer_port = port;
-		key = pkey;
 		type = ntype;
 		refresh_time = time(NULL);
 		return true;
@@ -59,12 +59,12 @@ typedef struct socket_set {
 
 	socket_set()
 	{
-		type = 1;
-		bzero(part_buf, sizeof(part_buf));
+		key = NULL;
 		part_len = 0;
 		peer_port = 0;
+		type = 1;
 		refresh_time = 0;
-		key = NULL;
+		memset(part_buf, 0, sizeof(part_buf));
 	}
 
 	~socket_set()
@@ -105,12 +105,12 @@ typedef struct net_data {
 		}
 	}
 
-	bool init(int nfile, time_t conntime, const string& peerip, unsigned short peerport, int ntype, unsigned int nlen)
+	bool init(int _fd, time_t conntime, const string& ip, unsigned short port, int ntype, unsigned int nlen)
 	{
-		fd = nfile;
+		fd = _fd;
 		connect_time = conntime;
-		peer_ip = peerip;
-		peer_port = peerport;
+		peer_ip = ip;
+		peer_port = port;
 		type = ntype;
 		data_len = nlen;
 
@@ -118,8 +118,10 @@ typedef struct net_data {
 		{
 			pdata = new char[nlen];
 			if (!pdata)
+            {
 				return false;
-			bzero(pdata, nlen);
+            }
+			memset(pdata, 0, nlen);
 		}
 		return true;
 	}

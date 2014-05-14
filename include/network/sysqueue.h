@@ -11,7 +11,18 @@ class CSysQueue {
 public:
     void clearQueue()
     {
-
+        Lock();
+        typename list<T*>::iterator iter;
+        for (iter = m_datalst.begin(); iter != m_datalst.end(); ++iter)
+        {
+            if (*iter)
+            {
+                delete *iter;
+                *iter = NULL;
+            }
+        }
+        m_datalst.clear();
+        UnLock();
     }
 
     virtual ~CSysQueue()
@@ -64,9 +75,16 @@ public:
         m_lock.Lock();
         do {
             if (!arg)
+            {
                 break;
+            }
 
             if (m_datalst.size() >= m_maxSize)
+            {
+                break;
+            }
+
+            if (bhead)
             {
                 m_datalst.push_front(arg);
             }

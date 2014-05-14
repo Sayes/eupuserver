@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  euputhread.cpp
- *
- *    Description:  
- *
- *        Version:  1.0
- *        Created:  2013
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
- *
- * =====================================================================================
- */
-
 #include "euputhread.h"
 
 CEupuThread::CEupuThread()
