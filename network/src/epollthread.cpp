@@ -80,10 +80,10 @@ void CEpollThread::Run()
 {
 	pause();
 
-	m_bIsExist = false;
+	m_bIsExit = false;
 
 	doEpollEvent();
-	m_bIsExist = true;
+	m_bIsExit = true;
 }
 
 void CEpollThread::Reset()

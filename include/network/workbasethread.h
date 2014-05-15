@@ -11,7 +11,7 @@ public:
     virtual bool stop();
     bool isStop()
     {
-        return m_bIsExist;
+        return m_bIsExit;
     }
 
     CWorkBaseThread();

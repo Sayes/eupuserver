@@ -3,7 +3,7 @@
 CEupuThread::CEupuThread()
 : m_pid(0)
 , m_bOperate(false)
-, m_bIsExist(true)
+, m_bIsExit(true)
 {
     SetmaskSIGUSR1();
     sigemptyset(&m_waitSig);
@@ -13,7 +13,7 @@ CEupuThread::CEupuThread()
 CEupuThread::~CEupuThread()
 {
     m_bOperate = false;
-    m_bIsExist = false;
+    m_bIsExit = false;
 }
 
 void* CEupuThread::ThreadFunc(void* arg)
@@ -41,7 +41,7 @@ bool CEupuThread::start()
         if (0 == nret)
         {
             m_bOperate = true;
-            m_bIsExist = false;
+            m_bIsExit = false;
             return true;
         }
     }
@@ -70,7 +70,7 @@ bool CEupuThread::stop()
 	return true;
 }
 
-bool CEupuThread::isstarted()
+bool CEupuThread::isStarted()
 {
     return m_bOperate;
 }

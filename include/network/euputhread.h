@@ -19,7 +19,7 @@ public:
 	virtual bool continues();
 	virtual bool stop();
 	virtual void reset() = 0;
-	virtual bool isstarted();
+	virtual bool isStarted();
 
 protected:
     void SetmaskSIGUSR1();
@@ -30,7 +30,7 @@ protected:
 	pthread_t m_pid;
 	sigset_t m_waitSig;
 	bool m_bOperate;
-	bool m_bIsExist;
+	bool m_bIsExit;
 };
 
 
