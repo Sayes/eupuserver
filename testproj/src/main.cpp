@@ -4,6 +4,7 @@
 #include "globalconfig.h"
 #include "common.h"
 #include "eupulogger4system.h"
+#include "workthread.h"
 
 using namespace std;
 
@@ -19,7 +20,9 @@ void exitSystem()
 int main(int argc, char* argv[])
 {
 
-    LOGSETLEVEL((LOGLEVEL)1);
+    daemonize();
+
+    LOGSETLEVEL((LOGLEVEL)4);
 
     LOGSETDEBUG(true);
 
@@ -30,11 +33,10 @@ int main(int argc, char* argv[])
     {
         LOG(_DEBUG_, "init config failed");
     }
-
-    daemonize();
-    fgNtoA(2000);
-
     unsigned int ping_timer = pConfig->getPingTimer();
+
+    CWorkThread workthread;
+    workthread.processMessage(NULL);
 
     do {
         if (!initSystem())

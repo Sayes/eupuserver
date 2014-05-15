@@ -90,6 +90,7 @@ CEupuLogger4System::CEupuLogger4System(const char * spath) : CEupuLogger(spath),
 CEupuLogger4System::~CEupuLogger4System()
 {
     //dtor
+    Release();
 }
 
 void CEupuLogger4System::Fatal4Sys(const string &strFatal)

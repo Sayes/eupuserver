@@ -1,4 +1,4 @@
-OBJS = src/main.o	
+OBJS = src/main.o src/workthread.o
  
 #  
 # include standard include file
