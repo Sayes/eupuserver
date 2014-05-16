@@ -1,6 +1,6 @@
 {
 "listen_port" : 3601,
-"listen_ip" : "10.10.40.177",
+"listen_ip" : "10.10.40.213",
 "work_threads" : 5,
 "update_interval" : 60,
 "keepalive_timer" : 120,

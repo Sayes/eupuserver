@@ -522,3 +522,15 @@ bool CGlobalMgr::createCloseConnectEvent(int fd, time_t conntime)
     }
     return true;
 }
+
+void CGlobalMgr::sendKeepaliveMsgToAllServer()
+{
+    m_serverlock.Lock();
+
+    sendMsgToServer(MAINSVR_TYPE, KEEP_ALIVE_PING, 0, 0, 0, NULL, 0, false);
+    sendMsgToServer(DISSVR_TYPE, KEEP_ALIVE_PING, 0, 0, 0, NULL, 0, false);
+    sendMsgToServer(USERCENTERSVR_TYPE, KEEP_ALIVE_PING, 0, 0, 0, NULL, 0, false);
+    sendMsgToServer(LOGSVR_TYPE, KEEP_ALIVE_PING, 0, 0, 0, NULL, 0, false);
+
+    m_serverlock.UnLock();
+}

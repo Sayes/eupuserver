@@ -5,7 +5,7 @@ CEupuThread::CEupuThread()
 , m_bOperate(false)
 , m_bIsExit(true)
 {
-    SetmaskSIGUSR1();
+    setMaskSIGUSR1();
     sigemptyset(&m_waitSig);
     sigaddset(&m_waitSig, SIGUSR1);
 }
@@ -23,7 +23,7 @@ void* CEupuThread::ThreadFunc(void* arg)
     return NULL;
 }
 
-void CEupuThread::SetmaskSIGUSR1()
+void CEupuThread::setMaskSIGUSR1()
 {
     sigset_t sig;
     sigemptyset(&sig);

@@ -14,16 +14,16 @@ public:
 
 	virtual ~CEpollThread();
 
-	virtual bool Stop();
-	virtual void Run();
-	virtual void Reset();
+	virtual bool stop();
+	virtual void run();
+	virtual void reset();
 
-	bool IsStop()
+	bool isStop()
 	{
 		return false;
 	}
 
-	bool StartUp();
+	bool startup();
 
 private:
 	bool parsePacketToRecvQueue(SOCKET_SET* psocket, char* buf, int buflen);

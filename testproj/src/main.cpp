@@ -1,20 +1,121 @@
 #include <fstream>
 #include "json/json.h"
+#include "eupulogger4system.h"
 #include "globaldef.h"
 #include "globalconfig.h"
+#include "globalmgr.h"
 #include "common.h"
-#include "eupulogger4system.h"
+#include "euputhread.h"
+#include "epollthread.h"
+#include "workbasethread.h"
 #include "workthread.h"
 
 using namespace std;
 
+CEpollThread* g_epollthread = NULL;
+CWorkThread* g_workthread = NULL;
+
 bool initSystem()
 {
-    return 0;
+    CGlobalConfig* pConfig = CGlobalConfig::getInstance();
+    if (!pConfig)
+    {
+        LOG(_ERROR_, "initSystem() error, CGlobalConfig::getInstance() failed");
+        return false;
+    }
+
+    if (!pConfig->initSysConfig("sysconf.json"))
+    {
+        LOG(_ERROR_, "initSystem() error, CGlobalConfig::initSysConfig() failed");
+        return false;
+    }
+
+    CGlobalMgr* pglobalmgr = CGlobalMgr::getInstance();
+    if (!pglobalmgr)
+    {
+        LOG(_ERROR_, "initSystem() error, CGlobalMgr::getInstance() failed");
+        return false;
+    }
+
+    pglobalmgr->init();
+
+    g_epollthread = new CEpollThread;
+
+    if (!g_epollthread)
+    {
+        LOG(_ERROR_, "initSystem() error, new CEpollThread failed");
+        return false;
+    }
+
+    if (!g_epollthread->startup())
+    {
+        LOG(_ERROR_, "initSystem() error, g_epollthread->startup() failed");
+        return false;
+    }
+
+    g_workthread = new CWorkThread;
+
+    if (!g_workthread)
+    {
+        LOG(_ERROR_, "initSystem() error, new CWorkThread failed");
+        delete g_epollthread;
+        g_epollthread = NULL;
+        return false;
+    }
+
+    if (!g_workthread->start())
+    {
+        LOG(_ERROR_, "initSystem() error, g_workthread->start() failed");
+        delete g_epollthread;
+        g_epollthread = NULL;
+        delete g_workthread;
+        g_workthread = NULL;
+        return false;
+    }
+
+    LOG(_INFO_, "initSystem() successed");
+
+    return true;
 }
 
 void exitSystem()
 {
+    if (!g_workthread)
+    {
+        LOG(_ERROR_, "exitSystem() error, g_workthread == NULL");
+    }
+    else if (!g_workthread->stop())
+    {
+        LOG(_ERROR_, "exitSystem() error, g_workthread->stop() failed");
+        delete g_workthread;
+        g_workthread = NULL;
+    }
+
+
+    if (!g_epollthread)
+    {
+        LOG(_ERROR_, "exitSystem() error, g_epollthread == NULL");
+    }
+    else if (!g_epollthread->stop())
+    {
+        LOG(_ERROR_, "exitSystem() error, g_epollthread->stop() failed");
+        delete g_epollthread;
+        g_epollthread = NULL;
+    }
+
+    CGlobalConfig* pconfig = CGlobalConfig::getInstance();
+    if (pconfig)
+    {
+        pconfig->release();
+    }
+
+    CGlobalMgr* pglobalmgr = CGlobalMgr::getInstance();
+    if (pglobalmgr)
+    {
+        pglobalmgr->release();
+    }
+    sleep(1);
+    CEupuLogger4System::Release();
 }
 
 int main(int argc, char* argv[])
@@ -22,27 +123,12 @@ int main(int argc, char* argv[])
 
     daemonize();
 
-    LOGSETLEVEL((LOGLEVEL)4);
-
-    LOGSETDEBUG(true);
-
-    LOG(_INFO_, "main() start");
-
-    CGlobalConfig* pConfig = CGlobalConfig::getInstance();
-    if (!pConfig->initSysConfig("sysconf.json"))
-    {
-        LOG(_DEBUG_, "init config failed");
-    }
-    unsigned int ping_timer = pConfig->getPingTimer();
-
-    CWorkThread workthread;
-    workthread.processMessage(NULL);
-
     do {
         if (!initSystem())
         {
             break;
         }
+
 
     } while (0);
 

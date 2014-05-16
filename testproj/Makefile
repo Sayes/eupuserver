@@ -8,7 +8,7 @@ include ../common.mak
 # RELEASE dir definition
 RELEASE_DIR = ../release
 
-CFLAGS += -DOS_LINUX -I$(LOG4CXX_INCLUDE_PATH) $(LIB_CFLAGS)
+CFLAGS += -DOS_LINUX -I$(LOG4CXX_INCLUDE_PATH) $(LIB_CFLAGS) -I./src
 LDFLAGS = -L$(RELEASE_DIR) -L/usr/local/apr/lib -m32
 
 TARGETS = testproj 

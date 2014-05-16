@@ -22,7 +22,7 @@ public:
 	virtual bool isStarted();
 
 protected:
-    void SetmaskSIGUSR1();
+    void setMaskSIGUSR1();
 	static void* ThreadFunc(void *arg);
 	virtual void run() = 0;
 

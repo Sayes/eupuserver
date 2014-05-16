@@ -6,18 +6,23 @@
 CWorkBaseThread::CWorkBaseThread()
     : CEupuThread()
 {
+    LOG(_INFO_, "CWorkBaseThread::CWorkBaseThread() begin");
 }
 
 CWorkBaseThread::~CWorkBaseThread()
 {
+    LOG(_INFO_, "CWorkBaseThread::~CWorkBaseThread() begin");
 }
 
 void CWorkBaseThread::reset()
 {
+    LOG(_INFO_, "CWorkBaseThread::reset() begin");
 }
 
 bool CWorkBaseThread::stop()
 {
+    LOG(_INFO_, "CWorkBaseThread::stop() begin");
+
     m_bOperate = false;
 
     if (m_bIsExit == false)
@@ -29,6 +34,8 @@ bool CWorkBaseThread::stop()
 
 void CWorkBaseThread::run()
 {
+    LOG(_INFO_, "CWorkBaseThread::run() begin");
+
     pause();
 
     m_bIsExit = false;
@@ -85,6 +92,8 @@ void CWorkBaseThread::run()
 
 bool CWorkBaseThread::start()
 {
+    LOG(_INFO_, "CWorkBaseThread::start() begin");
+
     if (!CEupuThread::start())
     {
         LOG(_ERROR_, "CWorkBaseThread::loop() error, CEupuThread::start() failed");
@@ -97,6 +106,7 @@ bool CWorkBaseThread::start()
 
 void CWorkBaseThread::loop()
 {
+    LOG(_INFO_, "CWorkBaseThread::loop() begin");
     return;
 }
 

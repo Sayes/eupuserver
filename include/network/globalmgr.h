@@ -40,6 +40,8 @@ public:
     bool addMsgToSendList(NET_DATA* pdata);
     bool sendMsgToServer(int ntype, USHORT mainid, USHORT assistantid, BYTE code, BYTE reserve, CEupuStream* pstream, UINT nlen, bool blocked = true);
     void setServerSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype);
+    void sendKeepaliveMsgToAllServer();
+
     void switchSendMap();
 
     void setMainSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype);

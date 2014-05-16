@@ -8,6 +8,8 @@
 #define RS_SERVER_CONNECTED             11
 #define RS_SERVER_DISCONNECTED          12
 
+#define KEEP_ALIVE_PING                 20
+
 struct MP_Server_Connected : public CEupuStream {
     MP_Server_Connected()
     {

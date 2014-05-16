@@ -105,7 +105,7 @@ public:
         return m_cfg.work_threads;
     }
 
-    UINT getEpollMaxSize()
+    UINT getMaxEpollSize()
     {
         return m_cfg.epoll_max_size;
     }

@@ -76,7 +76,7 @@ CEpollThread::~CEpollThread()
 
 // the thread work function, it will wait for the continue signal
 // otherwise it will be pause
-void CEpollThread::Run()
+void CEpollThread::run()
 {
 	pause();
 
@@ -86,13 +86,81 @@ void CEpollThread::Run()
 	m_bIsExit = true;
 }
 
-void CEpollThread::Reset()
+void CEpollThread::reset()
 {
 }
 
-bool CEpollThread::StartUp()
+bool CEpollThread::startup()
 {
-	return false;
+    m_maxepollsize = CGlobalConfig::getInstance()->getMaxEpollSize();
+    m_keepalivetimeout = CGlobalConfig::getInstance()->getKeepaliveTimer();
+    m_keepaliveinterval = m_keepalivetimeout / 2;
+    m_serverip = CGlobalConfig::getInstance()->getListenIp();
+    m_serverport = CGlobalConfig::getInstance()->getListenPort();
+
+    m_sendbufsize = CGlobalConfig::getInstance()->getSocketSendBuf();
+    m_readbufsize = CGlobalConfig::getInstance()->getSocketRecvBuf();
+
+    m_recvbuflen = m_sendbufsize;
+    if (m_sendbufsize < m_readbufsize)
+    {
+        m_recvbuflen = m_readbufsize;
+    }
+
+    if (m_recvbuflen < MAX_SEND_SIZE)
+    {
+        m_recvbuflen = MAX_SEND_SIZE;
+    }
+
+    m_recvbuflen += MAX_SEND_SIZE;
+    m_recvbuffer = new char[m_recvbuflen];
+    if (!m_recvbuffer)
+    {
+        LOG(_ERROR_, "CEpollThread::startup() error, new m_recvbuffer failed");
+        exit(-1);
+    }
+
+    m_events = new epoll_event[m_maxepollsize];
+    if (!m_events)
+    {
+        LOG(_ERROR_, "CEpollThread::startup() error, new m_events failed");
+        exit(-1);
+    }
+
+    m_epollfd = epoll_create(m_maxepollsize);
+    if (m_epollfd < 0)
+    {
+        LOG(_ERROR_, "CEpollThread::startup() error, epoll_create() failed, request epoll size %d", m_maxepollsize);
+        delete []m_recvbuffer;
+        m_recvbuffer = NULL;
+        delete []m_events;
+        m_events = NULL;
+        return false;
+    }
+
+    if (!doListen())
+    {
+        LOG(_ERROR_, "CEpollThread::startup() error, doListen() failed, m_epollfd=%d", m_epollfd);
+        delete []m_recvbuffer;
+        m_recvbuffer = NULL;
+        delete []m_events;
+        m_events = NULL;
+        return false;
+    }
+
+    if (!start())
+    {
+        LOG(_ERROR_, "CEpollThread::startup() error, start() failed, m_epollfd=%d", m_epollfd);
+        delete []m_recvbuffer;
+        m_recvbuffer = NULL;
+        delete []m_events;
+        m_events = NULL;
+        return false;
+    }
+
+    continues();
+
+	return true;
 }
 
 time_t CEpollThread::getIndex()
@@ -166,15 +234,69 @@ void CEpollThread::doEpollEvent()
 	}
 }
 
-
-bool CEpollThread::Stop()
+bool CEpollThread::stop()
 {
-    return false;
+    m_bOperate = false;
+    while (!m_bIsExit)
+    {
+        usleep(10);
+    }
+    return true;
 }
 
 void CEpollThread::doKeepaliveTimeout()
 {
+    time_t curtime = time(NULL);
+    if (curtime - m_checkkeepalivetime < m_keepaliveinterval)
+    {
+        return;
+    }
 
+    list<int> timelist;
+    map<int, SOCKET_SET*>::iterator iter = m_socketmap.begin();
+    for (; iter != m_socketmap.end(); ++iter)
+    {
+        if (iter->second != NULL)
+        {
+            if (iter->second->refresh_time + m_keepalivetimeout > curtime)
+            {
+                timelist.push_back(iter->first);
+            }
+        }
+        else
+        {
+            timelist.push_back(iter->first);
+        }
+    }//end for
+
+    bool bclosed = false;
+    for (list<int>::iterator itertimeout = timelist.begin(); itertimeout != timelist.end(); ++itertimeout)
+    {
+        bclosed = false;
+        map<int, SOCKET_SET*>::iterator itersocket = m_socketmap.find(*itertimeout);
+        if (itersocket != m_socketmap.end())
+        {
+            if (itersocket->second != NULL)
+            {
+                if (itersocket->second->key != NULL)
+                {
+                    bclosed = true;
+                    LOG(_ERROR_, "CEpollThread::doKeepaliveTimeout() error, close socket_set for timeout");
+                    closeClient(itersocket->first, itersocket->second->key->connect_time);
+                }
+            }
+
+            if (!bclosed)
+            {
+                LOG(_ERROR_, "CEpollThread::doKeepaliveTimeout() error, close socket_set->key->fd close for timeout");
+                close(itersocket->first);
+                delete itersocket->second;
+                m_socketmap.erase(itersocket);
+            }
+        }
+    }//end for
+    timelist.clear();
+    m_checkkeepalivetime = time(NULL);
 }
 
 void CEpollThread::doSendkeepaliveToServer()
@@ -184,6 +306,8 @@ void CEpollThread::doSendkeepaliveToServer()
     {
         return;
     }
+
+    CGlobalMgr::getInstance()->sendKeepaliveMsgToAllServer();
 
     m_lastkeepalivetime = time(NULL);
 
@@ -229,7 +353,7 @@ bool CEpollThread::doListen()
 
         if (bind(m_listenfd, (sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
         {
-            LOG(_ERROR_, "CEpollThread::doListen() bind(m_listenfd...) error");
+            LOG(_ERROR_, "CEpollThread::doListen() bind(m_listenfd...) error, m_listenfd=%d, ip=%s", m_listenfd, GETNULLSTR(m_serverip));
             break;
         }
 
