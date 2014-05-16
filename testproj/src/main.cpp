@@ -121,14 +121,26 @@ void exitSystem()
 int main(int argc, char* argv[])
 {
 
-    daemonize();
+    //daemonize();
 
     do {
+
         if (!initSystem())
         {
             break;
         }
 
+        int interval = 0;
+        while (1)
+        {
+            interval++;
+            if (interval >= 12)
+            {
+                interval = 0;
+                LOG(_INFO_, "main(), the recv queue has %d total messages", CGlobalMgr::getInstance()->getRecvQueue()->sizeWithoutLock());
+            }
+            sleep(5);
+        }
 
     } while (0);
 
