@@ -10,7 +10,7 @@ include ../common.mak
 
 # RELEASE dir definition
 RELEASE_DIR = ../release
-CFLAGS += -I$(LOG4CXX_INCLUDE_PATH) $(LIB_CFLAGS)
+CFLAGS += $(LIB_CFLAGS)
 LDFLAGS += -L${RELEASE_DIR}
 
 TARGETS = libeupulogger.so

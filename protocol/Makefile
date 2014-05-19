@@ -23,10 +23,10 @@ libprotocol.a: $(OBJS)
 	test -d ../lib || mkdir -p ../lib
 	ar -r $@ $^
 	cp $@ $(RELEASE_DIR)
-	cp $@ $(LIB_DIR)
+#cp $@ $(LIB_DIR)
 
 clean:
 	rm -f $(OBJS) $(TARGETS)
 	rm -f *.o src/*.d
 	rm -f $(RELEASE_DIR)/libprotocol.a
-	rm -f $(LIB_DIR)/libprotocol.a
+#rm -f $(LIB_DIR)/libprotocol.a

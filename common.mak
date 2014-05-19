@@ -1,26 +1,29 @@
 
-
 CC = gcc -g
 CXX = g++ -g
-
 LINK = g++ -g
 
-LOG4CXX_INCLUDE_PATH = /usr/local/log4cxx/include
+LOG4CXX_PATH = /usr/local/log4cxx
+
+APR_PATH = /usr/local/apr
+
+PROTOBUF_PATH = /usr/local/protobuf
 
 TS_DIR = /home/syz/eupuserver-code/trunk
 #TS_DIR = /home/shenyizhong/workshop/projects/tinyserver-code/trunk
 
 TS_INCLUDE = $(TS_DIR)/include
-LIB_DIR = $(TS_DIR)/lib
 
-LFLAGS = -L$(LIB_DIR)
+#LIB_DIR = $(TS_DIR)/lib
+#LFLAGS = -L$(LIB_DIR)
 
 os_type = $(shell uname -s)
 ifeq ($(os_type), Linux)
 
 LDFLAGS = -shared -m32
-CFLAGS = -O0 -g3 -Wall -c -fmessage-length=0 -m32 -I. -L/usr/lib
-LIB_CFLAGS = -I$(TS_INCLUDE) -I$(TS_INCLUDE)/common -I$(TS_INCLUDE)/network -I$(TS_INCLUDE)/logger -I$(TS_INCLUDE)/protocol
+CFLAGS = -O0 -g3 -Wall -c -fmessage-length=0 -m32
+LIB_CFLAGS = -I$(APR_PATH)/include -I$(LOG4CXX_PATH)/include -I$(PROTOBUF_PATH)/include -I$(TS_INCLUDE) -I$(TS_INCLUDE)/common -I$(TS_INCLUDE)/network -I$(TS_INCLUDE)/logger -I$(TS_INCLUDE)/protocol
+LIB_LFLAGS = -L$(APR_PATH)/lib -L$(LOG4CXX_PATH)/lib -L$(PROTOBUF_PATH)/lib
 
 MAKE = make
 
@@ -31,5 +34,4 @@ endif
 .SUFFIXES: .cpp .c .o
 .cpp.o:; $(CXX) $(CFLAGS) -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" $< -o $@
 .c.o:; $(CXX) $(CFLAGS) $< -o $@
-
 

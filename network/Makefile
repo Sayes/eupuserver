@@ -19,11 +19,11 @@ libnetwork.so : $(OBJS)
 	test -d ../release || mkdir -p ../release
 	$(LINK) $(LDFLAGS) -o $@ $^
 	cp $@ $(RELEASE_DIR)
-	cp $@ $(LIB_DIR)
+#cp $@ $(LIB_DIR)
 
 clean:
 	rm -f $(OBJS) $(TARGETS)
 	rm -f *.o src/*.d
 	rm -f $(RELEASE_DIR)/libnetwork.so
-	rm -f $(LIB_DIR)/libnetwork.so
+#rm -f $(LIB_DIR)/libnetwork.so
 
