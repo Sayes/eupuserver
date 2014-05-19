@@ -1,0 +1,19 @@
+package eupu; 
+message NetMessageHead 
+{ 
+    required uint32 u32msgsize = 1;
+    required uint32 u32mainid = 2;
+    required uint32 u32assisid = 3;
+    required uint32 u32handlecode = 4;
+    required uint32 u32reserve = 5;
+}
+
+message NetData
+{
+	required int32 fd = 1;
+	required uint64 connect_time = 2;
+	required string peer_ip = 3;
+	required uint32 peer_port = 4;
+	required uint32 type = 5;
+	required uint32 datalen = 6 [default = 0];
+}

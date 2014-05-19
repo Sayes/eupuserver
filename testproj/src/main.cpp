@@ -9,6 +9,7 @@
 #include "epollthread.h"
 #include "workbasethread.h"
 #include "workthread.h"
+#include "eupu.base.pb.h"
 
 using namespace std;
 
@@ -129,6 +130,9 @@ int main(int argc, char* argv[])
         {
             break;
         }
+
+        eupu::NetMessageHead msghead;
+        eupu::NetData msgdata;
 
         int interval = 0;
         while (1)

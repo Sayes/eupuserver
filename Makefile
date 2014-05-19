@@ -6,7 +6,7 @@ ifeq ($(os_type), Linux)
 MAKE = make
 endif
 
-SUBDIRS = common logger protocol network testproj
+SUBDIRS = common logger protocol network appmsg testproj
 
 INCLUDE_DIR = 
 
