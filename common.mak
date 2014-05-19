@@ -14,19 +14,15 @@ TS_DIR = /home/syz/eupuserver-code/trunk
 
 TS_INCLUDE = $(TS_DIR)/include
 
-#LIB_DIR = $(TS_DIR)/lib
-#LFLAGS = -L$(LIB_DIR)
-
 os_type = $(shell uname -s)
-ifeq ($(os_type), Linux)
 
+ifeq ($(os_type), Linux)
 LDFLAGS = -shared -m32
 CFLAGS = -O0 -g3 -Wall -c -fmessage-length=0 -m32
 LIB_CFLAGS = -I$(APR_PATH)/include -I$(LOG4CXX_PATH)/include -I$(PROTOBUF_PATH)/include -I$(TS_INCLUDE) -I$(TS_INCLUDE)/common -I$(TS_INCLUDE)/network -I$(TS_INCLUDE)/logger -I$(TS_INCLUDE)/protocol
 LIB_LFLAGS = -L$(APR_PATH)/lib -L$(LOG4CXX_PATH)/lib -L$(PROTOBUF_PATH)/lib
 
 MAKE = make
-
 endif
 
 

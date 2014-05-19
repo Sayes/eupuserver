@@ -11,7 +11,6 @@ include ../common.mak
 # RELEASE dir definition
 RELEASE_DIR = ../release
 CFLAGS += $(LIB_CFLAGS)
-LDFLAGS += -L${RELEASE_DIR}
 
 TARGETS = libeupulogger.so
 
@@ -21,7 +20,6 @@ libeupulogger.so: $(OBJS)
 	test -d ../release || mkdir -p ../release
 	$(LINK) $(LDFLAGS) -o $@ $^
 	cp $@ ${RELEASE_DIR}
-
 
 clean:
 	rm -f $(OBJS) $(TARGETS)
