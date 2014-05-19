@@ -1,6 +1,4 @@
-tinyserver
+eupuserver
 ==========
-
 a server based on tcp connection
-test commit
 
