@@ -1,12 +1,16 @@
 {
-"listen_port" : 3601,
-"listen_ip" : "10.10.40.213",
-"work_threads" : 5,
-"update_interval" : 60,
-"keepalive_timer" : 120,
-"ping_timer" : 3600,
-"log_level" : 4,
-"send_queue_size" : 100,
-"recv_queue_size" : 15000,
-"epoll_max_size" : 10000
+"sys_listen_port" : 3601,
+"sys_listen_ip" : "10.10.40.213",
+"sys_work_threads" : 5,
+"sys_update_interval" : 60,
+"sys_keepalive_timer" : 120,
+"sys_save_timer" : 60,
+"sys_ping_timer" : 3600,
+"sys_log_level" : 4,
+"sys_send_queue_size" : 100,
+"sys_recv_queue_size" : 15000,
+"sys_epoll_max_size" : 10000,
+
+"svr_def_send_buffer" : 8192,
+"svr_def_recv_buffer" : 8192
 }

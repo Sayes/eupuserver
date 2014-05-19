@@ -6,18 +6,18 @@
 
 #define CONFIGURATION   ""
 #define SYSTEM          ""
-#define LISTEN_PORT     "listen_port"
-#define LISTEN_IP       "listen_ip"
-#define WORK_THREADS    "work_threads"
-#define UPDATE_INTERVAL "update_interval"
-#define KEEPALIVE_TIMER "keepalive_timer"
+#define LISTEN_PORT     "sys_listen_port"
+#define LISTEN_IP       "sys_listen_ip"
+#define WORK_THREADS    "sys_work_threads"
+#define UPDATE_INTERVAL "sys_update_interval"
+#define KEEPALIVE_TIMER "sys_keepalive_timer"
 #define UPDATE_PEOPLE_TIMER ""
-#define SAVE_TIMER      ""
-#define PING_TIMER      "ping_timer"
-#define LOG_LEVEL       "log_level"
-#define SEND_QUEUE_SIZE "send_queue_size"
-#define RECV_QUEUE_SIZE "recv_queue_size"
-#define EPOLL_MAX_SIZE  "epoll_max_size"
+#define SAVE_TIMER      "sys_save_timer"
+#define PING_TIMER      "sys_ping_timer"
+#define LOG_LEVEL       "sys_log_level"
+#define SEND_QUEUE_SIZE "sys_send_queue_size"
+#define RECV_QUEUE_SIZE "sys_recv_queue_size"
+#define EPOLL_MAX_SIZE  "sys_epoll_max_size"
 
 #define NODE_ID         ""
 #define GAME_ID         ""
@@ -37,6 +37,9 @@
 #define WEIGHT          "weight"
 
 #define BLACK_SERVER    "black_server"
+
+#define DEF_SEND_BUFFER "svr_def_send_buffer"
+#define DEF_RECV_BUFFER "svr_def_recv_buffer"
 
 CGlobalConfig* CGlobalConfig::m_pInstance = NULL;
 
@@ -102,18 +105,27 @@ bool CGlobalConfig::initSysConfig(const std::string& path)
     m_cfg.recv_queue_size = v[RECV_QUEUE_SIZE].asInt();
     m_cfg.work_threads = v[WORK_THREADS].asInt();
     m_cfg.epoll_max_size = v[EPOLL_MAX_SIZE].asInt();
+    m_cfg.que_savetime = v[SAVE_TIMER].asInt();
     m_cfg.ping_timer = v[PING_TIMER].asInt();
     m_cfg.update_interval = v[UPDATE_INTERVAL].asInt();
     m_cfg.keepalive_timer = v[KEEPALIVE_TIMER].asInt();
     m_cfg.loglevel = v[LOG_LEVEL].asInt();
+
+    int sendbuffer = 8192;
+    int recvbuffer = 8192;
+
+    sendbuffer = v[DEF_SEND_BUFFER].asInt();
+    recvbuffer = v[DEF_RECV_BUFFER].asInt();
+
+    m_cfg.maxsendbuf = sendbuffer == 0 ? 8192 : sendbuffer;
+    m_cfg.maxrecvbuf = recvbuffer == 0 ? 8192 : recvbuffer;
 
     return true;
 }
 
 UINT CGlobalConfig::getQueueTimer()
 {
-    //TODO
-    return 0; 
+    return m_cfg.que_savetime; 
 }
 
 UINT CGlobalConfig::getPingTimer()

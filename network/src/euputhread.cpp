@@ -58,10 +58,11 @@ void CEupuThread::pause()
     sigwait(&m_waitSig, &sig);
 }
 
-bool CEupuThread::continues()
+//continue the thread, the real object needn't implement this method
+void CEupuThread::continues()
 {
+    //send SIGUSR1 signal to current thread to continue
     pthread_kill(m_pid, SIGUSR1);
-	return false;
 }
 
 bool CEupuThread::stop()

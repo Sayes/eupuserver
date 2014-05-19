@@ -16,7 +16,7 @@ public:
 
 	virtual bool start();
 	virtual void pause();
-	virtual bool continues();
+	virtual void continues();
 	virtual bool stop();
 	virtual void reset() = 0;
 	virtual bool isStarted();

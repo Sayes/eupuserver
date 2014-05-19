@@ -10,8 +10,8 @@ SOCKET_SET* initSocketset(int fd, time_t conntime, const string& peerip, unsigne
 		exit(-1);
 	}
 
-	SOCKET_SET* socketkey = new SOCKET_SET;
-	if (!socketkey)
+	SOCKET_SET* socketset = new SOCKET_SET;
+	if (!socketset)
 	{
 		delete key;
 		key = NULL;
@@ -20,15 +20,15 @@ SOCKET_SET* initSocketset(int fd, time_t conntime, const string& peerip, unsigne
 
 	key->fd = fd;
 	key->connect_time = conntime;
-	if (!socketkey->init(key, peerip, peerport, ntype))
+	if (!socketset->init(key, peerip, peerport, ntype))
 	{
 		delete key;
 		key = NULL;
-		delete socketkey;
-		socketkey = NULL;
+		delete socketset;
+		socketset = NULL;
 		return NULL;
 	}
-	return socketkey;
+	return socketset;
 }
 
 bool setNonBlock(int sockfd)
