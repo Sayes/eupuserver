@@ -10,7 +10,7 @@ include ../common.mak
 
 # RELEASE dir definition
 RELEASE_DIR = ../release
-CFLAGS += $(LIB_CFLAGS)
+CFLAGS += -DOS_LINUX $(LIB_CFLAGS)
 
 TARGETS = libeupulogger.so
 
