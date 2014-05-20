@@ -1,7 +1,7 @@
 #ifndef _UTILITY_H_
 #define _UTILITY_H_
 
-#include  <sys/times.h>
+#include <time.h>
 #include "globaldef.h"
 
 typedef struct tm tm;

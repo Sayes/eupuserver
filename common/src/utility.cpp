@@ -1,11 +1,6 @@
-#include "utility.h"
-#include  <unistd.h>
-//#include  <sys/times.h>
 #include  <stdio.h>
 #include  <stdlib.h>
-
-//time_t cUtility::timep(0);
-//struct tm* cUtility::p(0);
+#include "utility.h"
 
 const char cUtility::base64_decode_map[256] =
 {

@@ -2,7 +2,9 @@
 #include <sys/stat.h>
 #include <signal.h>
 #include <fcntl.h>
+#ifdef OS_LINUX
 #include <sys/resource.h>
+#endif
 #include <iostream>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -31,6 +33,7 @@ string fgNtoA(unsigned int ip)
 
 void daemonize()
 {
+#ifdef OS_LINUX
 	pid_t pid;
 	pid_t sid;
 	int fd;
@@ -90,4 +93,5 @@ void daemonize()
 	}
 
 	signal(SIGPIPE, SIG_IGN);
+#endif
 }
