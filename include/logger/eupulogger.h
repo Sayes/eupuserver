@@ -1,8 +1,6 @@
 #ifndef _EUPULOGGER_H_
 #define _EUPULOGGER_H_
 
-using namespace std;
-
 #include <log4cxx/logger.h>
 #include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/basicconfigurator.h>

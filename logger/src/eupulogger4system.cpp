@@ -1,7 +1,7 @@
 #include <iostream>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/time.h>
+#include <time.h>
 #include <stdarg.h>
 #include <string>
 #include "eupulogger4system.h"
@@ -158,16 +158,35 @@ void CEupuLogger4System::WriteLog(const char *filename, int line, LOGLEVEL level
 	memset(&tme, 0, sizeof(tme));
 
 	gettimeofday(&tmv, NULL);
+
+	//get the log string
+#ifdef OS_LINUX
 	localtime_r(&tmv.tv_sec, &tme);
 
 	va_start(arglist, fmt);
 	vsnprintf(msgbuf, sizeof(msgbuf), fmt, arglist);
 	va_end(arglist);
 
-	//get the log string
+	int pid = (int)getpid();
     snprintf(buf, sizeof(buf), "%04d/%02d/%02d %02d:%02d:%02d:%06u [0x%08x, 0x%08x] <%-5s> (%s, %06d) %s",  
            tme.tm_year+1900, tme.tm_mon+1, tme.tm_mday, tme.tm_hour, tme.tm_min, tme.tm_sec, (unsigned int)tmv.tv_usec,
-           (int)getpid(), (int)pthread_self(), GetLogLevelStr(level), filename, line, msgbuf);
+           pid, (int)pthread_self(), GetLogLevelStr(level), filename, line, msgbuf);
+
+#elif OS_WINDOWS
+	time_t tm_sec = tmv.tv_sec;
+	struct tm* p = localtime(&tm_sec);
+
+	va_start(arglist, fmt);
+	vsnprintf(msgbuf, sizeof(msgbuf), fmt, arglist);
+	va_end(arglist);
+
+	int pid = 0;
+	int threadid = 0;
+    snprintf(buf, sizeof(buf), "%04d/%02d/%02d %02d:%02d:%02d:%06u [0x%08x, 0x%08x] <%-5s> (%s, %06d) %s",  
+           p->tm_year+1900, p->tm_mon+1, p->tm_mday, p->tm_hour, p->tm_min, p->tm_sec, (unsigned int)tmv.tv_usec,
+           pid, threadid, GetLogLevelStr(level), filename, line, msgbuf);
+
+#endif
 
 	//if (m_IsDebug)
 	//{
@@ -192,10 +211,12 @@ void CEupuLogger4System::WriteMonitorLog(UINT type, UINT mainid, UINT assiantid,
     memset(&tme, 0, sizeof(tme));
 
     gettimeofday(&tmv, NULL);
+
+#ifdef OS_LINUX
     localtime_r(&tmv.tv_sec, &tme);
 
     char tmpbuf[100];
-    bzero(tmpbuf, sizeof(tmpbuf));
+    memset(tmpbuf, 0, sizeof(tmpbuf));
     string strkey;
     if(type == 1)
     {
@@ -212,6 +233,31 @@ void CEupuLogger4System::WriteMonitorLog(UINT type, UINT mainid, UINT assiantid,
     snprintf(buf, sizeof(buf), "%04d-%02d-%02d %02d:%02d:%02d---%u---%s---%s---%s---%u",  
            tme.tm_year+1900, tme.tm_mon+1, tme.tm_mday, tme.tm_hour, tme.tm_min, tme.tm_sec,
             type, GETNULLSTR(strkey), GETNULLPTR(username), GETNULLPTR(domain), action);
+
+#elif OS_WINDOWS
+	time_t tm_sec = tmv.tv_sec;
+    struct tm* p = localtime(&tm_sec);
+
+    char tmpbuf[100];
+    memset(tmpbuf, 0, sizeof(tmpbuf));
+    string strkey;
+    if(type == 1)
+    {
+        strkey = fgNtoA(mainid);
+        snprintf(tmpbuf, sizeof(tmpbuf), "%s_%u",strkey.c_str(), assiantid);
+        strkey = string(tmpbuf);
+    }else
+    {
+        snprintf(tmpbuf, sizeof(tmpbuf), "%u_%u", mainid, assiantid);
+        strkey = string(tmpbuf);
+    }
+
+    //get the log string
+    snprintf(buf, sizeof(buf), "%04d-%02d-%02d %02d:%02d:%02d---%u---%s---%s---%s---%u",  
+			p->tm_year+1900, p->tm_mon+1, p->tm_mday, p->tm_hour, p->tm_min, p->tm_sec,
+            type, GETNULLSTR(strkey), GETNULLPTR(username), GETNULLPTR(domain), action);
+
+#endif
 
     Fatal(m_FtlPtr, buf);
 }
@@ -250,14 +296,30 @@ void CEupuLogger4System::WriteHex(const char *filename, int line, LOGLEVEL level
 	memset(&tme, 0, sizeof(tme));
 
 	gettimeofday(&tmv, NULL);
+
+
+#ifdef OS_LINUX
 	localtime_r(&tmv.tv_sec, &tme);
 
 	string hexdata = ConvertStr2Hex(buf, buflen);
+	int pid = (int)getpid();
+	snprintf(msgbuf, sizeof(msgbuf), "%04d/%02d/%02d %02d:%02d:%02d:%06u [0x%08x, 0x%08x] <%-5s> (%s, %06d) %s: \n%s",
+		tme.tm_year+1900, tme.tm_mon+1, tme.tm_mday, tme.tm_hour, tme.tm_min, tme.tm_sec, (unsigned int)tmv.tv_usec,
+		pid, (int)pthread_self(), GetLogLevelStr(level), filename, 
+		line, GETNULLPTR(title), GETNULLSTR(hexdata));
+#elif OS_WINDOWS
+	time_t tm_sec = tmv.tv_sec;
+	struct tm* p = localtime(&tm_sec);
 
-  snprintf(msgbuf, sizeof(msgbuf), "%04d/%02d/%02d %02d:%02d:%02d:%06u [0x%08x, 0x%08x] <%-5s> (%s, %06d) %s: \n%s",
-           tme.tm_year+1900, tme.tm_mon+1, tme.tm_mday, tme.tm_hour, tme.tm_min, tme.tm_sec, (unsigned int)tmv.tv_usec,
-           (int)getpid(), (int)pthread_self(), GetLogLevelStr(level), filename, 
-           line, GETNULLPTR(title), GETNULLSTR(hexdata));
+	string hexdata = ConvertStr2Hex(buf, buflen);
+	int pid = 0;
+	int threadid = 0;
+	snprintf(msgbuf, sizeof(msgbuf), "%04d/%02d/%02d %02d:%02d:%02d:%06u [0x%08x, 0x%08x] <%-5s> (%s, %06d) %s: \n%s",
+		p->tm_year+1900, p->tm_mon+1, p->tm_mday, p->tm_hour, p->tm_min, p->tm_sec, (unsigned int)tmv.tv_usec,
+		pid, threadid, GetLogLevelStr(level), filename, 
+		line, GETNULLPTR(title), GETNULLSTR(hexdata));
+#endif
+
 /*
   if(m_IsDebug)
   {
