@@ -45,7 +45,7 @@ string cUtility::Int2String(int num)
 {
     char tmp[100];
     memset(tmp, 0, sizeof(tmp));
-    snprintf(tmp, sizeof(tmp),"%d", num);
+	snprintf(tmp, sizeof(tmp),"%d", num);
     return string(tmp);
 }
 
@@ -58,7 +58,7 @@ string cUtility::uInt2String(UINT num)
 }
 
 
-ulong cUtility::String2UL(const char *str)
+ULONG cUtility::String2UL(const char *str)
 {
     if (str == NULL)
     {
@@ -176,6 +176,7 @@ UINT cUtility::GetMillionTime()
 
 void cUtility::GetTime4Log(char* szTime)
 {
+#ifdef OS_LINUX
     if (szTime == NULL)
     {
         return;
@@ -185,11 +186,24 @@ void cUtility::GetTime4Log(char* szTime)
     time(&timep);
     localtime_r(&timep, &ptm);
     sprintf(szTime, "%.2d%.2d%.2d", ptm.tm_hour, ptm.tm_min, ptm.tm_sec);
+#elif OS_WINDOWS
+    if (szTime == NULL)
+    {
+        return;
+    }
+    time_t timep;
+    struct tm* p = NULL;
+    time(&timep);
+    p = localtime(&timep);
 
+	if (p)
+		sprintf(szTime, "%.2d%.2d%.2d", p->tm_hour, p->tm_min, p->tm_sec);
+#endif
 }
 
 void cUtility::GetDate4Log(char* szDate)
 {
+#ifdef OS_LINUX
     if (szDate == NULL)
     {
         return;
@@ -201,7 +215,21 @@ void cUtility::GetDate4Log(char* szDate)
     localtime_r(&timep, &ptm);
 
     sprintf(szDate, "%d%.2d%.2d", (1900+ptm.tm_year), (1+ptm.tm_mon), ptm.tm_mday);
+#elif OS_WINDOWS
+    if (szDate == NULL)
+    {
+        return;
+    }
 
+    time_t timep;
+    struct tm* p = NULL;
+    time(&timep);
+    p = localtime(&timep);
+
+	if (p)
+		sprintf(szDate, "%d%.2d%.2d", (1900+p->tm_year), (1+p->tm_mon), p->tm_mday);
+
+#endif
 }
 
 void cUtility::GetDate(char* szDate)
@@ -211,12 +239,23 @@ void cUtility::GetDate(char* szDate)
         return;
     }
 
+#ifdef OS_LINUX
     time_t timep;
     struct tm p = {0};
     time(&timep);
     localtime_r(&timep, &p);
 
     sprintf(szDate, "%d-%.2d-%.2d ", (1900+p.tm_year), (1+p.tm_mon), p.tm_mday);
+#elif OS_WINDOWS
+    time_t timep;
+    struct tm* p = NULL;
+    time(&timep);
+    p = localtime(&timep);
+
+	if (p)
+		sprintf(szDate, "%d-%.2d-%.2d ", (1900+p->tm_year), (1+p->tm_mon), p->tm_mday);
+
+#endif
 }
 
 void cUtility::GetDateTime4Log(char* szDateTime)
@@ -225,7 +264,7 @@ void cUtility::GetDateTime4Log(char* szDateTime)
     {
         return;
     }
-
+#ifdef OS_LINUX
     time_t timep;
     struct tm p = {0};
     time(&timep);
@@ -233,6 +272,15 @@ void cUtility::GetDateTime4Log(char* szDateTime)
 
     sprintf(szDateTime, "%d%.2d%.2d%.2d%.2d%.2d", (1900+p.tm_year), (1 +p.tm_mon), p.tm_mday, p.tm_hour, p.tm_min,
             p.tm_sec);
+#elif OS_WINDOWS
+    time_t timep;
+    struct tm* p = NULL;
+    time(&timep);
+    p = localtime(&timep);
+
+	if (p)
+		sprintf(szDateTime, "%d%.2d%.2d%.2d%.2d%.2d", (1900+p->tm_year), (1 +p->tm_mon), p->tm_mday, p->tm_hour, p->tm_min, p->tm_sec);
+#endif
 }
 
 void cUtility::GetDateTime(char* szDateTime)
@@ -241,7 +289,7 @@ void cUtility::GetDateTime(char* szDateTime)
     {
         return;
     }
-
+#ifdef OS_LINUX
     time_t timep;
     struct tm p = {0};
     time(&timep);
@@ -249,7 +297,15 @@ void cUtility::GetDateTime(char* szDateTime)
 
     sprintf(szDateTime, "%d-%.2d-%.2d %.2d:%.2d:%.2d", (1900+p.tm_year), (1 +p.tm_mon), p.tm_mday, p.tm_hour,
             p.tm_min, p.tm_sec);
+#elif OS_WINDOWS
+    time_t timep;
+    struct tm* p = NULL;
+    time(&timep);
+    p = localtime(&timep);
 
+	if (p)
+		sprintf(szDateTime, "%d-%.2d-%.2d %.2d:%.2d:%.2d", (1900+p->tm_year), (1 +p->tm_mon), p->tm_mday, p->tm_hour, p->tm_min, p->tm_sec);
+#endif
 }
 time_t cUtility::FormatTime(char * szTime)
 {
@@ -294,12 +350,12 @@ time_t cUtility::FormatTime(char * szTime)
 
 
 }
-ulong cUtility::DiffTime(time_t tTime)
+ULONG cUtility::DiffTime(time_t tTime)
 {
    time_t currentTime;
    time(&currentTime);
    double cost = difftime(currentTime,tTime);
-   ulong uCost = ulong(cost);
+   ULONG uCost = ULONG(cost);
 
    return uCost;
 }
@@ -336,6 +392,8 @@ bool cUtility::CheckDate(INT32 year, INT32 month, INT32 day)
     {
         return false;
     }
+
+#ifdef OS_LINUX
     //form time
     struct tm tm_new;
     tm_new.tm_year = year - 1900;
@@ -345,6 +403,7 @@ bool cUtility::CheckDate(INT32 year, INT32 month, INT32 day)
     tm_new.tm_min = 0;
     tm_new.tm_sec = 0;
     time_t time_new = mktime(&tm_new);
+
     localtime_r(&time_new, &tm_new);
 
     if (tm_new.tm_year != (year - 1900) || tm_new.tm_mon != (month - 1) || tm_new.tm_mday != day)
@@ -355,6 +414,32 @@ bool cUtility::CheckDate(INT32 year, INT32 month, INT32 day)
     {
         return true;
     }
+
+#elif OS_WINDOWS
+
+    //form time
+    struct tm tm_new;
+    tm_new.tm_year = year - 1900;
+    tm_new.tm_mon = month - 1;
+    tm_new.tm_mday = day;
+    tm_new.tm_hour = 0;
+    tm_new.tm_min = 0;
+    tm_new.tm_sec = 0;
+    time_t time_new = mktime(&tm_new);
+    struct tm* p = localtime(&time_new);
+
+	if (!p)
+		return false;
+
+    if (p->tm_year != (year - 1900) || p->tm_mon != (month - 1) || p->tm_mday != day)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+#endif
 }
 
 /*
@@ -487,7 +572,9 @@ UINT cUtility::str2Time(string strTm)
     tm1.tm_hour = atoi(Hour.c_str());
     tm1.tm_min = atoi(Minute.c_str());
     tm1.tm_sec = atoi(Second.c_str());
+#ifdef OS_LINUX
     tm1.tm_gmtoff = 0;//tmUTC->tm_gmtoff;
+#endif
     tm1.tm_isdst = 0;//tmUTC->tm_isdst;
     //tm1.tm_zone = new char[ strlen(tmUTC.tm_zone) + 1];
     //strcpy((char*)tm1.tm_zone,(const char*)tmUTC->tm_zone);

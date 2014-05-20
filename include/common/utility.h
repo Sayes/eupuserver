@@ -12,7 +12,7 @@ public:
     static string Int2String(int num);
     static string uInt2String(UINT num);
     //static string Char2String(char* str);
-    static ulong String2UL(const char *str);
+    static ULONG String2UL(const char *str);
     static long String2L(const char* str);
     static bool Compress(BYTE* pSrc, int nLen, BYTE* pDst, int&nDstLen);
     static bool Uncompress(BYTE* pSrc, int nLen, BYTE* pDst, int&nDstLen);
@@ -70,7 +70,7 @@ public:
     static UINT str2Time(string strTm);
     static UINT64 GenerateKeyByIPAndPort(UINT uIp, UINT uPort);
     static time_t FormatTime(char * szTime);
-    ulong static DiffTime(time_t tTime);
+    static ULONG DiffTime(time_t tTime);
     static int abs(int a);
 
 protected:

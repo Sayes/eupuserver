@@ -6,7 +6,7 @@
 #include <sys/resource.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#elif define OS_WINDOWS
+#elif OS_WINDOWS
 #include <ws2tcpip.h>
 #endif
 #include <iostream>
