@@ -1,7 +1,11 @@
 #include <iostream>
 #include <sys/types.h>
 #include <sys/stat.h>
+#ifdef OS_LINUX
+#include <sys/time.h>
+#elif OS_WINDOWS
 #include <time.h>
+#endif
 #include <stdarg.h>
 #include <string>
 #include "eupulogger4system.h"
