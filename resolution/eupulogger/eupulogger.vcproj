@@ -20,7 +20,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="4"
+			ConfigurationType="2"
 			CharacterSet="1"
 			>
 			<Tool
@@ -60,13 +60,16 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				AdditionalDependencies="log4cxx.lib"
-				OutputFile="..\..\release\win\$(ProjectName).lib"
-				AdditionalLibraryDirectories="Y:\log4cxx\lib"
+				Name="VCLinkerTool"
+				AdditionalDependencies="common.lib log4cxx.lib"
+				OutputFile="..\..\release\win\$(ProjectName).dll"
+				AdditionalLibraryDirectories="..\..\lib;Y:\log4cxx\lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -76,6 +79,9 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"

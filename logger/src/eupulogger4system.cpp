@@ -5,12 +5,13 @@
 #include <sys/time.h>
 #elif OS_WINDOWS
 #include <time.h>
+#include <ws2tcpip.h>
 #endif
 #include <stdarg.h>
 #include <string>
+#include "common.h"
 #include "eupulogger4system.h"
 #include "utility.h"
-#include "common.h"
 
 #define MAX_MSGSIZE 2048
 

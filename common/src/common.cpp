@@ -14,15 +14,6 @@
 
 using namespace std;
 
-unsigned int fgAtoN(const char* ip)
-{
-	struct in_addr addr = {0};
-	if (inet_pton(AF_INET, ip, &addr) < 0)
-	{	 
-		return 0;
-	}
-	return addr.s_addr;
-}
 
 string fgNtoA(unsigned int ip)
 {
@@ -32,6 +23,17 @@ string fgNtoA(unsigned int ip)
 	const char* p = inet_ntop(AF_INET, (void*)&addr, buf, (socklen_t)sizeof(buf));
 	return string(p);
 }
+
+unsigned int fgAtoN(const char* ip)
+{
+	struct in_addr addr = {0};
+	if (inet_pton(AF_INET, ip, &addr) < 0)
+	{
+		return 0;
+	}
+	return addr.s_addr;
+}
+
 
 void daemonize()
 {

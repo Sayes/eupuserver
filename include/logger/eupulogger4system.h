@@ -50,6 +50,7 @@ protected:
     LOGLEVEL m_Level;
 private:
     static CEupuLogger4System* m_pLogger;
+
 };
 
 #define LOGSETLEVEL CEupuLogger4System::Logger()->SetLogLevel
