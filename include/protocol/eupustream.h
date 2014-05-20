@@ -3,8 +3,12 @@
 
 #include <string>
 #include <sys/types.h>
+#ifdef OS_LINUX
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#elif OS_WINDOWS
+#include <ws2tcpip.h>
+#endif
 #include "globaldef.h"
 
 using namespace std;
