@@ -4,10 +4,12 @@
 #include <fcntl.h>
 #ifdef OS_LINUX
 #include <sys/resource.h>
-#endif
-#include <iostream>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#elif define OS_WINDOWS
+#include <ws2tcpip.h>
+#endif
+#include <iostream>
 #include "common.h"
 
 using namespace std;

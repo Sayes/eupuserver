@@ -8,10 +8,14 @@
 #include <time.h>
 #include <errno.h>
 #include <sys/types.h>
+#ifdef OS_LINUX
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
+#elif OS_WINDOWS
+#include <ws2tcpip.h>
+#endif
 #include <string>
 #include <iostream>
 #include <fstream>
