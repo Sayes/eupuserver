@@ -193,10 +193,10 @@ void CEupuLogger4System::WriteLog(const char *filename, int line, LOGLEVEL level
 
 #endif
 
-	//if (m_IsDebug)
-	//{
-    //  cout << buf;
-    //}
+	if (m_IsDebug)
+	{
+        std::cout << buf;
+    }
 
     Error(m_ErrPtr, buf);
 
@@ -205,12 +205,10 @@ void CEupuLogger4System::WriteLog(const char *filename, int line, LOGLEVEL level
 
 void CEupuLogger4System::WriteMonitorLog(UINT type, UINT mainid, UINT assiantid, UINT action, const char *username, const char *domain)
 {
-    //char msgbuf[MAX_MSGSIZE];
     char buf[MAX_MSGSIZE];
     struct timeval tmv;
     struct tm tme;
 
-    //memset(msgbuf, 0, sizeof(msgbuf));
     memset(buf, 0, sizeof(buf));
     memset(&tmv, 0, sizeof(tmv));
     memset(&tme, 0, sizeof(tme));
@@ -325,12 +323,11 @@ void CEupuLogger4System::WriteHex(const char *filename, int line, LOGLEVEL level
 		line, GETNULLPTR(title), GETNULLSTR(hexdata));
 #endif
 
-/*
-  if(m_IsDebug)
-  {
-     cout << msgbuf << endl; 
-  }
-*/
+  //if(m_IsDebug)
+  //{
+  //   cout << msgbuf << endl; 
+  //}
+
   Error(m_ErrPtr, msgbuf);
 }
 
