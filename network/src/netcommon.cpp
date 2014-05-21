@@ -33,6 +33,7 @@ SOCKET_SET* initSocketset(int fd, time_t conntime, const string& peerip, unsigne
 
 bool setNonBlock(int sockfd)
 {
+#ifdef OS_LINUX
 	int opts = fcntl(sockfd, F_GETFL);
 	if (-1 == opts)
 	{
@@ -44,6 +45,9 @@ bool setNonBlock(int sockfd)
 	{
 		return false;
 	}
+#elif OS_WINDOWS
+	//TODO
+#endif
 	return true;
 }
 
@@ -56,7 +60,12 @@ int recv_msg(int fd, char* buf, int &nlen)
 
 	while (n > 0)
 	{
+#ifdef OS_LINUX
 		nread = recv(fd, p, n, MSG_NOSIGNAL);
+#elif OS_WINDOWS
+		//TODO, be sure whith param replace MSG_NOSIGNAL
+		nread = recv(fd, p, n, 0);
+#endif
 		if (nread < 0)
 		{
 			if (errno == EINTR)
@@ -94,7 +103,11 @@ int send_msg(int fd, char* buf, int &nlen)
 
 	while (n > 0)
 	{
+#ifdef OS_LINUX
 		nsend = send(fd, p, n, MSG_NOSIGNAL);
+#elif OS_WINDOWS
+		nsend = send(fd, p, n, 0);
+#endif
 		if (nsend < 0)
 		{
 			if (errno == EINTR)
@@ -134,7 +147,11 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 
 		if (!bind(fd, (struct sockaddr*)&localaddr, sizeof(localaddr)) < 0)
 		{
+#ifdef OS_LINUX
 			close(fd);
+#elif OS_WINDOWS
+			closesocket(fd);
+#endif
 			return -1;
 		}
 	}
@@ -146,29 +163,45 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 
 	if (!setNonBlock(fd))
 	{
+#ifdef OS_LINUX
 		close(fd);
+#elif OS_WINDOWS
+		closesocket(fd);
+#endif
 		return -1;
 	}
 
 	unsigned int nsend = pserver->send_buffer;
 	unsigned int nrecv = pserver->recv_buffer;
 
-	if (setsockopt(fd, SOL_SOCKET, SO_SNDBUF, &nsend, sizeof(nsend)) < 0)
+	if (setsockopt(fd, SOL_SOCKET, SO_SNDBUF, (const char*)&nsend, sizeof(nsend)) < 0)
 	{
+#ifdef OS_LINUX
 		close(fd);
+#elif OS_WINDOWS
+		closesocket(fd);
+#endif
 		return -1;
 	}
 
-	if (setsockopt(fd, SOL_SOCKET, SO_RCVBUF, &nrecv, sizeof(nrecv)) < 0)
+	if (setsockopt(fd, SOL_SOCKET, SO_RCVBUF, (const char*)&nrecv, sizeof(nrecv)) < 0)
 	{
+#ifdef OS_LINUX
 		close(fd);
+#elif OS_WINDOWS
+		closesocket(fd);
+#endif
 		return -1;
 	}
 
 	int opt = 1;
-	if (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &opt, sizeof(opt)) < 0)
+	if (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (const char*)&opt, sizeof(opt)) < 0)
 	{
+#ifdef OS_LINUX
 		close(fd);
+#elif OS_WINDOWS
+		closesocket(fd);
+#endif
 		return -1;
 	}
 
@@ -178,11 +211,20 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 
 	if (nret < 0)
 	{
+#ifdef OS_LINUX
 		if (!(errno == EINPROGRESS || errno == EWOULDBLOCK))
 		{
 			close(fd);
 			return -1;
 		}
+#elif OS_WINDOWS
+		//TODO
+		//if (!(errno == EINPROGRESS || errno == EWOULDBLOCK))
+		{
+			closesocket(fd);
+			return -1;
+		}
+#endif
 	}
 
 	fd_set wset;
@@ -197,22 +239,34 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 	nret = select(fd + 1, NULL, &wset, NULL, &tv);
 	if (nret == 0)
 	{
+#ifdef OS_LINUX
 		close(fd);
+#elif OS_WINDOWS
+		closesocket(fd);
+#endif
 		return -1;
 	}
 	else if (nret < 0)
 	{
+#ifdef OS_LINUX
 		close(fd);
+#elif OS_WINDOWS
+		closesocket(fd);
+#endif
 		return -1;
 	}
 
 	int sock_err = 0;
 	int sock_err_len = sizeof(sock_err);
-	nret = getsockopt(fd, SOL_SOCKET, SO_ERROR, (void*)&sock_err, (socklen_t*)&sock_err_len);
+	nret = getsockopt(fd, SOL_SOCKET, SO_ERROR, (char*)&sock_err, (socklen_t*)&sock_err_len);
 
 	if (nret < 0 || sock_err != 0)
 	{
+#ifdef OS_LINUX
 		close(fd);
+#elif OS_WINDOWS
+		closesocket(fd);
+#endif
 		return -1;
 	}
 	return fd;

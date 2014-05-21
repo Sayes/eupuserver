@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\include\appmsg;..\..\include\common;..\..\include\protocol;..\..\include\network;..\..\include\logger;Y:\json\include;Y:\protobuf\include;Y:\log4cxx\include;Y:\pthread\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;OS_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="log4cxx.lib common.lib appmsg.lib pthreadVC2.lib"
+				AdditionalDependencies="pthreadVC2.lib"
 				OutputFile="..\..\release\win\$(ProjectName).lib"
 				AdditionalLibraryDirectories="..\..\lib;Y:\json\lib;Y:\pthread\lib"
 			/>
@@ -154,10 +154,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\network\src\epollthread.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\network\src\euputhread.cpp"
 				>
 			</File>
@@ -185,10 +181,6 @@
 			>
 			<File
 				RelativePath="..\..\include\network\counter.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\network\epollthread.h"
 				>
 			</File>
 			<File

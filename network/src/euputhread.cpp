@@ -1,13 +1,19 @@
 #include "euputhread.h"
 
 CEupuThread::CEupuThread()
-: m_pid(0)
-, m_bOperate(false)
+: m_bOperate(false)
 , m_bIsExit(true)
+#ifdef OS_LINUX
+, m_pid(0)
+#endif
 {
     setMaskSIGUSR1();
+#ifdef OS_LINUX
     sigemptyset(&m_waitSig);
     sigaddset(&m_waitSig, SIGUSR1);
+#elif OS_WINDOWS
+	//TODO
+#endif
 }
 
 CEupuThread::~CEupuThread()
@@ -25,10 +31,14 @@ void* CEupuThread::ThreadFunc(void* arg)
 
 void CEupuThread::setMaskSIGUSR1()
 {
+#ifdef OS_LINUX
     sigset_t sig;
     sigemptyset(&sig);
     sigaddset(&sig, SIGUSR1);
     pthread_sigmask(SIG_BLOCK, &sig, NULL);
+#elif OS_WINDOWS
+	//TODO
+#endif
 }
 
 bool CEupuThread::start()
@@ -55,14 +65,22 @@ bool CEupuThread::start()
 void CEupuThread::pause()
 {
     int sig;
+#ifdef OS_LINUX
     sigwait(&m_waitSig, &sig);
+#elif OS_WINDOWS
+	//TODO
+#endif
 }
 
 //continue the thread, the real object needn't implement this method
 void CEupuThread::continues()
 {
     //send SIGUSR1 signal to current thread to continue
+#ifdef OS_LINUX
     pthread_kill(m_pid, SIGUSR1);
+#elif OS_WINDOWS
+	//TODO
+#endif
 }
 
 bool CEupuThread::stop()

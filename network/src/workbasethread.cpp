@@ -27,7 +27,11 @@ bool CWorkBaseThread::stop()
 
     if (m_bIsExit == false)
     {
+#ifdef OS_LINUX
         usleep(10);
+#elif OS_WINDOWS
+		Sleep(1);
+#endif
     }
     return true;
 }
@@ -56,7 +60,11 @@ void CWorkBaseThread::run()
     {
         if (precvlist->isEmptyWithoutLock())
         {
-            usleep(500);
+#ifdef OS_LINUX
+			usleep(500);
+#elif OS_WINDOWS
+			Sleep(1);
+#endif
             continue;
         }
 

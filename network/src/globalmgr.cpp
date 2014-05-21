@@ -1,3 +1,4 @@
+#include "ws2tcpip.h"
 #include "eupulogger4system.h"
 #include "globalmgr.h"
 #include "globalconfig.h"
@@ -457,7 +458,11 @@ void CGlobalMgr::createServerConnect(int ntype)
     if (psocket == NULL)
     {
         LOG(_ERROR_, "CGlobalMgr::createServerConnect() error, initSocketset() failed");
+#ifdef OS_LINUX
         close(fd);
+#elif OS_WINDOWS
+		closesocket(fd);
+#endif
         exit(-1);
     }
 
@@ -465,7 +470,11 @@ void CGlobalMgr::createServerConnect(int ntype)
     if (pevent == NULL)
     {
         LOG(_ERROR_, "CGlobalMgr::createServerConnect() error, new NET_EVENT failed");
+#ifdef OS_LINUX
         close(fd);
+#elif OS_WINDOWS
+		closesocket(fd);
+#endif
         delete psocket;
         psocket = NULL;
         exit(-1);
@@ -480,7 +489,11 @@ void CGlobalMgr::createServerConnect(int ntype)
     if (!m_eventlist.inQueue(pevent, false))
     {
         LOG(_ERROR_, "CGlobalMgr::createServerConnect() error, EventQueue->inQueue() failed");
+#ifdef OS_LINUX
         close(fd);
+#elif OS_WINDOWS
+		closesocket(fd);
+#endif
         delete psocket;
         psocket = NULL;
         delete pevent;

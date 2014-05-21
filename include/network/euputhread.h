@@ -28,7 +28,11 @@ protected:
 
 protected:
 	pthread_t m_pid;
+#ifdef OS_LINUX
 	sigset_t m_waitSig;
+#elif OS_WINDOWS
+	//TODO
+#endif
 	bool m_bOperate;
 	bool m_bIsExit;
 };

@@ -42,9 +42,9 @@ typedef short SHORT;
 typedef __int8_t INT8;
 typedef __int32_t INT32;
 #elif OS_WINDOWS
-typedef UINT64 __uint64_t;
 #include <WinDef.h>
 #define snprintf sprintf_s
+typedef UINT64 __uint64_t;
 int gettimeofday(struct timeval *tp, void *tzp)
 {
     time_t clock;
