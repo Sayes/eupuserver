@@ -16,7 +16,7 @@ using namespace std;
 CEpollThread* g_epollthread = NULL;
 CWorkThread* g_workthread = NULL;
 
-bool initSystem()
+bool initSystem(bool isdaemon)
 {
     CGlobalConfig* pConfig = CGlobalConfig::getInstance();
     if (!pConfig)
@@ -29,6 +29,11 @@ bool initSystem()
     {
         LOG(_ERROR_, "initSystem() error, CGlobalConfig::initSysConfig() failed");
         return false;
+    }
+
+    if (isdaemon)
+    {
+        LOGSETDEBUG(true);
     }
 
     CGlobalMgr* pglobalmgr = CGlobalMgr::getInstance();
@@ -117,16 +122,64 @@ void exitSystem()
     }
     sleep(1);
     CEupuLogger4System::Release();
+
+    LOG(_INFO_, "exitSystem() end");
+}
+
+void showusage()
+{
+}
+
+void showversion()
+{
 }
 
 int main(int argc, char* argv[])
 {
 
-    //daemonize();
+    int ch = 0;
+    int opterr = 0;
+    bool isdaemon = false;
+
+    while ( (ch = getopt(argc, argv, "h:v:d")) != EOF)
+    {
+        switch (ch)
+        {
+            case 'h':
+            {
+                showusage();
+                return 0;
+            }
+            case 'v':
+            {
+                showversion();
+                return 0;
+            }
+            case 'd':
+            {
+                isdaemon = true;
+                break;
+            }
+            case '?':
+            {
+                std::cout << "invalid opt" << std::endl;
+                return 0;
+            }
+            default:
+            {
+                return 0;
+            }
+        }
+    }
+
+    if (isdaemon)
+    {
+        daemonize();
+    }
 
     do {
 
-        if (!initSystem())
+        if (!initSystem(isdaemon))
         {
             break;
         }
