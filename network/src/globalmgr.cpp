@@ -1,4 +1,3 @@
-#include "ws2tcpip.h"
 #include "eupulogger4system.h"
 #include "globalmgr.h"
 #include "globalconfig.h"
