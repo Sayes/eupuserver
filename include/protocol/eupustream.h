@@ -9,6 +9,7 @@
 #elif OS_WINDOWS
 #include <ws2tcpip.h>
 #endif
+#include "common.h"
 #include "globaldef.h"
 
 using namespace std;
@@ -64,7 +65,11 @@ public:
         struct in_addr addr;
         memset(&addr, 0, sizeof(addr));
         addr.s_addr = htonl(ip);
+#ifdef OS_LINUX
         const char* p = inet_ntop(AF_INET, (void*)&addr, buf, (socklen_t)sizeof(buf));
+#elif OS_WINDOWS
+        const char* p = eupu_inet_ntop(AF_INET, (void*)&addr, buf, (socklen_t)sizeof(buf));
+#endif
         return string(p);
     }
 

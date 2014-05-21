@@ -61,7 +61,6 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="libprotobuf.lib libprotobuf-lite.lib libprotoc.lib"
 				OutputFile="..\..\release\win\$(ProjectName).lib"
 				AdditionalLibraryDirectories="Y:\protobuf\lib"
 			/>

@@ -20,7 +20,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
+			ConfigurationType="4"
 			CharacterSet="1"
 			>
 			<Tool
@@ -60,16 +60,11 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="common.lib log4cxx.lib"
-				OutputFile="..\..\release\win\$(ProjectName).dll"
-				AdditionalLibraryDirectories="..\..\lib;Y:\log4cxx\lib"
+				Name="VCLibrarianTool"
+				OutputFile="..\..\release\win\$(ProjectName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -79,9 +74,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -198,6 +190,10 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\eupulogger.rc"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

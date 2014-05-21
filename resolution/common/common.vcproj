@@ -177,6 +177,30 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\common\src\inet_ntop.c"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\common\src\inet_pton.c"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\..\common\src\utility.cpp"
 				>
 				<FileConfiguration
@@ -196,6 +220,10 @@
 			>
 			<File
 				RelativePath="..\..\include\common\common.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\common\eupu_inet.h"
 				>
 			</File>
 			<File

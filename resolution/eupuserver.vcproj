@@ -61,12 +61,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="log4cxx.lib common.lib appmsg.lib pthreadVC2.lib"
+				AdditionalDependencies="ws2_32.lib libprotobuf.lib log4cxx.lib appmsg.lib common.lib eupulogger.lib protocol.lib pthreadVC2.lib"
 				OutputFile="..\release\win\$(ProjectName).exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\lib;Y:\json\lib;Y:\log4cxx\lib;Y:\protobuf\lib;Y:\pthread\lib"
+				AdditionalLibraryDirectories="..\lib;Y:\json\lib;Y:\log4cxx\lib;Y:\protobuf\lib;Y:\pthread\lib;&quot;D:\workshop\eupuserver-code\trunk\lib&quot;"
 				GenerateDebugInformation="true"
-				SubSystem="2"
+				SubSystem="1"
 				TargetMachine="1"
 			/>
 			<Tool

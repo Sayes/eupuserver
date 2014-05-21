@@ -4,10 +4,9 @@
 #include "stdafx.h"
 #include "eupulogger4system.h"
 #include "eupu.base.pb.h"
+#include "eupu_inet.h"
 #include "globaldef.h"
 #include "netcommon.h"
-
-#pragma comment(lib, "ws2_32.lib")
 
 #define PORT			2300
 #define SENDBUF_LEN		1024

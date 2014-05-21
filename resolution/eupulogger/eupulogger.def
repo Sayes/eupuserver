@@ -1,0 +1,5 @@
+
+LIBRARY eupulogger
+EXPORTS
+	WriteLog
+	WriteHex
