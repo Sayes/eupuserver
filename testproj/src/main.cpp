@@ -128,7 +128,6 @@ void exitSystem()
 
 void showusage()
 {
-    err_sys("showusage");
 }
 
 void showversion()

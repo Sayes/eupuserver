@@ -1,3 +1,4 @@
+#include "eupulogger4system.h"
 #include "globaldef.h"
 #include "netcommon.h"
 #include "common.h"
@@ -43,10 +44,16 @@ bool setNonBlock(int sockfd)
 	opts = opts | O_NONBLOCK;
 	if (fcntl(sockfd, F_SETFL, opts) < 0)
 	{
+        LOG(_ERROR_, "setNonBlock() error, fcntl() failed");
 		return false;
 	}
 #elif OS_WINDOWS
-	//TODO
+    u_long mode = 1;
+    if (ioctlsocket(sockfd, FIONBIO, &mode) == SOCKET_ERROR)
+    {
+        LOG(_ERROR_, "setNonBlock() error, ioctlsocket() failed");
+        return false;
+    }
 #endif
 	return true;
 }

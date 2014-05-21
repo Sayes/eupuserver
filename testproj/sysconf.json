@@ -1,6 +1,6 @@
 {
 "sys_listen_port" : 3601,
-"sys_listen_ip" : "10.10.40.213",
+"sys_listen_ip" : "192.168.1.106",
 "sys_work_threads" : 5,
 "sys_update_interval" : 60,
 "sys_keepalive_timer" : 120,
