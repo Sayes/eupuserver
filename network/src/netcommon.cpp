@@ -44,16 +44,16 @@ bool setNonBlock(int sockfd)
 	opts = opts | O_NONBLOCK;
 	if (fcntl(sockfd, F_SETFL, opts) < 0)
 	{
-        LOG(_ERROR_, "setNonBlock() error, fcntl() failed");
+		LOG(_ERROR_, "setNonBlock() error, fcntl() failed");
 		return false;
 	}
 #elif OS_WINDOWS
-    u_long mode = 1;
-    if (ioctlsocket(sockfd, FIONBIO, &mode) == SOCKET_ERROR)
-    {
-        LOG(_ERROR_, "setNonBlock() error, ioctlsocket() failed, sockfd=%d, error=%ld", sockfd, WSAGetLastError());
-        return false;
-    }
+	u_long mode = 1;
+	if (ioctlsocket(sockfd, FIONBIO, &mode) == SOCKET_ERROR)
+	{
+		LOG(_ERROR_, "setNonBlock() error, ioctlsocket() failed, sockfd=%d, error=%ld", sockfd, WSAGetLastError());
+		return false;
+	}
 #endif
 	return true;
 }

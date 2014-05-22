@@ -118,9 +118,9 @@ typedef struct net_data {
 		{
 			pdata = new char[nlen];
 			if (!pdata)
-            {
+			{
 				return false;
-            }
+			}
 			memset(pdata, 0, nlen);
 		}
 		return true;

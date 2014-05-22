@@ -38,14 +38,14 @@ private:
 
 	void doEpollEvent();
 	void doSystemEvent();
-    void closeClient(int fd, time_t conntime);
-    void createClientCloseMsg(SOCKET_SET* psockset);
-    bool createConnectServerMsg(SOCKET_SET* psockset);
-    void doKeepaliveTimeout();
-    void doSendKeepaliveToServer();
-    void deleteSendMsgFromSendMap(int fd);
+	void closeClient(int fd, time_t conntime);
+	void createClientCloseMsg(SOCKET_SET* psockset);
+	bool createConnectServerMsg(SOCKET_SET* psockset);
+	void doKeepaliveTimeout();
+	void doSendKeepaliveToServer();
+	void deleteSendMsgFromSendMap(int fd);
 
-    time_t getIndex();
+	time_t getIndex();
 
 private:
 	int m_epollfd;
@@ -73,7 +73,7 @@ private:
 
 	list<NET_DATA*> m_recvlist;
 	time_t m_index;
-	
+
 };
 
 #endif//OS_LINUX

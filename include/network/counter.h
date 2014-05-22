@@ -9,7 +9,7 @@ public:
 	{
 		m_count = 0;	
 	}
-	
+
 	~CCounter()
 	{
 

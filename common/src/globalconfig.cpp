@@ -45,22 +45,22 @@ CGlobalConfig* CGlobalConfig::m_pInstance = NULL;
 
 CGlobalConfig* CGlobalConfig::getInstance()
 {
-    if (m_pInstance == NULL)
-    {
-        m_pInstance = new CGlobalConfig;
-        LOG(_DEBUG_, "new CGlobalConfig");
-    }
-    return m_pInstance;
+	if (m_pInstance == NULL)
+	{
+		m_pInstance = new CGlobalConfig;
+		LOG(_DEBUG_, "new CGlobalConfig");
+	}
+	return m_pInstance;
 }
 
 void CGlobalConfig::release()
 {
-    if (m_pInstance != NULL)
-    {
-        delete m_pInstance;
-        m_pInstance = NULL;
-        LOG(_DEBUG_, "delete CGlobalConfig");
-    }
+	if (m_pInstance != NULL)
+	{
+		delete m_pInstance;
+		m_pInstance = NULL;
+		LOG(_DEBUG_, "delete CGlobalConfig");
+	}
 }
 
 CGlobalConfig::CGlobalConfig()
@@ -69,102 +69,102 @@ CGlobalConfig::CGlobalConfig()
 
 CGlobalConfig::~CGlobalConfig()
 {
-    vector<PMEM_SERVER>::iterator iter = m_memlst.begin();
-    for (; iter < m_memlst.end(); ++iter)
-    {
-        if (*iter)
-            delete (*iter);
-    }
-    m_memlst.clear();
+	vector<PMEM_SERVER>::iterator iter = m_memlst.begin();
+	for (; iter < m_memlst.end(); ++iter)
+	{
+		if (*iter)
+			delete (*iter);
+	}
+	m_memlst.clear();
 }
 
 bool CGlobalConfig::initSysConfig(const std::string& path)
 {
-    std::ifstream f;
-    f.open(path.c_str());
-    if (!f.is_open())
-    {
-        char szErrMsg[256];
-        sprintf(szErrMsg, "%s open failed", path.c_str());
-        LOG(_ERROR_, szErrMsg);
-        return false;
-    }
+	std::ifstream f;
+	f.open(path.c_str());
+	if (!f.is_open())
+	{
+		char szErrMsg[256];
+		sprintf(szErrMsg, "%s open failed", path.c_str());
+		LOG(_ERROR_, szErrMsg);
+		return false;
+	}
 
-    Json::Reader r;
-    Json::Value v;
+	Json::Reader r;
+	Json::Value v;
 
-    if (!r.parse(f, v, NULL))
-    {
-        LOG(_ERROR_, "parse config failed");
-        return false;
-    }
+	if (!r.parse(f, v, NULL))
+	{
+		LOG(_ERROR_, "parse config failed");
+		return false;
+	}
 
-    m_cfg.listen_ip = v[LISTEN_IP].asString();
-    m_cfg.listen_port = v[LISTEN_PORT].asInt();
-    m_cfg.send_queue_size = v[SEND_QUEUE_SIZE].asInt();
-    m_cfg.recv_queue_size = v[RECV_QUEUE_SIZE].asInt();
-    m_cfg.work_threads = v[WORK_THREADS].asInt();
-    m_cfg.epoll_max_size = v[EPOLL_MAX_SIZE].asInt();
-    m_cfg.que_savetime = v[SAVE_TIMER].asInt();
-    m_cfg.ping_timer = v[PING_TIMER].asInt();
-    m_cfg.update_interval = v[UPDATE_INTERVAL].asInt();
-    m_cfg.keepalive_timer = v[KEEPALIVE_TIMER].asInt();
-    m_cfg.loglevel = v[LOG_LEVEL].asInt();
+	m_cfg.listen_ip = v[LISTEN_IP].asString();
+	m_cfg.listen_port = v[LISTEN_PORT].asInt();
+	m_cfg.send_queue_size = v[SEND_QUEUE_SIZE].asInt();
+	m_cfg.recv_queue_size = v[RECV_QUEUE_SIZE].asInt();
+	m_cfg.work_threads = v[WORK_THREADS].asInt();
+	m_cfg.epoll_max_size = v[EPOLL_MAX_SIZE].asInt();
+	m_cfg.que_savetime = v[SAVE_TIMER].asInt();
+	m_cfg.ping_timer = v[PING_TIMER].asInt();
+	m_cfg.update_interval = v[UPDATE_INTERVAL].asInt();
+	m_cfg.keepalive_timer = v[KEEPALIVE_TIMER].asInt();
+	m_cfg.loglevel = v[LOG_LEVEL].asInt();
 
-    int sendbuffer = 8192;
-    int recvbuffer = 8192;
+	int sendbuffer = 8192;
+	int recvbuffer = 8192;
 
-    sendbuffer = v[DEF_SEND_BUFFER].asInt();
-    recvbuffer = v[DEF_RECV_BUFFER].asInt();
+	sendbuffer = v[DEF_SEND_BUFFER].asInt();
+	recvbuffer = v[DEF_RECV_BUFFER].asInt();
 
-    m_cfg.maxsendbuf = sendbuffer == 0 ? 8192 : sendbuffer;
-    m_cfg.maxrecvbuf = recvbuffer == 0 ? 8192 : recvbuffer;
+	m_cfg.maxsendbuf = sendbuffer == 0 ? 8192 : sendbuffer;
+	m_cfg.maxrecvbuf = recvbuffer == 0 ? 8192 : recvbuffer;
 
-    return true;
+	return true;
 }
 
 UINT CGlobalConfig::getQueueTimer()
 {
-    return m_cfg.que_savetime; 
+	return m_cfg.que_savetime; 
 }
 
 UINT CGlobalConfig::getPingTimer()
 {
-    return m_cfg.ping_timer;
+	return m_cfg.ping_timer;
 }
 
 UINT CGlobalConfig::getUpdateInterval()
 {
-    return m_cfg.update_interval;
+	return m_cfg.update_interval;
 }
 
 UINT CGlobalConfig::getKeepaliveTimer()
 {
-    return m_cfg.keepalive_timer;
+	return m_cfg.keepalive_timer;
 }
 
 UINT CGlobalConfig::getLogLevel()
 {
-    return m_cfg.loglevel;
+	return m_cfg.loglevel;
 }
 
 PCONNECT_SERVER CGlobalConfig::getMainServer()
 {
-    return NULL;
+	return NULL;
 }
 
 PCONNECT_SERVER CGlobalConfig::getDistributeServer()
 {
-    return NULL;
+	return NULL;
 }
 
 PCONNECT_SERVER CGlobalConfig::getUserCenterServer()
 {
-    return NULL;
+	return NULL;
 }
 
 PCONNECT_SERVER CGlobalConfig::getLogServer()
 {
-    return NULL;
+	return NULL;
 }
 
