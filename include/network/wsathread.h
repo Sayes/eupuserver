@@ -63,6 +63,8 @@ private:
 	list<int> m_delsendfdlist;
 	map<int, SOCKET_SET*> m_socketmap;
 
+    unsigned int m_maxwsaeventsize;
+
 	list<NET_DATA*> m_recvlist;
 	time_t m_index;
 
