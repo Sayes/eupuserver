@@ -2,7 +2,11 @@
 #define __EUPUTHREAD_H__
 
 #include <pthread.h>
+#ifdef OS_LINUX
 #include <signal.h>
+#elif OS_WINDOWS
+#include <semaphore.h>
+#endif
 
 class CEupuThread {
 public:
@@ -31,6 +35,7 @@ protected:
 #ifdef OS_LINUX
 	sigset_t m_waitSig;
 #elif OS_WINDOWS
+	sem_t m_waitSig;
 	//TODO
 #endif
 	bool m_bOperate;

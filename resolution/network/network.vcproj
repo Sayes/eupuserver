@@ -61,9 +61,8 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="pthreadVC2.lib"
 				OutputFile="..\..\release\win\$(ProjectName).lib"
-				AdditionalLibraryDirectories="..\..\lib;Y:\json\lib;Y:\pthread\lib"
+				AdditionalLibraryDirectories="..\..\lib;Y:\json\lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
