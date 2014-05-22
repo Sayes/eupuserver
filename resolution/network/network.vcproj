@@ -172,6 +172,10 @@
 				RelativePath="..\..\network\src\workbasethread.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\network\src\wsathread.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -204,6 +208,10 @@
 			</File>
 			<File
 				RelativePath="..\..\include\network\workbasethread.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\network\wsathread.h"
 				>
 			</File>
 		</Filter>
