@@ -452,9 +452,9 @@ void CGlobalMgr::createServerConnect(int ntype)
     }
 
     time_t conntime = time(NULL);
-    SOCKET_SET* psocket = initSocketset(fd, conntime, pserver->host, pserver->port, ntype);
+    SOCKET_SET* psockset = initSocketset(fd, conntime, pserver->host, pserver->port, ntype);
 
-    if (psocket == NULL)
+    if (psockset == NULL)
     {
         LOG(_ERROR_, "CGlobalMgr::createServerConnect() error, initSocketset() failed");
 #ifdef OS_LINUX
@@ -474,15 +474,15 @@ void CGlobalMgr::createServerConnect(int ntype)
 #elif OS_WINDOWS
 		closesocket(fd);
 #endif
-        delete psocket;
-        psocket = NULL;
+        delete psockset;
+        psockset = NULL;
         exit(-1);
     }
 
     setServerSocket(fd, conntime, pserver->host, pserver->port, ntype);
 
     pevent->eventid = ADD_CLIENT;
-    pevent->data = (char*)psocket;
+    pevent->data = (char*)psockset;
 
 
     if (!m_eventlist.inQueue(pevent, false))
@@ -493,8 +493,8 @@ void CGlobalMgr::createServerConnect(int ntype)
 #elif OS_WINDOWS
 		closesocket(fd);
 #endif
-        delete psocket;
-        psocket = NULL;
+        delete psockset;
+        psockset = NULL;
         delete pevent;
         pevent = NULL;
     }

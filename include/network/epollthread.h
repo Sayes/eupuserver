@@ -26,9 +26,9 @@ public:
 	bool startup();
 
 private:
-	bool parsePacketToRecvQueue(SOCKET_SET* psocket, char* buf, int buflen);
-	bool addSocketToMap(SOCKET_SET* psocket);
-	bool addClientToEpoll(SOCKET_SET* psocket);
+	bool parsePacketToRecvQueue(SOCKET_SET* psockset, char* buf, int buflen);
+	bool addSocketToMap(SOCKET_SET* psockset);
+	bool addClientToEpoll(SOCKET_SET* psockset);
 	bool doAccept(int fd);
 	void doRecvMessage(SOCKET_KEY* pkey);
 	int doSendMessage(SOCKET_KEY* pkey);
@@ -37,10 +37,10 @@ private:
 	void doEpollEvent();
 	void doSystemEvent();
     void closeClient(int fd, time_t conntime);
-    void createClientCloseMsg(SOCKET_SET* pkey);
-    bool createConnectServerMsg(SOCKET_SET* pkey);
+    void createClientCloseMsg(SOCKET_SET* psockset);
+    bool createConnectServerMsg(SOCKET_SET* psockset);
     void doKeepaliveTimeout();
-    void doSendkeepaliveToServer();
+    void doSendKeepaliveToServer();
     void deleteSendMsgFromSendMap(int fd);
 
     time_t getIndex();
@@ -70,7 +70,7 @@ private:
 	int m_maxepollsize;
 
 	list<NET_DATA*> m_recvlist;
-	time_t m_Index;
+	time_t m_index;
 	
 };
 
