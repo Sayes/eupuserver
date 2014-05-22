@@ -30,7 +30,7 @@ bool CWorkBaseThread::stop()
 #ifdef OS_LINUX
         usleep(10);
 #elif OS_WINDOWS
-		Sleep(1);
+		Sleep(10);
 #endif
     }
     return true;
@@ -63,7 +63,7 @@ void CWorkBaseThread::run()
 #ifdef OS_LINUX
 			usleep(500);
 #elif OS_WINDOWS
-			Sleep(1);
+			Sleep(500);
 #endif
             continue;
         }

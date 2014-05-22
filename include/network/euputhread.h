@@ -36,7 +36,6 @@ protected:
 	sigset_t m_waitSig;
 #elif OS_WINDOWS
 	sem_t m_waitSig;
-	//TODO
 #endif
 	bool m_bOperate;
 	bool m_bIsExit;

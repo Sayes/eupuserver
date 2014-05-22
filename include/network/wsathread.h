@@ -68,6 +68,10 @@ private:
 	list<NET_DATA*> m_recvlist;
 	time_t m_index;
 
+	//new data for windows
+	WSAEVENT m_eventArray[WSA_MAXIMUM_WAIT_EVENTS];
+	SOCKET m_sockArray[WSA_MAXIMUM_WAIT_EVENTS];
+	int m_nEventTotal;
 };
 
 #endif//OS_WINDOWS

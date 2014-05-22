@@ -51,7 +51,7 @@ bool setNonBlock(int sockfd)
     u_long mode = 1;
     if (ioctlsocket(sockfd, FIONBIO, &mode) == SOCKET_ERROR)
     {
-        LOG(_ERROR_, "setNonBlock() error, ioctlsocket() failed");
+        LOG(_ERROR_, "setNonBlock() error, ioctlsocket() failed, sockfd=%d, error=%ld", sockfd, WSAGetLastError());
         return false;
     }
 #endif

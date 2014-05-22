@@ -11,29 +11,23 @@ CEupuThread::CEupuThread()
     sigemptyset(&m_waitSig);
     sigaddset(&m_waitSig, SIGUSR1);
 #elif OS_WINDOWS
-	//TODO
 	memset(&m_pid, 0, sizeof(pthread_t));
+	sem_init(&m_waitSig, 0, 1);
 #endif
 }
 
 CEupuThread::~CEupuThread()
 {
+	sem_destroy(&m_waitSig);
     m_bOperate = false;
     m_bIsExit = false;
 }
 
 void* CEupuThread::ThreadFunc(void* arg)
 {
-#ifdef OS_LINUX
     CEupuThread* pthread = (CEupuThread*)arg;
     pthread->run();
     return NULL;
-#elif OS_WINDOWS
-	//TODO
-    CEupuThread* pthread = (CEupuThread*)arg;
-    pthread->run();
-    return NULL;
-#endif
 }
 
 void CEupuThread::setMaskSIGUSR1()
@@ -50,7 +44,6 @@ void CEupuThread::setMaskSIGUSR1()
 
 bool CEupuThread::start()
 {
-#ifdef OS_LINUX
     int nret = pthread_create(&m_pid, NULL, ThreadFunc, this);
     
     if (0 == nret)
@@ -68,26 +61,6 @@ bool CEupuThread::start()
         return false;
     }
     return true;
-#elif OS_WINDOWS
-	//TODO
-    int nret = pthread_create(&m_pid, NULL, ThreadFunc, this);
-    
-    if (0 == nret)
-    {
-        nret = pthread_detach(m_pid);
-        if (0 == nret)
-        {
-            m_bOperate = true;
-            m_bIsExit = false;
-            return true;
-        }
-    }
-    else
-    {
-        return false;
-    }
-    return true;
-#endif
 }
 
 void CEupuThread::pause()
@@ -109,6 +82,7 @@ void CEupuThread::continues()
     pthread_kill(m_pid, SIGUSR1);
 #elif OS_WINDOWS
 	//TODO
+	sem_post(&m_waitSig);
 #endif
 }
 
