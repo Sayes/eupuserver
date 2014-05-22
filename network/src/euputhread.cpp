@@ -18,7 +18,9 @@ CEupuThread::CEupuThread()
 
 CEupuThread::~CEupuThread()
 {
+#ifdef OS_WINDOWS
 	sem_destroy(&m_waitSig);
+#endif
     m_bOperate = false;
     m_bIsExit = false;
 }
