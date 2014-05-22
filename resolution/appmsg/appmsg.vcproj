@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\include\appmsg;..\..\include\common;..\..\include\protocol;..\..\include\network;..\..\include\logger;..\..\include\json;Y:\protobuf\include"
+				AdditionalIncludeDirectories="..\..\include\appmsg;Y:\protobuf\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -62,7 +62,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile="..\..\release\win\$(ProjectName).lib"
-				AdditionalLibraryDirectories="Y:\protobuf\lib"
+				AdditionalLibraryDirectories=""
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -108,6 +108,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="..\..\include\appmsg;Y:\protobuf\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -126,6 +127,8 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				OutputFile="..\..\release\win\$(ProjectName).lib"
+				AdditionalLibraryDirectories=""
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -141,6 +144,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="xcopy /r /y &quot;..\..\release\win\appmsg.lib&quot; &quot;..\..\lib\&quot;"
 			/>
 		</Configuration>
 	</Configurations>

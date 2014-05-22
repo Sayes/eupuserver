@@ -62,7 +62,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile="..\..\release\win\$(ProjectName).lib"
-				AdditionalLibraryDirectories="..\..\lib;Y:\json\lib"
+				AdditionalLibraryDirectories=""
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -108,7 +108,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
+				AdditionalIncludeDirectories="..\..\include\appmsg;..\..\include\common;..\..\include\protocol;..\..\include\network;..\..\include\logger;Y:\json\include;Y:\protobuf\include;Y:\log4cxx\include;Y:\pthread\include"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;OS_WINDOWS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -126,6 +127,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				OutputFile="..\..\release\win\$(ProjectName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -141,6 +143,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="xcopy /r /y &quot;..\..\release\win\network.lib&quot; &quot;..\..\lib\&quot;"
 			/>
 		</Configuration>
 	</Configurations>
