@@ -61,9 +61,8 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="common.lib"
 				OutputFile="..\..\release\win\$(ProjectName).lib"
-				AdditionalLibraryDirectories="..\..\lib"
+				AdditionalLibraryDirectories=""
 			/>
 			<Tool
 				Name="VCALinkTool"
