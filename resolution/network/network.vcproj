@@ -153,6 +153,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\..\network\src\epollthread.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\network\src\euputhread.cpp"
 				>
 			</File>
@@ -184,6 +188,10 @@
 			>
 			<File
 				RelativePath="..\..\include\network\counter.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\network\epollthread.h"
 				>
 			</File>
 			<File

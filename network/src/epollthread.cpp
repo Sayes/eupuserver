@@ -1,3 +1,5 @@
+#ifdef OS_LINUX
+
 #include <sys/epoll.h>
 #include "epollthread.h"
 #include "sysqueue.h"
@@ -1021,3 +1023,4 @@ bool CEpollThread::createConnectServerMsg(SOCKET_SET* psockset)
     return false;
 }
 
+#endif//OS_LINUX

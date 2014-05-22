@@ -1,6 +1,8 @@
 #ifndef _WSATHREAD_H_
 #define _WSATHREAD_H_
 
+#ifdef OS_WINDOWS
+
 #include <map>
 #include "globaldef.h"
 #include "euputhread.h"
@@ -65,5 +67,7 @@ private:
 	time_t m_index;
 
 };
+
+#endif//OS_WINDOWS
 
 #endif//_WSATHREAD_H_

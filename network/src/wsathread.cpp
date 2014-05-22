@@ -1,3 +1,5 @@
+#ifdef OS_WINDOWS
+
 #include "wsathread.h"
 #include "sysqueue.h"
 #include "common.h"
@@ -106,3 +108,4 @@ bool CWSAThread::createConnectServerMsg(SOCKET_SET *psockset)
 	return false;
 }
 
+#endif//OS_WINDOWS

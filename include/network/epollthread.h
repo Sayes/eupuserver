@@ -1,6 +1,8 @@
 #ifndef __EUPUEPOLLTHREAD_H__
 #define __EUPUEPOLLTHREAD_H__
 
+#ifdef OS_LINUX
+
 #include <map>
 #include <globaldef.h>
 #include <euputhread.h>
@@ -74,6 +76,6 @@ private:
 	
 };
 
-
+#endif//OS_LINUX
 
 #endif//__EUPUEPOLLTHREAD_H__
