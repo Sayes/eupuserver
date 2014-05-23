@@ -232,8 +232,59 @@ void CEpollThread::doEpollEvent()
 		if (m_recvlist.size() > 0)
 		{
 			CSysQueue<NET_DATA>* precvlist = CGlobalMgr::getInstance()->getRecvQueue();
+            precvlist->Lock();
+            list<NET_DATA*>::iterator iter = m_recvlist.begin();
+            for (; iter != m_recvlist.end(); ++iter)
+            {
+                if ( (*iter) == NULL)
+                    continue;
+                if (!precvlist->inQueueWithoutLock(*iter, false))
+                {
+                    delete (*iter);
+                }
+            }
+            precvlist->UnLock();
+            m_recvlist.clear();
 		}
-	}
+
+        doSystemEvent();
+
+        struct epoll_event ev;
+        CGlobalMgr::getInstance()->switchSendMap();
+        map<int, list<NET_DATA*>*>* psendmap = CGlobalMgr::getInstance()->getBakSendMap();
+
+        for (map<int, list<NET_DATA*>*>::iterator itersendmap = psendmap->begin(); itersendmap != psendmap->end(); ++itersendmap)
+        {
+            map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(itersendmap->first);
+            if (itersockmap == m_socketmap.end() || itersockmap->second == NULL || itersockmap->second->key == NULL)
+            {
+                LOG(_ERROR_, "CEpollThread::doEpollEvent() error, m_socketmap.find(fd) failed");
+                m_delsendfdlist.push_back(itersendmap->first);
+                continue;
+            }
+
+            ev.events = EPOLLOUT | EPOLLET;
+            ev.data.ptr = itersockmap->second->key;
+            if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, itersendmap->first, &ev) < 0)
+            {
+                m_delsendfdlist.push_back(itersendmap->first);
+                closeClient(itersockmap->second->key->fd, itersockmap->second->key->connect_time);
+                continue;
+            }
+        }
+
+        for (list<int>::iterator iterdelsendfdlist = m_delsendfdlist.begin(); iterdelsendfdlist != m_delsendfdlist.end(); ++iterdelsendfdlist)
+        {
+            deleteSendMsgFromSendMap(*iterdelsendfdlist);
+        }
+        m_delsendfdlist.clear();
+
+        doKeepaliveTimeout();
+
+        doSendKeepaliveToServer();
+	}//end while
+
+    return;
 }
 
 bool CEpollThread::stop()
