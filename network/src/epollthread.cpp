@@ -188,6 +188,7 @@ void CEpollThread::doEpollEvent()
 			pkey = (SOCKET_KEY*)m_events[i].data.ptr;
 			if (!pkey)
 			{
+                LOG(_ERROR_, "CEpollThread::doEpollEvent() error, (SOCKET_KEY*)m_events[i].data.ptr == NULL, i=%d", i);
 				continue;
 			}
 
@@ -197,7 +198,7 @@ void CEpollThread::doEpollEvent()
 				{
 					if (!doAccept(pkey->fd))
 					{
-						//LOG
+						LOG(_ERROR_, "CEpollThread::doEpollEvent() error, doAccept(pkey->fd) failed, fd=%d", pkey->fd);
 					}
 					continue;
 				}
@@ -217,12 +218,14 @@ void CEpollThread::doEpollEvent()
 					wev.data.ptr = pkey;
 					if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, pkey->fd, &wev) < 0)
 					{
+                        LOG(_ERROR_, "CEpollThread::doEpollEvent() error, epoll_ctl(m_epollfd, EPOLL_CTL_MOD, pkey->fd, &wev) failed, fd=%d", pkey->fd);
 						closeClient(pkey->fd, pkey->connect_time);
 					}
 				}
 			}
 			else
 			{
+                LOG(_ERROR_, "CEpollThread::doEpollEvent() error, epoll recv unknown error, fd=%d, conn_time=%u", pkey->fd, pkey->connect_time);
 				closeClient(pkey->fd, pkey->connect_time);
 			}
 		}//end for
@@ -240,6 +243,7 @@ void CEpollThread::doEpollEvent()
                     continue;
                 if (!precvlist->inQueueWithoutLock(*iter, false))
                 {
+                    LOG(_ERROR_, "CEpollThread::doEpollEvent() error, inQueueWithoutLock() failed");
                     delete (*iter);
                 }
             }
@@ -267,6 +271,7 @@ void CEpollThread::doEpollEvent()
             ev.data.ptr = itersockmap->second->key;
             if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, itersendmap->first, &ev) < 0)
             {
+                LOG(_ERROR_, "CEpollThread::doEpollEvent() error, epoll_ctl() failed, fd=%d, error=%s", itersendmap->first, strerror(errno));
                 m_delsendfdlist.push_back(itersendmap->first);
                 closeClient(itersockmap->second->key->fd, itersockmap->second->key->connect_time);
                 continue;
