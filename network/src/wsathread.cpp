@@ -166,6 +166,76 @@ time_t CWSAThread::getIndex()
 
 void CWSAThread::doWSAEvent()
 {
+	SOCKET_KEY* pkey = NULL;
+
+	while (m_bOperate)
+	{
+		//WSA_MAXIMUM_WAIT_EVENTS
+		int nIndex = ::WSAWaitForMultipleEvents(m_nEventTotal, m_eventArray, FALSE, WSA_INFINITE, FALSE);
+		nIndex = nIndex - WSA_WAIT_EVENT_0;
+		for (int i = nIndex; i < m_nEventTotal; ++i)
+		{
+			nIndex = ::WSAWaitForMultipleEvents(1, &m_eventArray[i], TRUE, 10, FALSE);
+
+			if (nIndex == WSA_WAIT_FAILED || nIndex == WSA_WAIT_TIMEOUT)
+			{
+				continue;
+			}
+			else
+			{
+				WSANETWORKEVENTS event;
+				if (::WSAEnumNetworkEvents(m_sockArray[i], m_eventArray[i], &event) == SOCKET_ERROR)
+				{
+					LOG(_ERROR_, "CWSAThread::doWSAEvent() error, ::WSAEnumNetworkEvents() failed, error=%s", WSAGetLastError()); 
+					continue;
+				}
+
+				SOCKET_KEY* pkey = m_keymap[i];
+				if (!pkey)
+				{
+					continue;
+				}
+
+				if (event.lNetworkEvents & FD_ACCEPT)
+				{
+					LOG(_INFO_, "CWSAThread::doWSAEvent(), m_listenfd=%d, m_sockArray[i]=%d", m_listenfd, m_sockArray[i]);
+					if (event.iErrorCode[FD_ACCEPT_BIT] == 0)
+					{
+						if (m_nEventTotal > WSA_MAXIMUM_WAIT_EVENTS)
+						{
+							LOG(_INFO_, "CWSAThread::doWSAEvent() error, m_nEventTotal > WSA_MAXIMUM_WAIT_EVENTS");
+							continue;
+						}
+
+						if (m_listenfd == m_sockArray[i] && m_listenfd == pkey->fd)
+						{
+							if (!doAccept(m_listenfd))
+							{
+								LOG(_ERROR_, "CWSAThread::doWSAEvent() error, m_listenfd=%d", m_listenfd);
+							}
+							continue;
+						}
+						else
+						{
+							LOG(_ERROR_, "CWSAThread::doWSAEvent() error, m_listenfd, m_sockArray[i], pkey->fd do not identical");
+							continue;
+						}
+
+						doRecvMessage(pkey);
+					}
+				}
+				else if (event.lNetworkEvents & FD_READ)
+				{
+				}
+				else if (event.lNetworkEvents & FD_CLOSE)
+				{
+				}
+				else if (event.lNetworkEvents & FD_WRITE)
+				{
+				}
+			}
+		}
+	}
 }
 
 bool CWSAThread::stop()
@@ -260,6 +330,8 @@ bool CWSAThread::doListen()
 
 		m_eventArray[m_nEventTotal] = event;
 		m_sockArray[m_nEventTotal] = m_listenfd;
+		m_keymap[m_nEventTotal] = m_listenkey;
+		m_nEventTotal++;
 
 		LOG(_INFO_, "CWSAThread::doListen() successed, listen fd=%d", m_listenfd);
 
@@ -272,12 +344,113 @@ bool CWSAThread::doListen()
 
 bool CWSAThread::doAccept(int fd)
 {
-	return false;
+	struct sockaddr_in addr = {0};
+	socklen_t addrlen = sizeof(addr);
+	int connfd = INVALID_SOCKET;
+
+	while (true)
+	{
+		addrlen = sizeof(addr);
+		connfd = accept(fd, (sockaddr*)&addr, &addrlen);
+		if (connfd == INVALID_SOCKET)
+		{
+			if (WSAGetLastError() != WSAEWOULDBLOCK)
+			{
+				LOG(_ERROR_, "CWSAThread::doAccept() error, fd=%d, error=%d", fd, WSAGetLastError());
+			}
+			return true;
+		}
+
+		string peerip = fgNtoA(ntohl(addr.sin_addr.S_un.S_addr));
+		unsigned short port = ntohs(addr.sin_port);
+
+		if (!setNonBlock(connfd))
+		{
+			LOG(_ERROR_, "CWSAThread::doAccept() error, fd=%d, connfd=%d", fd, connfd);
+			closesocket(connfd);
+			continue;
+		}
+
+		if (setsockopt(connfd, SOL_SOCKET, SO_SNDBUF, (char*)&m_sendbufsize, sizeof(m_sendbufsize)) == SOCKET_ERROR)
+		{
+			LOG(_ERROR_, "CWSAThread::doAccept() error, setsockopt(SO_SNDBUF=%d) failed, fd=%d, connfd=%d, error=%d", m_sendbufsize, fd, connfd, WSAGetLastError());
+			closesocket(connfd);
+			continue;
+		}
+
+		if (setsockopt(connfd, SOL_SOCKET, SO_RCVBUF, (char*)&m_readbufsize, sizeof(m_readbufsize)) == SOCKET_ERROR)
+		{
+			LOG(_ERROR_, "CWSAThread::doAccept() error, setsockopt(SO_RCVBUF=%d) failed, fd=%d, connfd=%d, error=%d", m_readbufsize, fd, connfd, WSAGetLastError());
+			closesocket(connfd);
+			continue;
+		}
+
+		int opt = 1;
+		if (setsockopt(connfd, IPPROTO_TCP, TCP_NODELAY, (char*)&opt, sizeof(opt)) < 0)
+		{
+			LOG(_ERROR_, "CWSAThread::doAccept() error, setsockopt(TCP_NODELAY) failed, fd=%d, connfd=%d, error=%d", fd, connfd, WSAGetLastError());
+			closesocket(connfd);
+			continue;
+		}
+
+		SOCKET_SET* psockset = initSocketset(connfd, getIndex(), peerip, port, CLIENT_TYPE);
+
+		if (!psockset)
+		{
+			LOG(_ERROR_, "CWSAThread::doAccept() error, initSocketset() failed, fd=%d, connfd=%d, peerip=%s, port=%d", fd, connfd, GETNULLSTR(peerip), port);
+			closesocket(connfd);
+			continue;
+		}
+
+		if (!createConnectServerMsg(psockset))
+		{
+			LOG(_ERROR_, "CWSAThread::doAccept() error, initSocketset() failed, fd=%d, connfd=%d, peerip=%s, port=%d", fd, connfd, GETNULLSTR(peerip), port);
+			delete psockset;
+			psockset = NULL;
+			closesocket(connfd);
+			continue;
+		}
+
+		if (!addClientToWSA(psockset))
+		{
+			LOG(_ERROR_, "CWSAThread::doAccept() error, addClientToWSA() failed, fd=%d, connfd=%d, peerip=%s, port=%d", fd, connfd, GETNULLSTR(peerip), port);
+			delete psockset;
+			psockset = NULL;
+			closesocket(connfd);
+			continue;
+		}
+	}
+
+	return true;
 }
 
 bool CWSAThread::addClientToWSA(SOCKET_SET* psockset)
 {
-	return false;
+	if (psockset == NULL || psockset->key == NULL)
+	{
+		return false;
+	}
+
+	WSAEVENT newevent = ::WSACreateEvent();
+	if (newevent == WSA_INVALID_EVENT)
+	{
+		LOG(_ERROR_, "CWSAThread::doWSAEvent() error, WSAEventSelect() failed, fd=%d", psockset->key->fd);
+		closesocket(psockset->key->fd);
+		return false;
+	}
+	if (::WSAEventSelect(psockset->key->fd, newevent, FD_READ | FD_WRITE | FD_CLOSE) == SOCKET_ERROR)
+	{
+		LOG(_ERROR_, "CWSAThread::WSAEventSelect() error, WSAEventSelect() failed, fd=%d", psockset->key->fd);
+		closesocket(psockset->key->fd);
+		::WSACloseEvent(newevent);
+		return false;
+	}
+	m_eventArray[m_nEventTotal] = newevent;
+	m_sockArray[m_nEventTotal] = psockset->key->fd;
+	m_keymap[m_nEventTotal] = psockset->key;
+	m_nEventTotal++;
+
+	return true;
 }
 
 void CWSAThread::doRecvMessage(SOCKET_KEY* pkey)
@@ -304,7 +477,7 @@ void CWSAThread::createClientCloseMsg(SOCKET_SET *psockset)
 
 bool CWSAThread::addSocketToMap(SOCKET_SET *psockset)
 {
-	return false;
+	return true;
 }
 
 void CWSAThread::deleteSendMsgFromSendMap(int fd)
