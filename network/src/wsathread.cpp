@@ -262,6 +262,20 @@ void CWSAThread::doWSAEvent()
 						//m_sockArray[m_nEventTotal] = psockset->key->fd;
 						//m_keymap[m_nEventTotal] = psockset->key;
 						//m_nEventTotal++;
+
+						int i = WSA_WAIT_EVENT_0;
+						for (; i < WSA_MAXIMUM_WAIT_EVENTS; ++i)
+						{
+							if (pkey->fd == m_sockArray[i])
+								break;
+						}
+						if (WSAEventSelect(pkey->fd, m_eventArray[i], 0) == SOCKET_ERROR)
+						{
+							LOG(_ERROR_, "CWSAThread::doWSAEvent() error, WSAEventSelect(0) failed, fd=%d", pkey->fd);
+						}
+
+						map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(pkey->fd);
+						closesocket(pkey->fd);
 					}
 				}
 				else
@@ -652,11 +666,115 @@ int CWSAThread::doSendMessage(SOCKET_KEY* pkey)
 
 bool CWSAThread::parsePacketToRecvQueue(SOCKET_SET *psockset, char *buf, int buflen)
 {
-	return false;
+	if (psockset == NULL || psockset->key == NULL)
+	{
+		LOG(_ERROR_, "CWSAThread::parsePacketToRecvQueue() error, psockset == NULL || psockset->key == NULL");
+		return false;
+	}
+
+	if (buf == NULL || buflen <= 0)
+	{
+		LOG(_ERROR_, "CWSAThread::parsePacketToRecvQueue() error, buf == NULL || buflen <= 0");
+		return false;
+	}
+
+	int curpos = 0;
+
+	while (curpos < buflen)
+	{
+		if (buflen - curpos < NET_HEAD_SIZE)
+		{
+			memcpy(psockset->part_buf, buf, buflen - curpos);
+			psockset->part_len = buflen - curpos;
+			return true;
+		}
+
+		unsigned short nmsgsize = *((unsigned short*)(buf + curpos));
+		unsigned short nlen = ntohs(nmsgsize);
+
+		if (nlen > MAX_SEND_SIZE || nlen < NET_HEAD_SIZE)
+		{
+			LOG(_ERROR_, "CWSAThread::parsePacketToRecvQueue() error, invalid message size, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
+			return false;
+		}
+
+		if (nlen > buflen - curpos)
+		{
+			memcpy(psockset->part_buf, buf, buflen - curpos);
+			psockset->part_len = buflen - curpos;
+			return true;
+		}
+
+		NET_DATA* pdata = new NET_DATA;
+		if (pdata == NULL)
+		{
+			LOG(_ERROR_, "CWSAThread::parsePacketToRecvQueue() error, new NET_DATA failed, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
+			exit(-1);
+		}
+
+		if (!pdata->init(psockset->key->fd, psockset->key->connect_time, psockset->peer_ip, psockset->peer_port, psockset->type, nlen))
+		{
+			LOG(_ERROR_, "CWSAThread::parsePacketToRecvQueue() error, pdata->init() failed, fd=%d, time%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
+			delete pdata;
+			pdata = NULL;
+			return false;
+		}
+
+		memcpy(pdata->pdata, buf + curpos, nlen);
+		pdata->data_len = nlen;
+		m_recvlist.push_back(pdata);
+		curpos += nlen;
+	}
+
+	return true;
 }
 
 void CWSAThread::closeClient(int fd, time_t conn_time)
 {
+	if (fd < 0)
+	{
+		LOG(_ERROR_, "CWSAThread::closeClient() error, fd < 0");
+		return;
+	}
+
+	int i = WSA_WAIT_EVENT_0;
+	for (; i < WSA_MAXIMUM_WAIT_EVENTS; ++i)
+	{
+		if (fd == m_sockArray[i])
+			break;
+	}
+
+	//TODO, check here
+	if (WSAEventSelect(fd, m_eventArray[i], 0) == SOCKET_ERROR)
+	{
+		LOG(_ERROR_, "CWSAThread::closeClient() error, WSAEventSelect(0) failed, fd=%d", fd);
+	}
+
+	map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(fd);
+	closesocket(fd);
+
+	if (itersockmap == m_socketmap.end())
+	{
+		LOG(_ERROR_, "CWSAThread::closeClient() error, can not find socket in m_socketmap, fd=%d", fd);
+	}
+	else
+	{
+		if (itersockmap->second != NULL)
+		{
+			if (itersockmap->second->type > CLIENT_TYPE)
+			{
+				CGlobalMgr::getInstance()->setServerSocket(-1, 0, "", 0, itersockmap->second->type);
+			}
+			createClientCloseMsg(itersockmap->second);
+			delete itersockmap->second;
+			itersockmap->second = NULL;
+		}
+		else
+		{
+			LOG(_ERROR_, "CWSAThread::closeClient() error, the found socket is NULL, fd=%d", fd);
+		}
+		m_socketmap.erase(itersockmap);
+	}
 }
 
 void CWSAThread::createClientCloseMsg(SOCKET_SET *psockset)
