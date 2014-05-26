@@ -924,7 +924,6 @@ bool CEpollThread::addSocketToMap(SOCKET_SET* psockset)
 
 	m_socketmap.insert(map<int, SOCKET_SET*>::value_type(psockset->key->fd, psockset));
 	return true;
-	return false;
 }
 
 void CEpollThread::deleteSendMsgFromSendMap(int fd)
@@ -1076,7 +1075,7 @@ bool CEpollThread::createConnectServerMsg(SOCKET_SET* psockset)
 	memcpy(pdata->pdata, buf, buflen);
 	pdata->data_len = buflen;
 	m_recvlist.push_back(pdata);
-	return false;
+	return true;
 }
 
 #endif//OS_LINUX
