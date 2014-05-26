@@ -23,7 +23,6 @@ SOCKET sockListen;
 SOCKADDR_IN addrServer;
 
 char SENDBUF[SENDBUF_LEN];
-char szErrorMsg[2048];
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -38,7 +37,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 
 
-	CEupuLogger4System::Logger()->Debug4Sys("SERVER: main() begin");
+	LOG(_ERROR_, "SERVER: main() begin");
+
 
 	WORD wVersionRequested;
 	WSADATA wsaData;
@@ -76,14 +76,14 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	if (!msghead.SerializeToArray(p, msghead.ByteSize()))
 	{
-		CEupuLogger4System::Logger()->Debug4Sys("SERVER: syz::NetMessageHead::ParseToArray(SENDBUF) error");
+		LOG(_ERROR_, "SERVER: syz::NetMessageHead::ParseToArray(SENDBUF) error");
 	}
 
 	p += MSGHEAD_LEN;
 
 	if (!msgdata.SerializeToArray(p, msgdata.ByteSize()))
 	{
-		CEupuLogger4System::Logger()->Debug4Sys("SERVER: syz::NetData::ParseToArray(SENDBUF) error");
+		LOG(_ERROR_, "SERVER: syz::NetData::ParseToArray(SENDBUF) error");
 	}
 
 	p += msgdata.ByteSize();
@@ -102,15 +102,17 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	if (INVALID_SOCKET == sockListen)
 	{
-		CEupuLogger4System::Logger()->Debug4Sys("SERVER: sockListen == INVALID_SOCKET");
+		LOG(_ERROR_, "SERVER: sockListen == INVALID_SOCKET");
 		WSACleanup();
 		exit(0);
 	}
 
 	hThread = (HANDLE)_beginthreadex(NULL, 0, ReceiveThread, NULL, 0, NULL);
 
-	CEupuLogger4System::Logger()->Debug4Sys("SERVER: WaitForSingleObject hThread");
+	LOG(_ERROR_, "SERVER: WaitForSingleObject hThread");
 	WaitForSingleObject((HANDLE)hThread, INFINITE);
+
+	CEupuLogger4System::Release();
 
 	return 0;
 }
@@ -120,7 +122,7 @@ unsigned int WINAPI ReceiveThread(LPVOID lpParam)
 
 	UNREFERENCED_PARAMETER(lpParam);
 
-	CEupuLogger4System::Logger()->Debug4Sys("SERVER: ReceiveThread() begin");
+	LOG(_ERROR_, "SERVER: ReceiveThread() begin");
 
 	bool bResult = true;
 	DWORD nEventTotal = 0;
@@ -134,7 +136,7 @@ unsigned int WINAPI ReceiveThread(LPVOID lpParam)
 
 	if (WSA_INVALID_EVENT == (eventArray[nEventTotal] = ::WSACreateEvent()))
 	{
-		CEupuLogger4System::Logger()->Debug4Sys("SERVER: ReceiveThread() ::WSACreateEvent() == WSA_INVALID_EVENT");
+		LOG(_ERROR_, "SERVER: ReceiveThread() ::WSACreateEvent() == WSA_INVALID_EVENT");
 		bResult = false;
 	}
 
@@ -142,7 +144,7 @@ unsigned int WINAPI ReceiveThread(LPVOID lpParam)
 	{
 		if (SOCKET_ERROR == WSAEventSelect(sockListen, eventArray[nEventTotal], FD_ACCEPT | FD_CLOSE))
 		{
-			CEupuLogger4System::Logger()->Debug4Sys("SERVER: ReceiveThread() ::WSAEventSelect() == SOCKET_ERROR");
+			LOG(_ERROR_, "SERVER: ReceiveThread() ::WSAEventSelect() == SOCKET_ERROR");
 			bResult = false;
 		}
 		else
@@ -160,7 +162,7 @@ unsigned int WINAPI ReceiveThread(LPVOID lpParam)
 
 		if (SOCKET_ERROR == bind(sockListen, (SOCKADDR*)&addrServer, sizeof(SOCKADDR)))
 		{
-			CEupuLogger4System::Logger()->Debug4Sys("SERVER: ReceiveThread() bind() == SOCKET_ERROR");
+			LOG(_ERROR_, "SERVER: ReceiveThread() bind() == SOCKET_ERROR");
 			bResult = false;
 		}
 	}
@@ -169,7 +171,7 @@ unsigned int WINAPI ReceiveThread(LPVOID lpParam)
 	{
 		if (SOCKET_ERROR == listen(sockListen, 5))
 		{
-			CEupuLogger4System::Logger()->Debug4Sys("SERVER: ReceiveThread() listen() == SOCKET_ERROR");
+			LOG(_ERROR_, "SERVER: ReceiveThread() listen() == SOCKET_ERROR");
 			bResult = false;
 		}
 	}
@@ -182,13 +184,13 @@ unsigned int WINAPI ReceiveThread(LPVOID lpParam)
 
 		for(;;)
 		{
-			CEupuLogger4System::Logger()->Debug4Sys("SERVER: ReceiveThread() ::WSAWaitForMultipleEvents() begin");
+			LOG(_ERROR_, "SERVER: ReceiveThread() ::WSAWaitForMultipleEvents() begin");
 			dwIdxSignaled = ::WSAWaitForMultipleEvents(nEventTotal, eventArray, FALSE, INFINITE, FALSE);
-			CEupuLogger4System::Logger()->Debug4Sys("SERVER: ReceiveThread() ::WSAWaitForMultipleEvents() signaled");
+			LOG(_ERROR_, "SERVER: ReceiveThread() ::WSAWaitForMultipleEvents() signaled");
 
 			if (WSA_WAIT_FAILED == dwIdxSignaled)
 			{
-				CEupuLogger4System::Logger()->Debug4Sys("SERVER: ReceiveThread() dwIdxSignaled == WSA_WAIT_FAILED");
+				LOG(_ERROR_, "SERVER: ReceiveThread() dwIdxSignaled == WSA_WAIT_FAILED");
 				break;
 			}
 
@@ -198,7 +200,7 @@ unsigned int WINAPI ReceiveThread(LPVOID lpParam)
 			WSANETWORKEVENTS networkEvents;
 			if (SOCKET_ERROR == ::WSAEnumNetworkEvents(sockSignaled, eventSignaled, &networkEvents))
 			{
-				CEupuLogger4System::Logger()->Debug4Sys("SERVER: ReceiveThread() ::WSAEnumNetworkEvents() == SOCKET_ERROR");
+				LOG(_ERROR_, "SERVER: ReceiveThread() ::WSAEnumNetworkEvents() == SOCKET_ERROR");
 				break;
 			}
 
@@ -206,7 +208,7 @@ unsigned int WINAPI ReceiveThread(LPVOID lpParam)
 			{
 				if (networkEvents.iErrorCode[FD_ACCEPT_BIT] != 0)
 				{
-					CEupuLogger4System::Logger()->Debug4Sys("SERVER: ReceiveThread() networkEvents.iErrorCode[FD_ACCEPT_BIT] != 0");
+					LOG(_ERROR_, "SERVER: ReceiveThread() networkEvents.iErrorCode[FD_ACCEPT_BIT] != 0");
 					break;
 				}
 
@@ -216,14 +218,13 @@ unsigned int WINAPI ReceiveThread(LPVOID lpParam)
 
 				if (INVALID_SOCKET == (sockClient = accept(sockListen, (SOCKADDR*)&addrClient, &sin_size)))
 				{
-					CEupuLogger4System::Logger()->Debug4Sys("SERVER: ReceiveThread() accept() == INVALID_SOCKET");
+					LOG(_ERROR_, "SERVER: ReceiveThread() accept() == INVALID_SOCKET");
 					break;
 				}
 
 				if (SOCKET_ERROR == send(sockClient, SENDBUF, SENDBUF_LEN, 0))
 				{
-					sprintf_s(szErrorMsg, "SERVER: ReceiveThread() send() == SOCKET_ERROR : %d", WSAGetLastError());
-					CEupuLogger4System::Logger()->Debug4Sys(szErrorMsg);
+					LOG(_ERROR_, "SERVER: ReceiveThread() send() == SOCKET_ERROR : %d", WSAGetLastError());
 					break;
 				}
 
@@ -239,7 +240,7 @@ unsigned int WINAPI ReceiveThread(LPVOID lpParam)
 
 			if (networkEvents.lNetworkEvents & FD_CLOSE)
 			{
-				CEupuLogger4System::Logger()->Debug4Sys("SERVER: ReceiveThread() client close the socket");
+				LOG(_ERROR_, "SERVER: ReceiveThread() client close the socket");
 			}
 		}
 	}
@@ -251,7 +252,7 @@ unsigned int WINAPI ReceiveThread(LPVOID lpParam)
 	}
 	WSACleanup();
 
-	CEupuLogger4System::Logger()->Debug4Sys("SERVER: ReceiveThread() end");
+	LOG(_ERROR_, "SERVER: ReceiveThread() end");
 
 	return 0;
 }

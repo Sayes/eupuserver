@@ -53,9 +53,17 @@ private:
 
 };
 
+#define WITHOUTLOG
+#ifdef WITHOUTLOG
+#define LOGSETLEVEL
+#define LOGSETDEBUG
+#define LOG
+#define LOGHEX
+#else
 #define LOGSETLEVEL CEupuLogger4System::Logger()->SetLogLevel
 #define LOGSETDEBUG CEupuLogger4System::Logger()->SetDebugMode
 #define LOG CEupuLogger4System::Logger()->WriteLog
 #define LOGHEX CEupuLogger4System::Logger()->WriteHex
+#endif
 
 #endif//_EUPULOGGER4SYSTEM_H_
