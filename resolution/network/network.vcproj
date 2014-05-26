@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\release\win\$(ProjectName).lib"
+				OutputFile="..\..\release\win\$(ProjectName)d.lib"
 				AdditionalLibraryDirectories=""
 			/>
 			<Tool
@@ -78,7 +78,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy /r /y &quot;..\..\release\win\network.lib&quot; &quot;..\..\lib\&quot;"
+				CommandLine="xcopy /r /y &quot;..\..\release\win\networkd.lib&quot; &quot;..\..\lib\&quot;"
 			/>
 		</Configuration>
 		<Configuration

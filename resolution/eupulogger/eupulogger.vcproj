@@ -61,8 +61,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\release\win\$(ProjectName).lib"
+				OutputFile="..\..\release\win\$(ProjectName)d.lib"
 				AdditionalLibraryDirectories=""
+				IgnoreDefaultLibraryNames=""
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -78,7 +79,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy /r /y &quot;..\..\release\win\eupulogger.lib&quot; &quot;..\..\lib\&quot;"
+				CommandLine="xcopy /r /y &quot;..\..\release\win\eupuloggerd.lib&quot; &quot;..\..\lib\&quot;"
 			/>
 		</Configuration>
 		<Configuration
@@ -112,7 +113,7 @@
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;OS_WINDOWS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
