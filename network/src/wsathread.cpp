@@ -179,6 +179,7 @@ void CWSAThread::doWSAEvent()
 
 			if (nIndex == WSA_WAIT_FAILED || nIndex == WSA_WAIT_TIMEOUT)
 			{
+				LOG(_ERROR_, "CWSAThread::doWSAEvent() error, (nIndex == WSA_WAIT_FAILED || nIndex == WSA_WAIT_TIMEOUT)");
 				continue;
 			}
 			else
@@ -186,13 +187,14 @@ void CWSAThread::doWSAEvent()
 				WSANETWORKEVENTS event;
 				if (::WSAEnumNetworkEvents(m_sockArray[i], m_eventArray[i], &event) == SOCKET_ERROR)
 				{
-					LOG(_ERROR_, "CWSAThread::doWSAEvent() error, ::WSAEnumNetworkEvents() failed, error=%s", WSAGetLastError()); 
+					LOG(_ERROR_, "CWSAThread::doWSAEvent() error, ::WSAEnumNetworkEvents() failed, error=%s", WSAGetLastError());
 					continue;
 				}
 
 				SOCKET_KEY* pkey = m_keymap[i];
 				if (!pkey)
 				{
+					LOG(_ERROR_, "CWSAThread::doWSAEvent() error, pkey == NULL, SOCKET_KEY* pkey = m_keymap[%d]", i);
 					continue;
 				}
 
@@ -215,23 +217,56 @@ void CWSAThread::doWSAEvent()
 							}
 							continue;
 						}
-						else
-						{
-							LOG(_ERROR_, "CWSAThread::doWSAEvent() error, m_listenfd, m_sockArray[i], pkey->fd do not identical");
-							continue;
-						}
 
 						doRecvMessage(pkey);
 					}
 				}
 				else if (event.lNetworkEvents & FD_READ)
 				{
-				}
-				else if (event.lNetworkEvents & FD_CLOSE)
-				{
+					LOG(_INFO_, "CWSAThread::doWSAEvent(), m_listenfd=%d, m_sockArray[i]=%d", m_listenfd, m_sockArray[i]);
+					if (event.iErrorCode[FD_ACCEPT_BIT] == 0)
+					{
+						if (m_nEventTotal > WSA_MAXIMUM_WAIT_EVENTS)
+						{
+							LOG(_INFO_, "CWSAThread::doWSAEvent() error, m_nEventTotal > WSA_MAXIMUM_WAIT_EVENTS");
+							continue;
+						}
+
+						doRecvMessage(pkey);
+					}
 				}
 				else if (event.lNetworkEvents & FD_WRITE)
 				{
+					if (doSendMessage(pkey) < 0)
+					{
+						closeClient(pkey->fd, pkey->connect_time);
+					}
+					else
+					{
+						//TODO
+						//WSAEVENT newevent = ::WSACreateEvent();
+						//if (newevent == WSA_INVALID_EVENT)
+						//{
+						//	LOG(_ERROR_, "CWSAThread::doWSAEvent() error, WSAEventSelect() failed, fd=%d", psockset->key->fd);
+						//	closesocket(psockset->key->fd);
+						//	return false;
+						//}
+						//if (::WSAEventSelect(psockset->key->fd, newevent, FD_READ | FD_WRITE | FD_CLOSE) == SOCKET_ERROR)
+						//{
+						//	LOG(_ERROR_, "CWSAThread::WSAEventSelect() error, WSAEventSelect() failed, fd=%d", psockset->key->fd);
+						//	closesocket(psockset->key->fd);
+						//	::WSACloseEvent(newevent);
+						//	return false;
+						//}
+						//m_eventArray[m_nEventTotal] = newevent;
+						//m_sockArray[m_nEventTotal] = psockset->key->fd;
+						//m_keymap[m_nEventTotal] = psockset->key;
+						//m_nEventTotal++;
+					}
+				}
+				else
+				{
+					closeClient(pkey->fd, pkey->connect_time);
 				}
 			}
 		}
@@ -455,11 +490,164 @@ bool CWSAThread::addClientToWSA(SOCKET_SET* psockset)
 
 void CWSAThread::doRecvMessage(SOCKET_KEY* pkey)
 {
+	if (pkey == NULL)
+	{
+		return;
+	}
+
+	int buflen = 0;
+	int nret = 0;
+
+	map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(pkey->fd);
+	if (itersockmap == m_socketmap.end() || itersockmap->second == NULL || itersockmap->second->key == NULL)
+	{
+		LOG(_ERROR_, "CWSAThread::doRecvMessage() error, can't find socket in map, fd=%d", pkey->fd);
+		return;
+	}
+
+	if (itersockmap->second->key != pkey)
+	{
+		LOG(_ERROR_, "CWSAThread::doRecvMessage() error, the found socket dones't match pkey, fd=%d", pkey->fd);
+		return;
+	}
+
+	SOCKET_SET* psockset = itersockmap->second;
+
+	while (1)
+	{
+		buflen = m_recvbuflen;
+		memset(m_recvbuffer, 0, buflen);
+
+		buflen -= psockset->part_len;
+		nret = recv_msg(pkey->fd, m_recvbuffer + psockset->part_len, buflen);
+		if (nret < 0)
+		{
+			LOG(_ERROR_, "CWSAThread::doRecvMessage() error, recv_msg() failed, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
+			return;
+		}
+
+		psockset->refresh_time = time(NULL);
+		bool bparse = true;
+		if (buflen > 0)
+		{
+			memcpy(m_recvbuffer, psockset->part_buf, psockset->part_len);
+			buflen += psockset->part_len;
+			psockset->part_len = 0;
+			bparse = parsePacketToRecvQueue(psockset, m_recvbuffer, buflen);
+			if (!bparse)
+			{
+				LOG(_ERROR_, "CWSAThread::doRecvMessage() error, parsePacketToRecvQueue() failed, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
+			}
+		}
+
+		if (nret == 0)
+		{
+			LOG(_ERROR_, "CWSAThread::doRecvMessage() error, recv_msg() return 0, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
+		}
+
+		if (!bparse || nret == 0)
+		{
+			closeClient(pkey->fd, pkey->connect_time);
+			return;
+		}
+
+		if (nret == 1)
+		{
+			break;	//EAGAIN
+		}
+	}
 }
 
 int CWSAThread::doSendMessage(SOCKET_KEY* pkey)
 {
-	return 0;
+	if (pkey == NULL)
+		return 0;
+
+	map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(pkey->fd);
+	if (itersockmap == m_socketmap.end() || itersockmap->second || itersockmap->second->key)
+	{
+		LOG(_ERROR_, "CWSAThread::doSendMessage() error, do not find socket in m_socketmap, fd=%d", pkey->fd);
+		deleteSendMsgFromSendMap(pkey->fd);
+		return 0;
+	}
+
+	int num = 0;
+	int buflen = 0;
+
+	map<int, list<NET_DATA*>*>* psendmap = CGlobalMgr::getInstance()->getBakSendMap();
+	map<int, list<NET_DATA*>*>::iterator itersendmap = psendmap->find(pkey->fd);
+	if (itersendmap == psendmap->end())
+	{
+		LOG(_ERROR_, "CWSAThread::doSendMessage() error, do not find data in m_sendmap, fd=%d", pkey->fd);
+		return 0;
+	}
+
+	if (itersendmap->second == NULL)
+	{
+		LOG(_ERROR_, "CWSAThread::doSendMessage() error, data in m_sendmap is NULL, fd=%d", pkey->fd);
+		return 0;
+	}
+
+	while (itersendmap->second->size() > 0)
+	{
+		NET_DATA* pdata = itersendmap->second->front();
+		if (pdata == NULL)
+		{
+			itersendmap->second->pop_front();
+			continue;
+		}
+
+		if (!((itersockmap->second->key->fd == pdata->fd) && (itersockmap->second->key->connect_time == pdata->connect_time)))
+		{
+			LOG(_ERROR_, "CWSAThread::doSendMessage() error, data and socket don't match in fd and connect_time, data fd=%d", pdata->fd);
+			delete pdata;
+			itersendmap->second->pop_front();
+			continue;
+		}
+
+		buflen = pdata->data_len;
+		int nsend = send_msg(pdata->fd, pdata->pdata, buflen);
+		if (nsend < 0)
+		{
+			LOG(_ERROR_, "CWSAThread::doSendMessage() error, send_msg() failed, fd=%d", pdata->fd);
+			deleteSendMsgFromSendMap(pkey->fd);
+			return -1;
+		}
+		else if (nsend == 0)
+		{
+			//TODO, check here
+			num = pdata->data_len - buflen;
+			if (num > 0)
+			{
+				LOG(_INFO_, "CWSAThread::doSendMessage() error, send_msg() send part of data, fd=%d, len=%d", pdata->fd, buflen);
+				pdata->data_len = num;
+				memmove(pdata->pdata, pdata->pdata + buflen, num);
+			}
+			else
+			{
+				LOG(_INFO_, "CWSAThread::doSendMessage() successed, fd=%d, time=%u, peerip=%s, port=%d", pdata->fd, pdata->connect_time, GETNULLSTR(pdata->peer_ip), pdata->peer_port);
+				delete pdata;
+				itersendmap->second->pop_front();
+			}
+			break;
+		}
+		else
+		{
+			LOG(_INFO_, "CWSAThread::doSendMessage() successed, fd=%d, time=%u, peerip=%s, port=%d", pdata->fd, pdata->connect_time, GETNULLSTR(pdata->peer_ip), pdata->peer_port);
+			delete pdata;
+			itersendmap->second->pop_front();
+			continue;
+		}
+	}//end while
+
+	if (itersendmap->second->size() <= 0)
+	{
+		delete itersendmap->second;
+		itersendmap->second = NULL;
+		psendmap->erase(itersendmap);
+	}
+
+	return 1;
 }
 
 bool CWSAThread::parsePacketToRecvQueue(SOCKET_SET *psockset, char *buf, int buflen)
