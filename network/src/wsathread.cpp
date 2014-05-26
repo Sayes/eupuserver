@@ -779,24 +779,231 @@ void CWSAThread::closeClient(int fd, time_t conn_time)
 
 void CWSAThread::createClientCloseMsg(SOCKET_SET *psockset)
 {
+	if (psockset == NULL || psockset->key == NULL)
+	{
+		LOG(_ERROR_, "CWSAThread::createClientCloseMsg() error, psockset == NULL || psockset->key == NULL");
+		return;
+	}
+
+	char buf[MAX_SEND_SIZE];
+	UINT buflen = sizeof(buf);
+	memset(buf, 0, buflen);
+
+	MP_Server_DisConnected msg;
+	msg.m_nServer = psockset->type;
+	if (!msg.Out((BYTE*)buf, buflen))
+	{
+		LOG(_ERROR_, "CWSAThread::createClientCloseMsg() error, msg.Out() failed, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
+		return;
+	}
+
+	NET_DATA* pdata = new NET_DATA;
+	if (pdata == NULL)
+	{
+		LOG(_ERROR_, "CWSAThread::createClientCloseMsg() error, new NET_DATA failed, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
+		exit(-1);
+	}
+
+	if (!pdata->init(psockset->key->fd, psockset->key->connect_time, psockset->peer_ip, psockset->peer_port, psockset->type, buflen))
+	{
+		LOG(_ERROR_, "CWSAThread::createClientCloseMsg() error, pdata->init() failed, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
+		delete pdata;
+		pdata = NULL;
+		return;
+	}
+
+	memcpy(pdata->pdata, buf, buflen);
+	pdata->data_len = buflen;
+	m_recvlist.push_back(pdata);
 }
 
 bool CWSAThread::addSocketToMap(SOCKET_SET *psockset)
 {
+	if (psockset == NULL || psockset->key == NULL || psockset->key->fd < 0)
+	{
+		LOG(_ERROR_, "CWSAThread::addSocketToMap() error, psockset == NULL || psockset->key == NULL || psockset->key->fd < 0");
+		return false;
+	}
+
+	if (m_maxwsaeventsize <= m_socketmap.size())
+	{
+		LOG(_ERROR_, "CWSAThread::addSocketToMap() error, the wsa event handler is full, size=%d", m_maxwsaeventsize);
+		return false;
+	}
+
+	map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(psockset->key->fd);
+	if (itersockmap != m_socketmap.end())
+	{
+		if (itersockmap->second && itersockmap->second->key)
+		{
+			LOG(_WARN_, "CWSAThread::addSocketToMap() error, found timeout socket in m_socketmap, fd=%d", psockset->key->fd);
+		}
+		else
+		{
+			LOG(_WARN_, "CWSAThread::addSocketToMap() error, found timeout socket in m_socketmap, but sockset == NULL || key == NULL, fd=%d", psockset->key->fd);
+		}
+		
+		if (itersockmap->second != NULL)
+		{
+			delete itersockmap->second;
+			itersockmap->second = NULL;
+		}
+		m_socketmap.erase(itersockmap);
+	}
+
+	m_socketmap.insert(map<int, SOCKET_SET*>::value_type(psockset->key->fd, psockset));
+
 	return true;
 }
 
 void CWSAThread::deleteSendMsgFromSendMap(int fd)
 {
+	if (fd < 0)
+	{
+		LOG(_ERROR_, "CWSAThread::deleteSendMsgFromSendMap() error, fd < 0");
+		return;
+	}
+
+	map<int, list<NET_DATA*>*>* psendmap = CGlobalMgr::getInstance()->getBakSendMap();
+	map<int, list<NET_DATA*>*>::iterator itersendmap = psendmap->find(fd);
+
+	if (itersendmap != psendmap->end())
+	{
+		if (itersendmap->second != NULL)
+		{
+			list<NET_DATA*>::iterator iterdata = itersendmap->second->begin();
+			for (; iterdata != itersendmap->second->end(); ++iterdata)
+			{
+				delete *iterdata;
+			}
+			itersendmap->second->clear();
+			delete itersendmap->second;
+			itersendmap->second = NULL;
+		}
+		psendmap->erase(itersendmap);
+	}
+	return;
 }
 
 void CWSAThread::doSystemEvent()
 {
+	CSysQueue<NET_EVENT>* pevent = CGlobalMgr::getInstance()->getEventQueue();
+	if (pevent == NULL)
+	{
+		return;
+	}
+
+	if (pevent->isEmptyWithoutLock())
+	{
+		return;
+	}
+
+	pevent->Lock();
+	NET_EVENT* pdata = NULL;
+	while (pevent->outQueueWithoutLock(pdata, true))
+	{
+		if (pdata == NULL)
+		{
+			continue;
+		}
+
+		switch (pdata->eventid)
+		{
+		case CLOSE_CLIENT:
+			{
+				if (pdata->data != NULL)
+				{
+					SOCKET_KEY* pkey = (SOCKET_KEY*)pdata->data;
+					LOG(_INFO_, "CWSATread::doSystemEvent() handle CLOSE_CLIENT");
+					closeClient(pkey->fd, pkey->connect_time);
+					delete pkey;
+					pkey = NULL;
+				}
+				break;
+			}
+		case ADD_CLIENT:
+			{
+				if (pdata->data == NULL)
+				{
+					LOG(_ERROR_, "CWSAThread::doSystemEvent() error, event data is NULL");
+					break;
+				}
+				SOCKET_SET* psockset = (SOCKET_SET*)pdata->data;
+				if (psockset->key == NULL)
+				{
+					LOG(_ERROR_, "CWSAThread::doSystemEvent() error, event data->key is NULL");
+					delete psockset;
+					psockset = NULL;
+				}
+
+				psockset->key->connect_time = getIndex();
+				CGlobalMgr::getInstance()->setServerSocket(psockset->key->fd, psockset->key->connect_time, psockset->peer_ip, psockset->peer_port, psockset->type);
+				LOG(_INFO_, "CWSAThread::doSystemEvent(), handle ADD_CLIENT event, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
+
+				if (!createConnectServerMsg(psockset))
+				{
+					closesocket(psockset->key->fd);
+					delete psockset;
+					psockset = NULL;
+					break;
+				}
+
+				if (!addClientToWSA(psockset))
+				{
+					LOG(_ERROR_, "CWSATread::doSystemEvent() error, addClientToWSA() failed, fd=%d, time=%u", psockset->key->fd, psockset->key->connect_time);
+					closesocket(psockset->key->fd);
+					delete psockset;
+					psockset = NULL;
+					break;
+				}
+				break;
+			}
+		default:
+			{
+				LOG(_ERROR_, "CWSAThread::doSystemEvent() error, invalid event, event=%d", pdata->eventid);
+				if (pdata->data != NULL)
+				{
+					delete pdata->data;
+					pdata->data = NULL;
+				}
+				break;
+			}
+		}
+	}//end while
+	pevent->UnLock();
 }
 
 bool CWSAThread::createConnectServerMsg(SOCKET_SET *psockset)
 {
-	return false;
+	if (psockset == NULL)
+	{
+		LOG(_ERROR_, "CWSAThread::createConnectServerMsg() error, psockset == NULL");
+		return false;
+	}
+
+	char buf[MAX_SEND_SIZE];
+	UINT buflen = sizeof(buf);
+	memset(buf, 0, buflen);
+
+	MP_Server_Connected msg;
+	if (!msg.Out((BYTE*)buf, buflen))
+	{
+		LOG(_ERROR_, "CWSAThread::createConnectServerMsg() error, msg.Out() failed, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
+		return false;
+	}
+
+	NET_DATA* pdata = new NET_DATA;
+	if (pdata == NULL)
+	{
+		LOG(_ERROR_, "CWSAThread::createConnectServerMsg() error, new NET_DATA failed, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
+		exit(-1);
+	}
+
+	memcpy(pdata->pdata, buf, buflen);
+	pdata->data_len = buflen;
+	m_recvlist.push_back(pdata);
+
+	return true;
 }
 
 #endif//OS_WINDOWS
