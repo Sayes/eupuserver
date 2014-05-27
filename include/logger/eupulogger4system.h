@@ -53,7 +53,7 @@ private:
 
 };
 
-#define WITHOUTLOG
+//#define WITHOUTLOG
 #ifdef WITHOUTLOG
 #define LOGSETLEVEL
 #define LOGSETDEBUG
