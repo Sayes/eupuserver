@@ -61,7 +61,7 @@ struct MP_Server_Connected : public CEupuStream {
 		if (msgHead.In(pSrc, nbuflen))
 		{
 			ntmp = nbuflen;
-			nret = InputValue(pSrc + ntmp, nbuflen - ntmp, m_nServer);
+			nret = InputValue(pSrc + ntmp, nlen - ntmp, m_nServer);
 			if (nret < 0)
 			{
 				return false;
@@ -102,7 +102,7 @@ struct MP_Server_DisConnected : public CEupuStream {
 		if (msgHead.Out(pDest, nbuflen))
 		{
 			ntmp = nbuflen;
-			nret = OutputValue(pDest + ntmp, nbuflen - ntmp, m_nServer);
+			nret = OutputValue(pDest + ntmp, nlen - ntmp, m_nServer);
 
 			if (nret < 0)
 			{
@@ -126,7 +126,7 @@ struct MP_Server_DisConnected : public CEupuStream {
 		if (msgHead.In(pSrc, nbuflen))
 		{
 			ntmp = nbuflen;
-			nret = InputValue(pSrc + ntmp, nbuflen - ntmp, m_nServer);
+			nret = InputValue(pSrc + ntmp, nlen - ntmp, m_nServer);
 			if (nret < 0)
 			{
 				return false;
