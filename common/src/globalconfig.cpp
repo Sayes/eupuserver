@@ -67,14 +67,6 @@ void CGlobalConfig::release()
 		m_pInstance = NULL;
 		LOG(_DEBUG_, "delete CGlobalConfig");
 	}
-
-    list<PCONNECT_SERVER>::iterator iter = m_serverlist.begin();
-    for (; iter != m_serverlist.end(); ++iter)
-    {
-        if ((*iter))
-            delete (*iter);
-    }
-    m_serverlist.clear();
 }
 
 CGlobalConfig::CGlobalConfig()
@@ -83,6 +75,14 @@ CGlobalConfig::CGlobalConfig()
 
 CGlobalConfig::~CGlobalConfig()
 {
+    list<PCONNECT_SERVER>::iterator iterserver = m_serverlist.begin();
+    for (; iterserver != m_serverlist.end(); ++iterserver)
+    {
+        if ((*iterserver))
+            delete (*iterserver);
+    }
+    m_serverlist.clear();
+
 	vector<PMEM_SERVER>::iterator iter = m_memlst.begin();
 	for (; iter < m_memlst.end(); ++iter)
 	{
@@ -107,7 +107,7 @@ bool CGlobalConfig::initSysConfig(const std::string& path)
 	Json::Reader r;
 	Json::Value v;
 
-	if (!r.parse(f, v, NULL))
+	if (!r.parse(f, v, false))
 	{
 		LOG(_ERROR_, "parse config failed");
 		return false;
@@ -124,10 +124,10 @@ bool CGlobalConfig::initSysConfig(const std::string& path)
 	m_cfg.update_interval = v[UPDATE_INTERVAL].asInt();
 	m_cfg.keepalive_timer = v[KEEPALIVE_TIMER].asInt();
 	m_cfg.loglevel = v[LOG_LEVEL].asInt();
-	Json::Value::const_iterator iter = v[CONNECT_SERVER].begin();
+	Json::Value::iterator iter = v[CONNECT_SERVER].begin();
 	for (; iter != v[CONNECT_SERVER].end(); ++iter)
 	{
-		LOG(_INFO_, "CGlobalConfig::initSysConfig(), %s", (*iter)[SERVER_NAME].asString());
+		LOG(_INFO_, "CGlobalConfig::initSysConfig(), %d", (*iter)[SERVER_PORT].asInt());
 	}
 
 	int sendbuffer = 8192;
