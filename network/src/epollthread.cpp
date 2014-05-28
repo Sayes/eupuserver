@@ -865,6 +865,7 @@ void CEpollThread::createClientCloseMsg(SOCKET_SET* psockset)
 	if (!msg.Out((BYTE*)buf, buflen))
 	{
 		LOG(_ERROR_, "CEpollThread::createClientCloseMsg() error, msg.Out(buf, buflen) failed, fd=%d, time=%u, type=%d", psockset->key->fd, psockset->key->connect_time, psockset->type);
+		msg.Debug();
 		return;
 	}
 
@@ -1053,6 +1054,7 @@ bool CEpollThread::createConnectServerMsg(SOCKET_SET* psockset)
 	{
 		LOG(_ERROR_, "CEpollThread::createConnectServerMsg() error, msg.Out() failed, fd=%d, conn_time=%u, peer_ip=%s, port=%d",
 			psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
+		msg.Debug();
 		return false;
 	}
 

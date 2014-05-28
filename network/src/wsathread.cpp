@@ -794,6 +794,7 @@ void CWSAThread::createClientCloseMsg(SOCKET_SET *psockset)
 	if (!msg.Out((BYTE*)buf, buflen))
 	{
 		LOG(_ERROR_, "CWSAThread::createClientCloseMsg() error, msg.Out() failed, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
+		msg.Debug();
 		return;
 	}
 
@@ -989,6 +990,7 @@ bool CWSAThread::createConnectServerMsg(SOCKET_SET *psockset)
 	if (!msg.Out((BYTE*)buf, buflen))
 	{
 		LOG(_ERROR_, "CWSAThread::createConnectServerMsg() error, msg.Out() failed, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
+		msg.Debug();
 		return false;
 	}
 
