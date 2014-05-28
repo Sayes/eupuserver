@@ -619,7 +619,7 @@ void CEpollThread::doRecvMessage(SOCKET_KEY* pkey)
 		if (nret == 0)
 		{
             LOG(_INFO_,"the peer have closed the connection, fd:%d, time:%u, peerip:%s, port:%d",
-                key->fd, key->connect_time, GETNULLSTR(iter->second->peer_ip), iter->second->peer_port);
+                pkey->fd, pkey->connect_time, GETNULLSTR(iter->second->peer_ip), iter->second->peer_port);
 		}
 
 		if (nret == 0 || !bparse)
