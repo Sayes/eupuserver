@@ -11,6 +11,7 @@
 #endif
 #include "common.h"
 #include "globaldef.h"
+#include "eupulogger4system.h"
 
 using namespace std;
 

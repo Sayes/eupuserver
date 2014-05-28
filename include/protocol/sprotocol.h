@@ -15,7 +15,7 @@ struct MP_Server_Connected : public CEupuStream {
 	{
 		msgHead.uMainID = RS_SERVER_CONNECTED;
 		msgHead.uMessageSize = NET_HEAD_SIZE + sizeof(int);
-		m_nServer = -1;
+		m_nServer = 0;
 	}
 
 	NetMessageHead msgHead;
@@ -23,7 +23,9 @@ struct MP_Server_Connected : public CEupuStream {
 
 	void Debug()
 	{
-		//TODO
+		LOG(_DEBUG_, "MP_Server_Connected::Debug() object members:");
+		msgHead.Debug();
+		LOG(_DEBUG_, "\tm_nServer: %d", m_nServer);
 	}
 
 	bool Out(BYTE* pDest, UINT& nlen)
@@ -35,7 +37,7 @@ struct MP_Server_Connected : public CEupuStream {
 		if (msgHead.Out(pDest, nbuffer))
 		{
 			ntmp = nbuffer;
-			nret = OutputValue(pDest + ntmp, nbuffer - ntmp, m_nServer);
+			nret = OutputValue(pDest + ntmp, nlen - ntmp, m_nServer);
 
 			if (nret < 0)
 			{
@@ -78,7 +80,7 @@ struct MP_Server_DisConnected : public CEupuStream {
 	{
 		msgHead.uMainID = RS_SERVER_DISCONNECTED;
 		msgHead.uMessageSize = NET_HEAD_SIZE + sizeof(int);
-		m_nServer = -1;
+		m_nServer = 0;
 	}
 
 	NetMessageHead msgHead;
@@ -86,7 +88,9 @@ struct MP_Server_DisConnected : public CEupuStream {
 
 	void Debug()
 	{
-		//TODO
+        LOG(_DEBUG_,"struct MP_Server_DisConnected object members:");
+        msgHead.Debug();
+        LOG(_DEBUG_,"\tm_nServer: %d", m_nServer);
 	}
 
 	bool Out(BYTE* pDest, UINT& nlen)

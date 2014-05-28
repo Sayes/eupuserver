@@ -23,7 +23,12 @@ public:
 
 	void Debug()
 	{
-		//TODO
+		LOG(_DEBUG_, "NetMessageHead::Debug() object members:");
+		LOG(_DEBUG_, "\tuMessageSize: %u", uMessageSize);
+		LOG(_DEBUG_, "\tuMainID: %u", uMainID);
+		LOG(_DEBUG_, "\tbAssistantID: %u", bAssistantID);
+		LOG(_DEBUG_, "\tbHandleCode: %u", bHandleCode);
+		LOG(_DEBUG_, "\tbReserve: %u", bReserve);
 	}
 
 	inline bool Out(BYTE* pDest, UINT& nLen)
@@ -56,11 +61,11 @@ public:
 
 		ntmp += nret;
 		nret = OutputValue(pDest + ntmp, buflen - ntmp, bReserve);
+
 		if (nret < 0)
 			return false;
 
 		ntmp += nret;
-
 		nLen = ntmp;
 		return true;
 	}
