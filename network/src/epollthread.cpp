@@ -597,6 +597,7 @@ void CEpollThread::doRecvMessage(SOCKET_KEY* pkey)
 		if (nret < 0)
 		{
 			LOG(_ERROR_, "CEpollThread::doRecvMessage() recv_msg() error, fd=%d, time=%u, peerip=%s, port=%d", pkey->fd, pkey->connect_time, GETNULLSTR(iter->second->peer_ip), iter->second->peer_port);
+			closeClient(key->fd, key->connect_time); 
 			return;
 		}
 
@@ -617,8 +618,8 @@ void CEpollThread::doRecvMessage(SOCKET_KEY* pkey)
 
 		if (nret == 0)
 		{
-			LOG(_ERROR_, "CEpollThread::doRecvMessage() error, the peer close the connection, fd=%d, time=%u, peerip=%s, port=%d",
-				pkey->fd, pkey->connect_time, GETNULLSTR(iter->second->peer_ip), iter->second->peer_port);
+            LOG(_INFO_,"the peer have closed the connection, fd:%d, time:%u, peerip:%s, port:%d",
+                key->fd, key->connect_time, GETNULLSTR(iter->second->peer_ip), iter->second->peer_port);
 		}
 
 		if (nret == 0 || !bparse)
