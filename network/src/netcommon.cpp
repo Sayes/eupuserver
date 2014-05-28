@@ -244,9 +244,9 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 	if (nret == SOCKET_ERROR)
 	{
 		int err = WSAGetLastError();
-		LOG(_ERROR_, "doNonblockConnect() error, connect() failed, error=%d", err);
 		if (!(err == WSAEINPROGRESS || err == WSAEWOULDBLOCK))
 		{
+			LOG(_ERROR_, "doNonblockConnect() error, connect() failed, error=%d", err);
 			closesocket(fd);
 			return -1;
 		}
@@ -265,6 +265,7 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 	nret = select(fd + 1, NULL, &wset, NULL, &tv);
 	if (nret == 0)
 	{
+		LOG(_ERROR_, "doNonblockConnect() error, select() failed, return 0");
 #ifdef OS_LINUX
 		close(fd);
 #elif OS_WINDOWS
@@ -274,6 +275,7 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 	}
 	else if (nret < 0)
 	{
+		LOG(_ERROR_, "doNonblockConnect() error, select() failed, return < 0");
 #ifdef OS_LINUX
 		close(fd);
 #elif OS_WINDOWS
@@ -296,6 +298,8 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 #endif
 		return -1;
 	}
+
+	LOG(_INFO_, "doNonblockConnect() end, fd=%d", fd);
 	return fd;
 }
 
