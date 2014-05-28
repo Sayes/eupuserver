@@ -12,5 +12,22 @@
 "sys_epoll_max_size" : 10000,
 
 "svr_def_send_buffer" : 8192,
-"svr_def_recv_buffer" : 8192
+"svr_def_recv_buffer" : 8192,
+
+    "connect_server" : [
+        {
+            "server_name" : "main_svr",
+            "server_host" : "10.10.40.177",
+            "server_port" : 3601,
+            "send_buffer" : 8192,
+            "recv_buffer" : 8192
+        },
+        {
+            "server_name" : "distribute_svr",
+            "server_host" : "10.10.40.177",
+            "server_port" : 3601,
+            "send_buffer" : 8192,
+            "recv_buffer" : 8192
+        }
+    ]
 }

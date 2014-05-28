@@ -149,6 +149,7 @@ private:
 	UINT mem_pool;
 	vector<PMEM_SERVER> m_memlst;
 
+    list<PCONNECT_SERVER> m_serverlist;
 	st_global_cfg m_cfg;
 	static CGlobalConfig* m_pInstance;
 };

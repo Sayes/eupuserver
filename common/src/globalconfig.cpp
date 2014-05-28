@@ -67,6 +67,14 @@ void CGlobalConfig::release()
 		m_pInstance = NULL;
 		LOG(_DEBUG_, "delete CGlobalConfig");
 	}
+
+    list<PCONNECT_SERVER>::iterator iter = m_serverlist.begin();
+    for (; iter != m_serverlist.end(); ++iter)
+    {
+        if ((*iter))
+            delete (*iter);
+    }
+    m_serverlist.clear();
 }
 
 CGlobalConfig::CGlobalConfig()
@@ -166,6 +174,14 @@ PCONNECT_SERVER CGlobalConfig::getMainServer()
 
 PCONNECT_SERVER CGlobalConfig::getDistributeServer()
 {
+    list<PCONNECT_SERVER>::iterator iter = m_serverlist.begin();
+    for (; iter != m_serverlist.end(); ++iter)
+    {
+        if ((*iter)->name == "distribute")
+        {
+            return *iter;
+        }
+    }
 	return NULL;
 }
 
