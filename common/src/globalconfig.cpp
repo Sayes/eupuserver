@@ -18,6 +18,12 @@
 #define SEND_QUEUE_SIZE "sys_send_queue_size"
 #define RECV_QUEUE_SIZE "sys_recv_queue_size"
 #define EPOLL_MAX_SIZE  "sys_epoll_max_size"
+#define CONNECT_SERVER	"connect_server"
+#define SERVER_NAME		"server_name"
+#define SERVER_HOST		"server_host"
+#define SERVER_PORT		"server_port"
+#define SERVER_SNDBUF	"send_buffer"
+#define SERVER_RCVBUF	"recv_buffer"
 
 #define NODE_ID         ""
 #define GAME_ID         ""
@@ -110,6 +116,11 @@ bool CGlobalConfig::initSysConfig(const std::string& path)
 	m_cfg.update_interval = v[UPDATE_INTERVAL].asInt();
 	m_cfg.keepalive_timer = v[KEEPALIVE_TIMER].asInt();
 	m_cfg.loglevel = v[LOG_LEVEL].asInt();
+	Json::Value::const_iterator iter = v[CONNECT_SERVER].begin();
+	for (; iter != v[CONNECT_SERVER].end(); ++iter)
+	{
+		LOG(_INFO_, "CGlobalConfig::initSysConfig(), %s", (*iter)[SERVER_NAME].asString());
+	}
 
 	int sendbuffer = 8192;
 	int recvbuffer = 8192;
