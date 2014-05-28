@@ -297,18 +297,38 @@ void CGlobalMgr::setServerSocket(int fd, time_t conntime, const string& ip, USHO
 
 void CGlobalMgr::setMainSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype)
 {
+    m_mainkey.fd = fd;
+    m_mainkey.connect_time = conntime;
+    m_mainkey.peer_ip = peerip;
+    m_mainkey.peer_port = peerport;
+    m_mainkey.type = ntype;
 }
 
 void CGlobalMgr::setDistributeSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype)
 {
+    m_distributekey.fd = fd;
+    m_distributekey.connect_time = conntime;
+    m_distributekey.peer_ip = peerip;
+    m_distributekey.peer_port = peerport;
+    m_distributekey.type = ntype;
 }
 
 void CGlobalMgr::setUserCenterSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype)
 {
+    m_usercenterkey.fd = fd;
+    m_usercenterkey.connect_time = conntime;
+    m_usercenterkey.peer_ip = peerip;
+    m_usercenterkey.peer_port = peerport;
+    m_usercenterkey.type = ntype;
 }
 
 void CGlobalMgr::setLogSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype)
 {
+    m_logkey.fd = fd;
+    m_logkey.connect_time = conntime;
+    m_logkey.peer_ip = peerip;
+    m_logkey.peer_port = peerport;
+    m_logkey.type = ntype;
 }
 
 void CGlobalMgr::switchSendMap()

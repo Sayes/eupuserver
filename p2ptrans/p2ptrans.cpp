@@ -137,10 +137,9 @@ int _tmain(int argc, _TCHAR* argv[])
 			if (interval >= 12)
 			{
 				interval = 0;
+				LOG(_INFO_, "main(), the recv queue has %d total messages", CGlobalMgr::getInstance()->getRecvQueue()->sizeWithoutLock());
 			}
 			Sleep(5000);
-
-			LOG(_INFO_, "main(), the recv queue has %d total messages", CGlobalMgr::getInstance()->getRecvQueue()->sizeWithoutLock());
 		}
 
 	} while (false);

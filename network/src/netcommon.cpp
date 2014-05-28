@@ -29,6 +29,8 @@ SOCKET_SET* initSocketset(int fd, time_t conntime, const string& peerip, unsigne
 		socketset = NULL;
 		return NULL;
 	}
+
+	LOG(_INFO_, "initSocketset() end");
 	return socketset;
 }
 

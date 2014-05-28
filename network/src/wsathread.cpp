@@ -283,8 +283,67 @@ void CWSAThread::doWSAEvent()
 					closeClient(pkey->fd, pkey->connect_time);
 				}
 			}
+		}//end for
+
+		//// end handle WSAWaitForMultipleEvents /////
+
+		if (m_recvlist.size() > 0)
+		{
+			CSysQueue<NET_DATA>* precvlist = CGlobalMgr::getInstance()->getRecvQueue();
+            precvlist->Lock();
+            list<NET_DATA*>::iterator iter = m_recvlist.begin();
+            for (; iter != m_recvlist.end(); ++iter)
+            {
+                if ( (*iter) == NULL)
+                    continue;
+                if (!precvlist->inQueueWithoutLock(*iter, false))
+                {
+                    LOG(_ERROR_, "CWSAThread::doEpollEvent() error, inQueueWithoutLock() failed");
+                    delete (*iter);
+                }
+            }
+            precvlist->UnLock();
+            m_recvlist.clear();
 		}
-	}
+
+        doSystemEvent();
+
+        //struct epoll_event ev;
+        CGlobalMgr::getInstance()->switchSendMap();
+        map<int, list<NET_DATA*>*>* psendmap = CGlobalMgr::getInstance()->getBakSendMap();
+
+        for (map<int, list<NET_DATA*>*>::iterator itersendmap = psendmap->begin(); itersendmap != psendmap->end(); ++itersendmap)
+        {
+            map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(itersendmap->first);
+            if (itersockmap == m_socketmap.end() || itersockmap->second == NULL || itersockmap->second->key == NULL)
+            {
+                LOG(_ERROR_, "CEpollThread::doEpollEvent() error, m_socketmap.find(fd) failed");
+                m_delsendfdlist.push_back(itersendmap->first);
+                continue;
+            }
+
+			//TODO, check here
+            //ev.events = EPOLLOUT | EPOLLET;
+            //ev.data.ptr = itersockmap->second->key;
+            //if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, itersendmap->first, &ev) < 0)
+            //{
+            //    LOG(_ERROR_, "CEpollThread::doEpollEvent() error, epoll_ctl() failed, fd=%d, error=%s", itersendmap->first, strerror(errno));
+            //    m_delsendfdlist.push_back(itersendmap->first);
+            //    closeClient(itersockmap->second->key->fd, itersockmap->second->key->connect_time);
+            //    continue;
+            //}
+        }
+
+        for (list<int>::iterator iterdelsendfdlist = m_delsendfdlist.begin(); iterdelsendfdlist != m_delsendfdlist.end(); ++iterdelsendfdlist)
+        {
+            deleteSendMsgFromSendMap(*iterdelsendfdlist);
+        }
+        m_delsendfdlist.clear();
+
+        doKeepaliveTimeout();
+
+        doSendKeepaliveToServer();
+	}//end while
 }
 
 bool CWSAThread::stop()
@@ -299,10 +358,71 @@ bool CWSAThread::stop()
 
 void CWSAThread::doKeepaliveTimeout()
 {
+	time_t curtime = time(NULL);
+	if (curtime - m_checkkeepalivetime < m_keepaliveinterval)
+	{
+		return;
+	}
+
+	list<int> timelist;
+	map<int, SOCKET_SET*>::iterator iter = m_socketmap.begin();
+	for (; iter != m_socketmap.end(); ++iter)
+	{
+		if (iter->second != NULL)
+		{
+			if (iter->second->refresh_time + m_keepalivetimeout > curtime)
+			{
+				timelist.push_back(iter->first);
+			}
+		}
+		else
+		{
+			timelist.push_back(iter->first);
+		}
+	}//end for
+
+	bool bclosed = false;
+	for (list<int>::iterator itertimeout = timelist.begin(); itertimeout != timelist.end(); ++itertimeout)
+	{
+		bclosed = false;
+		map<int, SOCKET_SET*>::iterator itersocket = m_socketmap.find(*itertimeout);
+		if (itersocket != m_socketmap.end())
+		{
+			if (itersocket->second != NULL)
+			{
+				if (itersocket->second->key != NULL)
+				{
+					bclosed = true;
+					LOG(_ERROR_, "CWSAThread::doKeepaliveTimeout() error, close socket_set for timeout, fd=%d, time=%u, peerip=%s, port=%d",
+						itersocket->first, itersocket->second->key->connect_time, GETNULLSTR(itersocket->second->peer_ip), itersocket->second->peer_port);
+					closeClient(itersocket->first, itersocket->second->key->connect_time);
+				}
+			}
+
+			if (!bclosed)
+			{
+				LOG(_ERROR_, "CWSAThread::doKeepaliveTimeout() error, close socket_set->key->fd close for timeout");
+				closesocket(itersocket->first);
+				delete itersocket->second;
+				m_socketmap.erase(itersocket);
+			}
+		}
+	}//end for
+	timelist.clear();
+	m_checkkeepalivetime = time(NULL);
 }
 
 void CWSAThread::doSendKeepaliveToServer()
 {
+	time_t curtime = time(NULL);
+	if (curtime - m_lastkeepalivetime < m_keepaliveinterval)
+	{
+		return;
+	}
+
+	CGlobalMgr::getInstance()->sendKeepaliveMsgToAllServer();
+
+	m_lastkeepalivetime = time(NULL);
 }
 
 bool CWSAThread::doListen()
