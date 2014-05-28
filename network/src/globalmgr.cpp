@@ -484,7 +484,6 @@ void CGlobalMgr::createServerConnect(int ntype)
 	pevent->eventid = ADD_CLIENT;
 	pevent->data = (char*)psockset;
 
-
 	if (!m_eventlist.inQueue(pevent, false))
 	{
 		LOG(_ERROR_, "CGlobalMgr::createServerConnect() error, EventQueue->inQueue() failed");

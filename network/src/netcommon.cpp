@@ -140,11 +140,17 @@ int send_msg(int fd, char* buf, int &nlen)
 int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& localip)
 {
 	if (!pserver)
+	{
+		LOG(_ERROR_, "doNonblockConnect() error, pserver == NULL");
 		return -1;
+	}
 
 	int fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (fd < 0)
+	{
+		LOG(_ERROR_, "doNonblockConnect() error, socket() failed");
 		return -1;
+	}
 
 	if (!localip.empty())
 	{
@@ -154,6 +160,7 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 
 		if (!bind(fd, (struct sockaddr*)&localaddr, sizeof(localaddr)) < 0)
 		{
+			LOG(_ERROR_, "doNonblockConnect() error, bind() failed");
 #ifdef OS_LINUX
 			close(fd);
 #elif OS_WINDOWS
@@ -170,6 +177,7 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 
 	if (!setNonBlock(fd))
 	{
+		LOG(_ERROR_, "doNonblockConnect() error, setNonBlock() failed");
 #ifdef OS_LINUX
 		close(fd);
 #elif OS_WINDOWS
@@ -183,6 +191,7 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 
 	if (setsockopt(fd, SOL_SOCKET, SO_SNDBUF, (const char*)&nsend, sizeof(nsend)) < 0)
 	{
+		LOG(_ERROR_, "doNonblockConnect() error, setsockopt(SO_SNDBUF) failed");
 #ifdef OS_LINUX
 		close(fd);
 #elif OS_WINDOWS
@@ -193,6 +202,7 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 
 	if (setsockopt(fd, SOL_SOCKET, SO_RCVBUF, (const char*)&nrecv, sizeof(nrecv)) < 0)
 	{
+		LOG(_ERROR_, "doNonblockConnect() error, setsockopt(SO_RCVBUF) failed");
 #ifdef OS_LINUX
 		close(fd);
 #elif OS_WINDOWS
@@ -204,6 +214,7 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 	int opt = 1;
 	if (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (const char*)&opt, sizeof(opt)) < 0)
 	{
+		LOG(_ERROR_, "doNonblockConnect() error, setsockopt(TCP_NODELAY) failed");
 #ifdef OS_LINUX
 		close(fd);
 #elif OS_WINDOWS
@@ -214,10 +225,14 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 
 	int nret = connect(fd, (struct sockaddr*)&addr, sizeof(addr));
 	if (nret == 0)
+	{
+		LOG(_ERROR_, "doNonblockConnect() done, connect() successed");
 		return fd;
+	}
 
 	if (nret < 0)
 	{
+		LOG(_ERROR_, "doNonblockConnect() error, connect() failed");
 #ifdef OS_LINUX
 		if (!(errno == EINPROGRESS || errno == EWOULDBLOCK))
 		{
@@ -269,6 +284,7 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 
 	if (nret < 0 || sock_err != 0)
 	{
+		LOG(_ERROR_, "doNonblockConnect() error, getsockopt(SO_ERROR) failed");
 #ifdef OS_LINUX
 		close(fd);
 #elif OS_WINDOWS

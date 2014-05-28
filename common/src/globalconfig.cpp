@@ -124,11 +124,6 @@ bool CGlobalConfig::initSysConfig(const std::string& path)
 	m_cfg.update_interval = v[UPDATE_INTERVAL].asInt();
 	m_cfg.keepalive_timer = v[KEEPALIVE_TIMER].asInt();
 	m_cfg.loglevel = v[LOG_LEVEL].asInt();
-	Json::Value::iterator iter = v[CONNECT_SERVER].begin();
-	for (; iter != v[CONNECT_SERVER].end(); ++iter)
-	{
-		LOG(_INFO_, "CGlobalConfig::initSysConfig(), %d", (*iter)[SERVER_PORT].asInt());
-	}
 
 	int sendbuffer = 8192;
 	int recvbuffer = 8192;
@@ -138,6 +133,31 @@ bool CGlobalConfig::initSysConfig(const std::string& path)
 
 	m_cfg.maxsendbuf = sendbuffer == 0 ? 8192 : sendbuffer;
 	m_cfg.maxrecvbuf = recvbuffer == 0 ? 8192 : recvbuffer;
+
+    list<PCONNECT_SERVER>::iterator iterserver = m_serverlist.begin();
+    for (; iterserver != m_serverlist.end(); ++iterserver)
+    {
+        if ((*iterserver))
+		{
+            delete (*iterserver);
+		}
+    }
+    m_serverlist.clear();
+
+	Json::Value::iterator iter = v[CONNECT_SERVER].begin();
+	for (; iter != v[CONNECT_SERVER].end(); ++iter)
+	{
+		PCONNECT_SERVER pserver = new __CONNECT_SERVER__;
+		pserver->send_buffer = sendbuffer;
+		pserver->recv_buffer = recvbuffer;
+		pserver->name = (*iter)[SERVER_NAME].asString();
+		pserver->host = (*iter)[SERVER_HOST].asString();
+		pserver->port = (*iter)[SERVER_PORT].asInt();
+		pserver->send_buffer = (*iter)[SERVER_SNDBUF].asInt();
+		pserver->recv_buffer = (*iter)[SERVER_RCVBUF].asInt();
+
+		m_serverlist.push_back(pserver);
+	}
 
 	return true;
 }
@@ -169,6 +189,14 @@ UINT CGlobalConfig::getLogLevel()
 
 PCONNECT_SERVER CGlobalConfig::getMainServer()
 {
+    list<PCONNECT_SERVER>::iterator iter = m_serverlist.begin();
+    for (; iter != m_serverlist.end(); ++iter)
+    {
+        if ((*iter)->name == "main")
+        {
+            return *iter;
+        }
+    }
 	return NULL;
 }
 
