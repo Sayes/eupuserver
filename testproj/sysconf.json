@@ -16,16 +16,16 @@
 
     "connect_server" : [
         {
-            "server_name" : "main_svr",
+            "server_name" : "main",
             "server_host" : "10.10.40.177",
             "server_port" : 3601,
             "send_buffer" : 8192,
             "recv_buffer" : 8192
         },
         {
-            "server_name" : "distribute_svr",
+            "server_name" : "distribute",
             "server_host" : "10.10.40.177",
-            "server_port" : 3601,
+            "server_port" : 3602,
             "send_buffer" : 8192,
             "recv_buffer" : 8192
         }
