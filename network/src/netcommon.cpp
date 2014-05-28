@@ -230,24 +230,28 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 		return fd;
 	}
 
+#ifdef OS_LINUX
 	if (nret < 0)
 	{
 		LOG(_ERROR_, "doNonblockConnect() error, connect() failed");
-#ifdef OS_LINUX
 		if (!(errno == EINPROGRESS || errno == EWOULDBLOCK))
 		{
 			close(fd);
 			return -1;
 		}
+	}
 #elif OS_WINDOWS
-		//TODO
-		//if (!(errno == EINPROGRESS || errno == EWOULDBLOCK))
+	if (nret == SOCKET_ERROR)
+	{
+		int err = WSAGetLastError();
+		LOG(_ERROR_, "doNonblockConnect() error, connect() failed, error=%d", err);
+		if (!(err == WSAEINPROGRESS || err == WSAEWOULDBLOCK))
 		{
 			closesocket(fd);
 			return -1;
 		}
-#endif
 	}
+#endif
 
 	fd_set wset;
 	struct timeval tv = {0};
