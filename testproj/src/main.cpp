@@ -121,9 +121,9 @@ void exitSystem()
         pglobalmgr->release();
     }
     sleep(1);
-    CEupuLogger4System::Release();
 
     LOG(_INFO_, "exitSystem() end");
+    CEupuLogger4System::Release();
 }
 
 void showusage()
