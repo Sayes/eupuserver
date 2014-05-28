@@ -339,7 +339,8 @@ void CEpollThread::doKeepaliveTimeout()
 				if (itersocket->second->key != NULL)
 				{
 					bclosed = true;
-					LOG(_ERROR_, "CEpollThread::doKeepaliveTimeout() error, close socket_set for timeout");
+					LOG(_ERROR_, "CEpollThread::doKeepaliveTimeout() error, close socket_set for timeout, fd=%d, time=%u, peerip=%s, port=%d",
+						itersocket->first, itersocket->second->key->connect_time, GETNULLSTR(itersocket->second->peer_ip), itersocket->second->peer_port);
 					closeClient(itersocket->first, itersocket->second->key->connect_time);
 				}
 			}
