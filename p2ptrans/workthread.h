@@ -9,6 +9,7 @@ public:
 	virtual ~CWorkThread();
 
 	int processMessage(NET_DATA* pdata);
+	int ProcessServerConnected(NET_DATA *pdata);
 };
 
 #endif//_WORKTHREAD_H_
