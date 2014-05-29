@@ -1,6 +1,8 @@
 #include "eupulogger4system.h"
 #include "workthread.h"
 #include "netcommon.h"
+#include "protocol.h"
+#include "sprotocol.h"
 
 CWorkThread::CWorkThread()
 : m_iUserCount(0)
@@ -29,38 +31,17 @@ int CWorkThread::processMessage(NET_DATA* pdata)
 		return -1;
 	}
 
-	if(header.bMainID != KEEP_ALIVE_PING)
+	if(header.uMainID != KEEP_ALIVE_PING)
 		header.Debug();
 
-	switch (header.bMainID)
+	switch (header.uMainID)
 	{
-	case RS_SERVER_CONNECTED:
-		{
-			LOG(_INFO_, "process RS_SERVER_CONNECTED message,peerip:%s,peerport:%d, type:%d",GETNULLSTR(pdata->peer_ip),pdata->peer_port,pdata->type);
-			if(pdata->type == USERCENTERSVR_TYPE)
-			{
-				return ProcessServerConnected(pdata);
-			}
-			else if (pdata->type == DISSVR_TYPE)
-			{
-				return ProcessDistributeConnect(pdata);
-			}
-			else if (pdata->type == MAINSVR_TYPE)
-			{
-				return ProcessMainConnected(pdata);
-			}
-			else if(pdata->type == CLIENT_TYPE)
-			{
-				LOG(_INFO_, "process CLIENT_TYPE message,peerip:%s, peerport:%d, type:%d",GETNULLSTR(pdata->peer_ip),pdata->peer_port,pdata->type);
-				m_iUserCount++;
-			}
-			return 1;
-		}
-	case RS_SERVER_DISCONNECTED:
-		{
-			LOG(_INFO_, "process RS_SERVER_DISCONNECTED message,peerip:%s,peerport:%d, type:%d",GETNULLSTR(pdata->peer_ip),pdata->peer_port,pdata->type);
-			return ProcessServDisConnect(pdata);
-		}
+    case RS_SERVER_CONNECTED:
+        {
+            LOG(_INFO_, "CWorkThread::processMessage() deal with RS_SERVER_CONNECT");
+            break;
+        }
+
 	default:
 		{
 		}

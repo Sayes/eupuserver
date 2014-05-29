@@ -13,7 +13,7 @@ public:
 	bool ProcessDistributeConnect(NET_DATA* pdata);
 	bool ProcessMainConnected(NET_DATA* pdata);
 private:
-	m_iUserCount;
+	int m_iUserCount;
 };
 
 #endif//_WORKTHREAD_H_
