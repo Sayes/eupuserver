@@ -188,7 +188,7 @@ void CEpollThread::doEpollEvent()
 			pkey = (SOCKET_KEY*)m_events[i].data.ptr;
 			if (!pkey)
 			{
-                LOG(_ERROR_, "CEpollThread::doEpollEvent() error, (SOCKET_KEY*)m_events[i].data.ptr == NULL, i=%d", i);
+				LOG(_ERROR_, "CEpollThread::doEpollEvent() error, (SOCKET_KEY*)m_events[i].data.ptr == NULL, i=%d", i);
 				continue;
 			}
 
@@ -218,14 +218,14 @@ void CEpollThread::doEpollEvent()
 					wev.data.ptr = pkey;
 					if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, pkey->fd, &wev) < 0)
 					{
-                        LOG(_ERROR_, "CEpollThread::doEpollEvent() error, epoll_ctl(m_epollfd, EPOLL_CTL_MOD, pkey->fd, &wev) failed, fd=%d", pkey->fd);
+						LOG(_ERROR_, "CEpollThread::doEpollEvent() error, epoll_ctl(m_epollfd, EPOLL_CTL_MOD, pkey->fd, &wev) failed, fd=%d", pkey->fd);
 						closeClient(pkey->fd, pkey->connect_time);
 					}
 				}
 			}
 			else
 			{
-                LOG(_ERROR_, "CEpollThread::doEpollEvent() error, epoll recv unknown error, fd=%d, conn_time=%u", pkey->fd, pkey->connect_time);
+				LOG(_ERROR_, "CEpollThread::doEpollEvent() error, epoll recv unknown error, fd=%d, conn_time=%u", pkey->fd, pkey->connect_time);
 				closeClient(pkey->fd, pkey->connect_time);
 			}
 		}//end for
@@ -235,61 +235,61 @@ void CEpollThread::doEpollEvent()
 		if (m_recvlist.size() > 0)
 		{
 			CSysQueue<NET_DATA>* precvlist = CGlobalMgr::getInstance()->getRecvQueue();
-            precvlist->Lock();
-            list<NET_DATA*>::iterator iter = m_recvlist.begin();
-            for (; iter != m_recvlist.end(); ++iter)
-            {
-                if ( (*iter) == NULL)
-                    continue;
-                if (!precvlist->inQueueWithoutLock(*iter, false))
-                {
-                    LOG(_ERROR_, "CEpollThread::doEpollEvent() error, inQueueWithoutLock() failed");
-                    delete (*iter);
-                }
-            }
-            precvlist->UnLock();
-            m_recvlist.clear();
+			precvlist->Lock();
+			list<NET_DATA*>::iterator iter = m_recvlist.begin();
+			for (; iter != m_recvlist.end(); ++iter)
+			{
+				if ( (*iter) == NULL)
+					continue;
+				if (!precvlist->inQueueWithoutLock(*iter, false))
+				{
+					LOG(_ERROR_, "CEpollThread::doEpollEvent() error, inQueueWithoutLock() failed");
+					delete (*iter);
+				}
+			}
+			precvlist->UnLock();
+			m_recvlist.clear();
 		}
 
-        doSystemEvent();
+		doSystemEvent();
 
-        struct epoll_event ev;
-        CGlobalMgr::getInstance()->switchSendMap();
-        map<int, list<NET_DATA*>*>* psendmap = CGlobalMgr::getInstance()->getBakSendMap();
+		struct epoll_event ev;
+		CGlobalMgr::getInstance()->switchSendMap();
+		map<int, list<NET_DATA*>*>* psendmap = CGlobalMgr::getInstance()->getBakSendMap();
 
-        for (map<int, list<NET_DATA*>*>::iterator itersendmap = psendmap->begin(); itersendmap != psendmap->end(); ++itersendmap)
-        {
-            map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(itersendmap->first);
-            if (itersockmap == m_socketmap.end() || itersockmap->second == NULL || itersockmap->second->key == NULL)
-            {
-                LOG(_ERROR_, "CEpollThread::doEpollEvent() error, m_socketmap.find(fd) failed");
-                m_delsendfdlist.push_back(itersendmap->first);
-                continue;
-            }
+		for (map<int, list<NET_DATA*>*>::iterator itersendmap = psendmap->begin(); itersendmap != psendmap->end(); ++itersendmap)
+		{
+			map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(itersendmap->first);
+			if (itersockmap == m_socketmap.end() || itersockmap->second == NULL || itersockmap->second->key == NULL)
+			{
+				LOG(_ERROR_, "CEpollThread::doEpollEvent() error, m_socketmap.find(fd) failed");
+				m_delsendfdlist.push_back(itersendmap->first);
+				continue;
+			}
 
-            ev.events = EPOLLOUT | EPOLLET;
-            ev.data.ptr = itersockmap->second->key;
-            if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, itersendmap->first, &ev) < 0)
-            {
-                LOG(_ERROR_, "CEpollThread::doEpollEvent() error, epoll_ctl() failed, fd=%d, error=%s", itersendmap->first, strerror(errno));
-                m_delsendfdlist.push_back(itersendmap->first);
-                closeClient(itersockmap->second->key->fd, itersockmap->second->key->connect_time);
-                continue;
-            }
-        }
+			ev.events = EPOLLOUT | EPOLLET;
+			ev.data.ptr = itersockmap->second->key;
+			if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, itersendmap->first, &ev) < 0)
+			{
+				LOG(_ERROR_, "CEpollThread::doEpollEvent() error, epoll_ctl() failed, fd=%d, error=%s", itersendmap->first, strerror(errno));
+				m_delsendfdlist.push_back(itersendmap->first);
+				closeClient(itersockmap->second->key->fd, itersockmap->second->key->connect_time);
+				continue;
+			}
+		}
 
-        for (list<int>::iterator iterdelsendfdlist = m_delsendfdlist.begin(); iterdelsendfdlist != m_delsendfdlist.end(); ++iterdelsendfdlist)
-        {
-            deleteSendMsgFromSendMap(*iterdelsendfdlist);
-        }
-        m_delsendfdlist.clear();
+		for (list<int>::iterator iterdelsendfdlist = m_delsendfdlist.begin(); iterdelsendfdlist != m_delsendfdlist.end(); ++iterdelsendfdlist)
+		{
+			deleteSendMsgFromSendMap(*iterdelsendfdlist);
+		}
+		m_delsendfdlist.clear();
 
-        doKeepaliveTimeout();
+		doKeepaliveTimeout();
 
-        doSendKeepaliveToServer();
+		doSendKeepaliveToServer();
 	}//end while
 
-    return;
+	return;
 }
 
 bool CEpollThread::stop()
