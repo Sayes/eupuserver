@@ -95,7 +95,7 @@ extern "C" {
 
 				if (newvalue > 255)
 					return (0);
-				*tp = new;
+				*tp = newvalue;
 				if (! saw_digit) {
 					if (++octets > 4)
 						return (0);
