@@ -44,7 +44,7 @@ bool initSystem()
 	g_wsathread = new CWSAThread;
 	if (g_wsathread == NULL)
 	{
-		LOG(_ERROR_, "initSystem() error, new CWSAThread failed");
+		LOG(_ERROR_, "initSystem() error, _new CWSAThread failed");
 		return false;
 	}
 
@@ -59,7 +59,7 @@ bool initSystem()
 	g_workthread = new CWorkThread;
 	if (g_workthread == NULL)
 	{
-		LOG(_ERROR_, "initSystem() error, new CWorkThread failed");
+		LOG(_ERROR_, "initSystem() error, _new CWorkThread failed");
 		delete g_wsathread;
 		g_wsathread = NULL;
 		return false;

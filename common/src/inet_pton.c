@@ -91,9 +91,9 @@ extern "C" {
 			const char *pch;
 
 			if ((pch = strchr(digits, ch)) != NULL) {
-				unsigned int new = *tp * 10 + (pch - digits);
+				unsigned int newvalue = *tp * 10 + (pch - digits);
 
-				if (new > 255)
+				if (newvalue > 255)
 					return (0);
 				*tp = new;
 				if (! saw_digit) {

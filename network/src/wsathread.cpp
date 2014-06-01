@@ -131,7 +131,7 @@ bool CWSAThread::startup()
 	m_recvbuffer = new char[m_recvbuflen];
 	if (!m_recvbuffer)
 	{
-		LOG(_ERROR_, "CWSAThread::startup() error, new char[m_recvbuflen] failed, m_recvbuflen=%d", m_recvbuflen);
+		LOG(_ERROR_, "CWSAThread::startup() error, _new char[m_recvbuflen] failed, m_recvbuflen=%d", m_recvbuflen);
 		exit(-1);
 	}
 
@@ -475,7 +475,7 @@ bool CWSAThread::doListen()
 		m_listenkey = new SOCKET_KEY;
 		if (!m_listenkey)
 		{
-			LOG(_ERROR_, "CWSAThread::doListen() error, new SOCKET_KEY failed, listen fd=%d", m_listenfd);
+			LOG(_ERROR_, "CWSAThread::doListen() error, _new SOCKET_KEY failed, listen fd=%d", m_listenfd);
 			closesocket(m_listenfd);
 			m_listenfd = INVALID_SOCKET;
 			exit(-1);
@@ -487,7 +487,7 @@ bool CWSAThread::doListen()
 		WSAEVENT event = ::WSACreateEvent();
 		if (event == WSA_INVALID_EVENT)
 		{
-			LOG(_ERROR_, "CWSAThread::doListen() error, new SOCKET_KEY failed, listen fd=%d", m_listenfd);
+			LOG(_ERROR_, "CWSAThread::doListen() error, _new SOCKET_KEY failed, listen fd=%d", m_listenfd);
 			break;
 		}
 
@@ -828,7 +828,7 @@ bool CWSAThread::parsePacketToRecvQueue(SOCKET_SET *psockset, char *buf, int buf
 		NET_DATA* pdata = new NET_DATA;
 		if (pdata == NULL)
 		{
-			LOG(_ERROR_, "CWSAThread::parsePacketToRecvQueue() error, new NET_DATA failed, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
+			LOG(_ERROR_, "CWSAThread::parsePacketToRecvQueue() error, _new NET_DATA failed, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
 			exit(-1);
 		}
 
@@ -921,7 +921,7 @@ void CWSAThread::createClientCloseMsg(SOCKET_SET *psockset)
 	NET_DATA* pdata = new NET_DATA;
 	if (pdata == NULL)
 	{
-		LOG(_ERROR_, "CWSAThread::createClientCloseMsg() error, new NET_DATA failed, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
+		LOG(_ERROR_, "CWSAThread::createClientCloseMsg() error, _new NET_DATA failed, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
 		exit(-1);
 	}
 
@@ -1117,7 +1117,7 @@ bool CWSAThread::createConnectServerMsg(SOCKET_SET *psockset)
 	NET_DATA* pdata = new NET_DATA;
 	if (pdata == NULL)
 	{
-		LOG(_ERROR_, "CWSAThread::createConnectServerMsg() error, new NET_DATA failed, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
+		LOG(_ERROR_, "CWSAThread::createConnectServerMsg() error, _new NET_DATA failed, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
 		exit(-1);
 	}
 

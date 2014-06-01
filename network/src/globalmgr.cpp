@@ -35,7 +35,7 @@ bool CGlobalMgr::createMsgToSendList(int fd, time_t conntime, const string& ip, 
 	NET_DATA* pdata = new NET_DATA;
 	if (pdata == NULL)
 	{
-		LOG(_ERROR_, "CGlobalMgr::createMsgToSendList() error, new NET_DATA failed");
+		LOG(_ERROR_, "CGlobalMgr::createMsgToSendList() error, _new NET_DATA failed");
 		exit(-1);
 	}
 
@@ -489,7 +489,7 @@ void CGlobalMgr::createServerConnect(int ntype)
 	NET_EVENT* pevent = new NET_EVENT;
 	if (pevent == NULL)
 	{
-		LOG(_ERROR_, "CGlobalMgr::createServerConnect() error, new NET_EVENT failed");
+		LOG(_ERROR_, "CGlobalMgr::createServerConnect() error, _new NET_EVENT failed");
 #ifdef OS_LINUX
 		close(fd);
 #elif OS_WINDOWS
@@ -529,7 +529,7 @@ bool CGlobalMgr::createCloseConnectEvent(int fd, time_t conntime)
 
 	if (pkey == NULL || pevent == NULL)
 	{
-		LOG(_ERROR_, "CGlobalMgr::createCloseConnectEvent() error, new SOCKET_KEY || new NET_EVENT failed");
+		LOG(_ERROR_, "CGlobalMgr::createCloseConnectEvent() error, _new SOCKET_KEY || new NET_EVENT failed");
 		if (pkey)
 			delete pkey;
 		pkey = NULL;

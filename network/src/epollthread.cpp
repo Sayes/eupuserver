@@ -118,14 +118,14 @@ bool CEpollThread::startup()
 	m_recvbuffer = new char[m_recvbuflen];
 	if (!m_recvbuffer)
 	{
-		LOG(_ERROR_, "CEpollThread::startup() error, new m_recvbuffer failed");
+		LOG(_ERROR_, "CEpollThread::startup() error, _new m_recvbuffer failed");
 		exit(-1);
 	}
 
 	m_events = new epoll_event[m_maxepollsize];
 	if (!m_events)
 	{
-		LOG(_ERROR_, "CEpollThread::startup() error, new m_events failed");
+		LOG(_ERROR_, "CEpollThread::startup() error, _new m_events failed");
 		exit(-1);
 	}
 
@@ -425,7 +425,7 @@ bool CEpollThread::doListen()
 		m_listenkey = new SOCKET_KEY;
 		if (!m_listenkey)
 		{
-			LOG(_ERROR_, "CEpollThread::doListen() new SOCKET_KEY error");
+			LOG(_ERROR_, "CEpollThread::doListen() _new SOCKET_KEY error");
 			exit(-1);
 		}
 

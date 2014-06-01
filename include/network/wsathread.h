@@ -68,7 +68,7 @@ private:
 	list<NET_DATA*> m_recvlist;
 	time_t m_index;
 
-	//new data for windows
+	//data for windows
 	WSAEVENT m_eventArray[WSA_MAXIMUM_WAIT_EVENTS];
 	SOCKET m_sockArray[WSA_MAXIMUM_WAIT_EVENTS];
 	SOCKET_KEY* m_keymap[WSA_MAXIMUM_WAIT_EVENTS];
