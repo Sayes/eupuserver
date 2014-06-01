@@ -71,7 +71,7 @@ void CEupuThread::pause()
 #ifdef OS_LINUX
 	sigwait(&m_waitSig, &sig);
 #elif OS_WINDOWS
-	//TODO
+	//TODO check here
 	sem_wait(&m_waitSig);
 #endif
 }
@@ -83,7 +83,7 @@ void CEupuThread::continues()
 #ifdef OS_LINUX
 	pthread_kill(m_pid, SIGUSR1);
 #elif OS_WINDOWS
-	//TODO
+	//TODO check here
 	sem_post(&m_waitSig);
 #endif
 }

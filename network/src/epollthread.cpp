@@ -28,15 +28,16 @@ CEpollThread::CEpollThread()
 
 CEpollThread::~CEpollThread()
 {
-	if (m_epollfd > 0)
+	if (m_listenfd >= 0)
+	{
+		close(m_listenfd);
+	}
+
+	if (m_epollfd >= 0)
 	{
 		close(m_epollfd);
 	}
 
-	if (m_listenfd > 0)
-	{
-		close(m_listenfd);
-	}
 
 	if (m_listenkey != NULL)
 	{
@@ -74,6 +75,7 @@ CEpollThread::~CEpollThread()
 		delete []m_recvbuffer;
 		m_recvbuffer = NULL;
 	}
+	m_recvbuflen = 0;
 }
 
 // the thread work function, it will wait for the continue signal
@@ -133,30 +135,18 @@ bool CEpollThread::startup()
 	if (m_epollfd < 0)
 	{
 		LOG(_ERROR_, "CEpollThread::startup() error, epoll_create() failed, request epoll size %d", m_maxepollsize);
-		delete []m_recvbuffer;
-		m_recvbuffer = NULL;
-		delete []m_events;
-		m_events = NULL;
 		return false;
 	}
 
 	if (!doListen())
 	{
 		LOG(_ERROR_, "CEpollThread::startup() error, doListen() failed, m_epollfd=%d", m_epollfd);
-		delete []m_recvbuffer;
-		m_recvbuffer = NULL;
-		delete []m_events;
-		m_events = NULL;
 		return false;
 	}
 
 	if (!start())
 	{
 		LOG(_ERROR_, "CEpollThread::startup() error, start() failed, m_epollfd=%d", m_epollfd);
-		delete []m_recvbuffer;
-		m_recvbuffer = NULL;
-		delete []m_events;
-		m_events = NULL;
 		return false;
 	}
 
@@ -182,7 +172,7 @@ void CEpollThread::doEpollEvent()
 	while (m_bOperate)
 	{
 		///////begin handle epoll events///////
-		nevent = epoll_wait(m_epollfd, m_events, m_maxepollsize, 1);
+		nevent = epoll_wait(m_epollfd, m_events, m_maxepollsize, 1); //500
 		for (int i = 0; i < nevent; ++i)
 		{
 			pkey = (SOCKET_KEY*)m_events[i].data.ptr;
@@ -205,7 +195,7 @@ void CEpollThread::doEpollEvent()
 
 				doRecvMessage(pkey);
 			}
-			else if (m_events[i].events && EPOLLOUT)
+			else if (m_events[i].events & EPOLLOUT)
 			{
 				if (doSendMessage(pkey) < 0)
 				{
@@ -232,6 +222,7 @@ void CEpollThread::doEpollEvent()
 
 		//// end handle epoll events /////
 
+        /////////////////begin copy all recv message to recv list/////////////////
 		if (m_recvlist.size() > 0)
 		{
 			CSysQueue<NET_DATA>* precvlist = CGlobalMgr::getInstance()->getRecvQueue();
@@ -250,9 +241,13 @@ void CEpollThread::doEpollEvent()
 			precvlist->UnLock();
 			m_recvlist.clear();
 		}
+        /////////////////end copy all recv message to recv list/////////////////
 
+        //////////////////begin handle system events//////////////////////////////////
 		doSystemEvent();
+        //////////////////end handle system events//////////////////////////////////
 
+        //////////////////begin set write epoll event by sendset///////////////////////////////
 		struct epoll_event ev;
 		CGlobalMgr::getInstance()->switchSendMap();
 		map<int, list<NET_DATA*>*>* psendmap = CGlobalMgr::getInstance()->getBakSendMap();
@@ -274,6 +269,7 @@ void CEpollThread::doEpollEvent()
 				LOG(_ERROR_, "CEpollThread::doEpollEvent() error, epoll_ctl() failed, fd=%d, error=%s", itersendmap->first, strerror(errno));
 				m_delsendfdlist.push_back(itersendmap->first);
 				closeClient(itersockmap->second->key->fd, itersockmap->second->key->connect_time);
+				//TODO check here
 				continue;
 			}
 		}
@@ -283,10 +279,14 @@ void CEpollThread::doEpollEvent()
 			deleteSendMsgFromSendMap(*iterdelsendfdlist);
 		}
 		m_delsendfdlist.clear();
+        //////////////////end set write epoll event by sendset///////////////////////////////
 
+        /////////////////////////begin handle keepalive timeout////////////////////////////////
 		doKeepaliveTimeout();
-
+        /////////////////////////end handle keepalive timeout////////////////////////////////
+        /////////////////////////begin send keepalive message to server///////////////////////////
 		doSendKeepaliveToServer();
+        /////////////////////////end send keepalive message to server////////////////////////////
 	}//end while
 
 	return;
@@ -311,19 +311,20 @@ void CEpollThread::doKeepaliveTimeout()
 	}
 
 	list<int> timelist;
-	map<int, SOCKET_SET*>::iterator iter = m_socketmap.begin();
-	for (; iter != m_socketmap.end(); ++iter)
+	map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.begin();
+	for (; itersockmap != m_socketmap.end(); ++itersockmap)
 	{
-		if (iter->second != NULL)
+		if (itersockmap->second != NULL)
 		{
-			if (iter->second->refresh_time + m_keepalivetimeout > curtime)
+			//TODO check here, > or < ?
+			if (itersockmap->second->refresh_time + m_keepalivetimeout < curtime)
 			{
-				timelist.push_back(iter->first);
+				timelist.push_back(itersockmap->first);
 			}
 		}
 		else
 		{
-			timelist.push_back(iter->first);
+			timelist.push_back(itersockmap->first);
 		}
 	}//end for
 
@@ -331,26 +332,26 @@ void CEpollThread::doKeepaliveTimeout()
 	for (list<int>::iterator itertimeout = timelist.begin(); itertimeout != timelist.end(); ++itertimeout)
 	{
 		bclosed = false;
-		map<int, SOCKET_SET*>::iterator itersocket = m_socketmap.find(*itertimeout);
-		if (itersocket != m_socketmap.end())
+		itersockmap = m_socketmap.find(*itertimeout);
+		if (itersockmap != m_socketmap.end())
 		{
-			if (itersocket->second != NULL)
+			if (itersockmap->second != NULL)
 			{
-				if (itersocket->second->key != NULL)
+				if (itersockmap->second->key != NULL)
 				{
 					bclosed = true;
 					LOG(_ERROR_, "CEpollThread::doKeepaliveTimeout() error, close socket_set for timeout, fd=%d, time=%u, peerip=%s, port=%d",
-						itersocket->first, itersocket->second->key->connect_time, GETNULLSTR(itersocket->second->peer_ip), itersocket->second->peer_port);
-					closeClient(itersocket->first, itersocket->second->key->connect_time);
+						itersockmap->first, itersockmap->second->key->connect_time, GETNULLSTR(itersockmap->second->peer_ip), itersockmap->second->peer_port);
+					closeClient(itersockmap->first, itersockmap->second->key->connect_time);
 				}
 			}
 
 			if (!bclosed)
 			{
 				LOG(_ERROR_, "CEpollThread::doKeepaliveTimeout() error, close socket_set->key->fd close for timeout");
-				close(itersocket->first);
-				delete itersocket->second;
-				m_socketmap.erase(itersocket);
+				close(itersockmap->first);
+				delete itersockmap->second;
+				m_socketmap.erase(itersockmap);
 			}
 		}
 	}//end for
@@ -516,8 +517,8 @@ bool CEpollThread::doAccept(int fd)
 		{
 			LOG(_ERROR_, "CEpollThread::doAccept(fd) createConnectServerMsg(psockset) error, connfd=%d, conntime=%u, peerip=%s, port=%d, type=%d",
 				psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port, psockset->type);
-			delete psockset;
 			close(connfd);
+			delete psockset;
 			continue;
 		}
 
@@ -575,14 +576,16 @@ void CEpollThread::doRecvMessage(SOCKET_KEY* pkey)
 	{
 		LOG(_ERROR_, "CEpollThread::doRecvMessage() fd not found in m_socketmap, fd=%d, time=%u", pkey->fd, pkey->connect_time);
 		closeClient(pkey->fd, pkey->connect_time);
-		return;
+		//TODO check here, will return or not
+		//return;
 	}
 
 	if (iter->second->key != pkey)
 	{
 		LOG(_ERROR_, "CEpollThread::doRecvMessage() the found socket doesn't match, fd=%d, cur=%p, old=%p", pkey->fd, pkey, iter->second->key);
 		closeClient(pkey->fd, pkey->connect_time);
-		return;
+		//TODO check here, will return or not
+		//return;
 	}
 
 	SOCKET_SET* psockset = iter->second;
@@ -749,10 +752,11 @@ bool CEpollThread::parsePacketToRecvQueue(SOCKET_SET* psockset, char* buf, int b
 	if (buf == NULL || buflen <= 0)
 	{
 		LOG(_ERROR_, "CEpollThread::parsePackageToRecvQueue() error, buflen < 0");
-		return false;
+		//TODO check here, return true or false ?
+		return true;
 	}
 
-	LOG(_DEBUG_, "recv message:", buf, buflen);
+	LOGHEX(_DEBUG_, "recv message:", buf, buflen);
 
 	int curpos = 0;
 
@@ -760,7 +764,7 @@ bool CEpollThread::parsePacketToRecvQueue(SOCKET_SET* psockset, char* buf, int b
 	{
 		if (buflen - curpos < NET_HEAD_SIZE)
 		{
-			memcpy(psockset->part_buf, buf, buflen - curpos);
+			memcpy(psockset->part_buf, buf + curpos, buflen - curpos);
 			psockset->part_len = buflen - curpos;
 			return true;
 		}
@@ -777,7 +781,8 @@ bool CEpollThread::parsePacketToRecvQueue(SOCKET_SET* psockset, char* buf, int b
 
 		if (nlen > buflen - curpos)
 		{
-			memcpy(psockset->part_buf, buf, buflen - curpos);
+			//TODO check here, buf or buf + curpos ?
+			memcpy(psockset->part_buf, buf + curpos, buflen - curpos);
 			psockset->part_len = buflen - curpos;
 			return true;
 		}
@@ -787,7 +792,8 @@ bool CEpollThread::parsePacketToRecvQueue(SOCKET_SET* psockset, char* buf, int b
 		{
 			LOG(_ERROR_, "CEpollThread::parsePacketToRecvQueue() error, create NET_DATA failed, fd=%d, peerip=%s, port=%d",
 				psockset->key->fd, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
-			LOGHEX(_DEBUG_, "recv message:", buf, buflen);
+			//TODO check here, buf or buf + curpos
+			LOGHEX(_DEBUG_, "recv message:", buf + curpos, buflen);
 			exit(-1);
 		}
 
@@ -963,7 +969,11 @@ void CEpollThread::deleteSendMsgFromSendMap(int fd)
 void CEpollThread::doSystemEvent()
 {
 	CSysQueue<NET_EVENT>* pevent = CGlobalMgr::getInstance()->getEventQueue();
-	if (pevent == NULL || pevent->isEmptyWithoutLock())
+	if (pevent == NULL)
+	{
+		return;
+	}
+	if (pevent->isEmptyWithoutLock())
 	{
 		return;
 	}
@@ -1030,7 +1040,10 @@ void CEpollThread::doSystemEvent()
 					delete (char*)pdata->data;
 				break;
 			}
-		}
+		} //end switch
+		//TODO check here, delete pdata or not ?
+		delete pdata;
+		pdata = NULL;
 	}//end while
 	pevent->UnLock();
 }
@@ -1071,6 +1084,7 @@ bool CEpollThread::createConnectServerMsg(SOCKET_SET* psockset)
 	{
 		LOG(_ERROR_, "CEpollThread::createConnectServerMsg() error, NET_DATA init() failed, fd=%d, conn_time=%u, peer_ip=%s, port=%d",
 			psockset->key->fd, psockset->key->connect_time, psockset->peer_ip, psockset->peer_port);
+		//TODO check here, delete pdata or not ?
 		delete pdata;
 		pdata = NULL;
 		return false;

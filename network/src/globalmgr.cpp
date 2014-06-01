@@ -117,6 +117,7 @@ bool CGlobalMgr::addMsgToSendList(NET_DATA* pmsg)
 		if (!plst)
 		{
 			LOG(_ERROR_, "CGlobalMgr::addMsgToSendList() error, net list<NET_DATA*> failed");
+			m_sendmaplock.UnLock();
 			exit(-1);
 		}
 		plst->push_back(pmsg);
@@ -128,10 +129,22 @@ bool CGlobalMgr::addMsgToSendList(NET_DATA* pmsg)
 		if (!plst)
 		{
 			LOG(_ERROR_, "CGlobalMgr::addMsgToSendList() error, found NET_DATA list is NULL, fd=%d", fd);
+            m_pcursendmap->erase(iter); //never found
+			m_sendmaplock.UnLock();
 			return false;
 		}
-		plst->push_back(pmsg);
-		m_pcursendmap->insert(map<int, list<NET_DATA*>*>::value_type(fd, plst));
+		if (plst->size() < m_maxsendlist)
+		{
+			plst->push_back(pmsg);
+		}
+		else
+		{
+			LOG(_ERROR_, "CGlobalMgr::addMsgToSendList() error, list > m_maxsendlist");
+			m_sendmaplock.UnLock();
+			return false;
+		}
+		//TODO check here, we needn't insert send map here ?
+		//m_pcursendmap->insert(map<int, list<NET_DATA*>*>::value_type(fd, plst));
 	}
 	m_sendmaplock.UnLock();
 
@@ -210,6 +223,7 @@ CSysQueue<NET_EVENT>* CGlobalMgr::getEventQueue()
 
 bool CGlobalMgr::sendMsgToServer(int ntype, USHORT mainid, USHORT assistantid, BYTE code, BYTE reserve, CEupuStream* stream, UINT nlen, bool blocked)
 {
+	//TODO check here, will judge block here ?
 	if (blocked)
 		m_sendmaplock.Lock();
 
@@ -527,7 +541,7 @@ bool CGlobalMgr::createCloseConnectEvent(int fd, time_t conntime)
 	SOCKET_KEY* pkey = new SOCKET_KEY;
 	NET_EVENT* pevent = new NET_EVENT;
 
-	if (pkey == NULL || pevent == NULL)
+	if (pkey != NULL || pevent != NULL)
 	{
 		LOG(_ERROR_, "CGlobalMgr::createCloseConnectEvent() error, _new SOCKET_KEY || _new NET_EVENT failed");
 		if (pkey)
@@ -536,7 +550,8 @@ bool CGlobalMgr::createCloseConnectEvent(int fd, time_t conntime)
 		if (pevent)
 			delete pevent;
 		pevent = NULL;
-		return false;
+		LOG(_ERROR_, "CGlobalMgr::createCloseEvent() error, create SOCKET_KEY or NET_EVENT failed");
+		exit(-1);
 	}
 
 	pkey->fd = fd;

@@ -242,7 +242,7 @@ void CWSAThread::doWSAEvent()
 					}
 					else
 					{
-						//TODO
+						//TODO reset socket event here ?
 					}
 				}
 				else
@@ -329,7 +329,8 @@ void CWSAThread::doKeepaliveTimeout()
 	{
 		if (iter->second != NULL)
 		{
-			if (iter->second->refresh_time + m_keepalivetimeout > curtime)
+			//TODO check here, > or < ?
+			if (iter->second->refresh_time + m_keepalivetimeout < curtime)
 			{
 				timelist.push_back(iter->first);
 			}
@@ -450,14 +451,13 @@ bool CWSAThread::doListen()
 			break;
 		}
 
-		//TODO check here
+		//TODO check here, if we need set FD_CONNECT, FD_CLOSE event
 		if (::WSAEventSelect(m_listenfd, event, FD_ACCEPT | FD_CONNECT | FD_CLOSE) == SOCKET_ERROR)
 		{
 			LOG(_ERROR_, "CWSAThread::doListen() error, WSAEventSelect() failed, listen fd=%d, error=%ld", m_listenfd, WSAGetLastError());
 			break;
 		}
 
-		//m_nEventTotal = WSA_WAIT_EVENT_0
 		m_eventArray[m_nEventTotal] = event;
 		m_sockArray[m_nEventTotal] = m_listenfd;
 		m_keymap[m_nEventTotal] = m_listenkey;
@@ -607,13 +607,17 @@ void CWSAThread::doRecvMessage(SOCKET_KEY* pkey)
 	if (itersockmap == m_socketmap.end() || itersockmap->second == NULL || itersockmap->second->key == NULL)
 	{
 		LOG(_ERROR_, "CWSAThread::doRecvMessage() error, can't find socket in map, fd=%d", pkey->fd);
-		return;
+		closeClient(pkey->fd, pkey->connect_time);
+		//TODO check here, will return or not
+		//return;
 	}
 
 	if (itersockmap->second->key != pkey)
 	{
 		LOG(_ERROR_, "CWSAThread::doRecvMessage() error, the found socket dones't match pkey, fd=%d", pkey->fd);
-		return;
+		closeClient(pkey->fd, pkey->connect_time);
+		//TODO check here, will return or not
+		//return;
 	}
 
 	SOCKET_SET* psockset = itersockmap->second;
@@ -766,7 +770,8 @@ bool CWSAThread::parsePacketToRecvQueue(SOCKET_SET *psockset, char *buf, int buf
 	if (buf == NULL || buflen <= 0)
 	{
 		LOG(_ERROR_, "CWSAThread::parsePacketToRecvQueue() error, buf == NULL || buflen <= 0");
-		return false;
+		//TODO check here, return true or false ?
+		return true;
 	}
 
 	int curpos = 0;
@@ -791,7 +796,8 @@ bool CWSAThread::parsePacketToRecvQueue(SOCKET_SET *psockset, char *buf, int buf
 
 		if (nlen > buflen - curpos)
 		{
-			memcpy(psockset->part_buf, buf, buflen - curpos);
+			//TODO check here, buf or buf + curpos ?
+			memcpy(psockset->part_buf, buf + curpos, buflen - curpos);
 			psockset->part_len = buflen - curpos;
 			return true;
 		}
@@ -800,6 +806,8 @@ bool CWSAThread::parsePacketToRecvQueue(SOCKET_SET *psockset, char *buf, int buf
 		if (pdata == NULL)
 		{
 			LOG(_ERROR_, "CWSAThread::parsePacketToRecvQueue() error, _new NET_DATA failed, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
+			//TODO check here, buf or buf + curpos
+			LOGHEX(_DEBUG_, "recv message:", buf + curpos, buflen);
 			exit(-1);
 		}
 
@@ -835,7 +843,7 @@ void CWSAThread::closeClient(int fd, time_t conn_time)
 			break;
 	}
 
-	//TODO, check here
+	//TODO, check here, we needn't do m_nEventTotal--
 	if (WSAEventSelect(fd, m_eventArray[i], 0) == SOCKET_ERROR)
 	{
 		LOG(_ERROR_, "CWSAThread::closeClient() error, WSAEventSelect(0) failed, fd=%d", fd);
@@ -1068,13 +1076,16 @@ void CWSAThread::doSystemEvent()
 				break;
 			}
 		}
+		//TODO check here, delete pdata or not ?
+		delete pdata;
+		pdata = NULL;
 	}//end while
 	pevent->UnLock();
 }
 
 bool CWSAThread::createConnectServerMsg(SOCKET_SET *psockset)
 {
-	if (psockset == NULL)
+	if (psockset == NULL || psockset->key == NULL)
 	{
 		LOG(_ERROR_, "CWSAThread::createConnectServerMsg() error, psockset == NULL");
 		return false;
@@ -1097,6 +1108,16 @@ bool CWSAThread::createConnectServerMsg(SOCKET_SET *psockset)
 	{
 		LOG(_ERROR_, "CWSAThread::createConnectServerMsg() error, _new NET_DATA failed, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
 		exit(-1);
+	}
+
+	if (!pdata->init(psockset->key->fd, psockset->key->connect_time, psockset->peer_ip, psockset->peer_port, psockset->type, buflen))
+	{
+		LOG(_ERROR_, "CEpollThread::createConnectServerMsg() error, NET_DATA init() failed, fd=%d, conn_time=%u, peer_ip=%s, port=%d",
+			psockset->key->fd, psockset->key->connect_time, psockset->peer_ip, psockset->peer_port);
+		//TODO check here, delete pdata or not ?
+		delete pdata;
+		pdata = NULL;
+		return false;
 	}
 
 	memcpy(pdata->pdata, buf, buflen);
