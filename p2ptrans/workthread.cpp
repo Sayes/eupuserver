@@ -1,5 +1,6 @@
 #include "eupulogger4system.h"
 #include "netcommon.h"
+#include "globalmgr.h"
 #include "protocol.h"
 #include "sprotocol.h"
 #include "workthread.h"
@@ -32,8 +33,13 @@ int CWorkThread::processMessage(NET_DATA* pdata)
     if(header.uMainID != KEEP_ALIVE_PING)
         header.Debug();
 
+	int nret = -1;
     switch (header.uMainID)
     {
+	case KEEP_ALIVE_PING:
+		{
+			break;
+		}
 	default:
 		{
 		}
