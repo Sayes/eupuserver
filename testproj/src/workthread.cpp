@@ -54,7 +54,15 @@ int CWorkThread::processMessage(NET_DATA* pdata)
             }
             break;
         }
-
+    case KEEP_ALIVE_PING:
+        {
+            if (pdata->type == CLIENT_TYPE)
+            {
+                LOG(_INFO_, "CWorkThread::processMessage() deal with KEEP_ALIVE_PING");
+                nret = ProcessKeepalive(pdata);
+            }
+            break;
+        }
 	default:
 		{
             LOG(_ERROR_, "CWorkThread::processMessage() error, invalid message");
