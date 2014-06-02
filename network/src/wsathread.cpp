@@ -229,7 +229,14 @@ void CWSAThread::doWSAEvent()
 							LOG(_INFO_, "CWSAThread::doWSAEvent() error, m_nEventTotal > WSA_MAXIMUM_WAIT_EVENTS");
 							continue;
 						}
-
+						if (m_listenfd == m_sockArray[i] && m_listenfd == pkey->fd)
+						{
+							if (!doAccept(m_listenfd))
+							{
+								LOG(_ERROR_, "CWSAThread::doWSAEvent() error, m_listenfd=%d", m_listenfd);
+							}
+							continue;
+						}
 						doRecvMessage(pkey);
 					}
 				}
@@ -452,7 +459,7 @@ bool CWSAThread::doListen()
 		}
 
 		//TODO check here, if we need set FD_CONNECT, FD_CLOSE event
-		if (::WSAEventSelect(m_listenfd, event, FD_ACCEPT | FD_CONNECT | FD_CLOSE) == SOCKET_ERROR)
+		if (::WSAEventSelect(m_listenfd, event, FD_ACCEPT | FD_READ | FD_CONNECT | FD_CLOSE) == SOCKET_ERROR)
 		{
 			LOG(_ERROR_, "CWSAThread::doListen() error, WSAEventSelect() failed, listen fd=%d, error=%ld", m_listenfd, WSAGetLastError());
 			break;
@@ -493,6 +500,7 @@ bool CWSAThread::doAccept(int fd)
 
 		string peerip = fgNtoA(ntohl(addr.sin_addr.S_un.S_addr));
 		unsigned short port = ntohs(addr.sin_port);
+		LOG(_INFO_, "CWSAThread::doAccept(), peerip=%s, port=%d", GETNULLSTR(peerip), port);
 
 		if (!setNonBlock(connfd))
 		{

@@ -474,6 +474,7 @@ bool CEpollThread::doAccept(int fd)
 
 		string peerip = fgNtoA(ntohl(addr.sin_addr.s_addr));
 		unsigned short port = ntohs(addr.sin_port);
+		LOG(_INFO_, "CEpollThread::doAccept(), peerip=%s, port=%d", GETNULLSTR(peerip), port);
 
 		if (!setNonBlock(connfd))
 		{
