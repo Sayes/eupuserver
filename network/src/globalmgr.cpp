@@ -541,7 +541,7 @@ bool CGlobalMgr::createCloseConnectEvent(int fd, time_t conntime)
 	SOCKET_KEY* pkey = new SOCKET_KEY;
 	NET_EVENT* pevent = new NET_EVENT;
 
-	if (pkey != NULL || pevent != NULL)
+	if (pkey == NULL || pevent == NULL)
 	{
 		LOG(_ERROR_, "CGlobalMgr::createCloseConnectEvent() error, _new SOCKET_KEY || _new NET_EVENT failed");
 		if (pkey)
@@ -550,7 +550,6 @@ bool CGlobalMgr::createCloseConnectEvent(int fd, time_t conntime)
 		if (pevent)
 			delete pevent;
 		pevent = NULL;
-		LOG(_ERROR_, "CGlobalMgr::createCloseEvent() error, create SOCKET_KEY or NET_EVENT failed");
 		exit(-1);
 	}
 
