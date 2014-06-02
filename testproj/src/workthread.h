@@ -9,6 +9,7 @@ public:
     virtual ~CWorkThread();
 
     int processMessage(NET_DATA* pdata);
+    int ProcessKeepalive(NET_DATA* pdata);
 	bool ProcessServerConnected(NET_DATA* pdata);
 	bool ProcessDistributeConnect(NET_DATA* pdata);
 	bool ProcessMainConnected(NET_DATA* pdata);

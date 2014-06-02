@@ -133,13 +133,13 @@ bool CGlobalMgr::addMsgToSendList(NET_DATA* pmsg)
 			m_sendmaplock.UnLock();
 			return false;
 		}
-		if (plst->size() < m_maxsendlist)
+		if (plst->size() < m_nMaxSendList)
 		{
 			plst->push_back(pmsg);
 		}
 		else
 		{
-			LOG(_ERROR_, "CGlobalMgr::addMsgToSendList() error, list > m_maxsendlist");
+			LOG(_ERROR_, "CGlobalMgr::addMsgToSendList() error, list > m_nMaxSendList");
 			m_sendmaplock.UnLock();
 			return false;
 		}
