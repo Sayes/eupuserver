@@ -49,7 +49,7 @@ int CWorkThread::processMessage(NET_DATA* pdata)
             LOG(_INFO_, "CWorkThread::processMessage() deal with RS_SERVER_CONNECT");
             if (pdata->type == CLIENT_TYPE)
             {
-                LOG(_INFO_, "CWorkThread::processMessage(), net client connected");
+                LOG(_INFO_, "CWorkThread::processMessage(), new client connected");
                 nret = ProcessKeepalive(pdata);
             }
             break;
