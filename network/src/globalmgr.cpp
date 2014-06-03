@@ -370,7 +370,7 @@ void CGlobalMgr::switchSendMap()
 				continue;
 			}
 
-			if (itercur->second->size() + iterbak->second->size() < m_nMaxSendList)
+			if (itercur->second->size() + iterbak->second->size() > m_nMaxSendList)
 			{
 				int needmove = m_nMaxSendList - itercur->second->size();
 				int idx = 0;
