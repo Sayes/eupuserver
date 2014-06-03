@@ -172,7 +172,7 @@ void CEpollThread::doEpollEvent()
 	while (m_bOperate)
 	{
 		///////begin handle epoll events///////
-		nevent = epoll_wait(m_epollfd, m_events, m_maxepollsize, 1); //500
+		nevent = epoll_wait(m_epollfd, m_events, m_maxepollsize, 10); //500
 		for (int i = 0; i < nevent; ++i)
 		{
 			pkey = (SOCKET_KEY*)m_events[i].data.ptr;

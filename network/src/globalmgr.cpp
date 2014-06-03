@@ -471,7 +471,6 @@ void CGlobalMgr::createServerConnect(int ntype)
 
 	if (pdata->fd >= 0)
 	{
-        LOG(_INFO_, "CGlobalMgr::createServerConnect(), connect key has init, type=%d", ntype);
 		m_serverlock.UnLock();
 		return;
 	}
