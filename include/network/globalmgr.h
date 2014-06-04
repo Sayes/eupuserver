@@ -15,65 +15,65 @@ using std::list;
 
 class CGlobalMgr {
 private:
-	CGlobalMgr()
-	{
-		m_nMaxSendList = 1000;
+    CGlobalMgr()
+    {
+        m_nMaxSendList = 1000;
 
-		m_pcursendmap = &m_sendmap[0];
-		m_pbaksendmap = &m_sendmap[1];
-	}
+        m_pcursendmap = &m_sendmap[0];
+        m_pbaksendmap = &m_sendmap[1];
+    }
 
-	~CGlobalMgr()
-	{
-		clean();
-	}
+    ~CGlobalMgr()
+    {
+        clean();
+    }
 public:
-	static void release();
-	static CGlobalMgr* getInstance();
+    static void release();
+    static CGlobalMgr* getInstance();
 public:
-	bool init();
-	void clean();
+    bool init();
+    void clean();
 
-	void createServerConnect(int ntype);
-	bool createCloseConnectEvent(int fd, time_t conntime);
-	bool createMsgToSendList(int fd, time_t conntime, const string& ip, USHORT port, int ntype,  USHORT mainid, USHORT assistantid, BYTE code, BYTE reserve, CEupuStream* stream, UINT nlen);
-	bool addMsgToSendList(NET_DATA* pdata);
-	bool sendMsgToServer(int ntype, USHORT mainid, USHORT assistantid, BYTE code, BYTE reserve, CEupuStream* pstream, UINT nlen, bool blocked = true);
-	void setServerSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype);
-	void sendKeepaliveMsgToAllServer();
+    void createServerConnect(int ntype);
+    bool createCloseConnectEvent(int fd, time_t conntime);
+    bool createMsgToSendList(int fd, time_t conntime, const string& ip, USHORT port, int ntype,  USHORT mainid, USHORT assistantid, BYTE code, BYTE reserve, CEupuStream* stream, UINT nlen);
+    bool addMsgToSendList(NET_DATA* pdata);
+    bool sendMsgToServer(int ntype, USHORT mainid, USHORT assistantid, BYTE code, BYTE reserve, CEupuStream* pstream, UINT nlen, bool blocked = true);
+    void setServerSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype);
+    void sendKeepaliveMsgToAllServer();
 
-	void switchSendMap();
+    void switchSendMap();
 
-	void setMainSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype);
-	void setDistributeSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype);
-	void setUserCenterSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype);
-	void setLogSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype);
+    void setMainSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype);
+    void setDistributeSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype);
+    void setUserCenterSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype);
+    void setLogSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype);
 
-	CSysQueue<NET_EVENT>* getEventQueue();
-	CSysQueue<NET_DATA>* getRecvQueue();
+    CSysQueue<NET_EVENT>* getEventQueue();
+    CSysQueue<NET_DATA>* getRecvQueue();
 
-	map<int, list<NET_DATA*>* > * getBakSendMap()
-	{
-		return m_pbaksendmap;
-	}
+    map<int, list<NET_DATA*>* > * getBakSendMap()
+    {
+        return m_pbaksendmap;
+    }
 
 private:
-	NET_DATA m_logkey;
-	NET_DATA m_usercenterkey;
-	NET_DATA m_mainkey;
-	NET_DATA m_distributekey;
-	CThreadLock m_serverlock;
+    NET_DATA m_logkey;
+    NET_DATA m_usercenterkey;
+    NET_DATA m_mainkey;
+    NET_DATA m_distributekey;
+    CThreadLock m_serverlock;
 
-	map<int, list<NET_DATA*> *> m_sendmap[2];
-	map<int, list<NET_DATA*> *>* m_pcursendmap;
-	map<int, list<NET_DATA*> *>* m_pbaksendmap;
-	CThreadLock m_sendmaplock;
+    map<int, list<NET_DATA*> *> m_sendmap[2];
+    map<int, list<NET_DATA*> *>* m_pcursendmap;
+    map<int, list<NET_DATA*> *>* m_pbaksendmap;
+    CThreadLock m_sendmaplock;
 
-	CSysQueue<NET_DATA> m_recvlist;
-	CSysQueue<NET_EVENT> m_eventlist;
+    CSysQueue<NET_DATA> m_recvlist;
+    CSysQueue<NET_EVENT> m_eventlist;
 
-	static CGlobalMgr* m_pInstance;
-	int m_nMaxSendList;
+    static CGlobalMgr* m_pInstance;
+    int m_nMaxSendList;
 };
 
 

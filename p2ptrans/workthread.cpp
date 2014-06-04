@@ -17,7 +17,7 @@ int CWorkThread::processMessage(NET_DATA* pdata)
 {
     if (!pdata)
     {
-        LOG(_ERROR_,"the message is null");
+        LOG(_ERROR_,"CWorkThread::processMessage() error, the message is null");
         return 0;
     }
 
@@ -26,24 +26,25 @@ int CWorkThread::processMessage(NET_DATA* pdata)
 
     if(!header.In((BYTE *)pdata->pdata, uTmp))
     {
-        LOG(_ERROR_,"parse message head failed");
+        LOG(_ERROR_,"CWorkThread::processMessage() error, parse message head failed");
         return -1;
     }
 
     if(header.uMainID != KEEP_ALIVE_PING)
         header.Debug();
 
-	int nret = -1;
+    int nret = -1;
     switch (header.uMainID)
     {
-	case KEEP_ALIVE_PING:
-		{
-			break;
-		}
-	default:
-		{
-		}
-	}
+    case KEEP_ALIVE_PING:
+        {
+            LOG(_INFO_,"CWorkThread::processMessage(), deal with KEEP_ALIVE_PING");
+            break;
+        }
+    default:
+        {
+        }
+    }
 
     return 1;
 }

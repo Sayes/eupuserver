@@ -13,24 +13,24 @@ using namespace log4cxx;
 
 class CEupuLogger {
 public:
-	CEupuLogger();
+    CEupuLogger();
 
-	CEupuLogger(const char* path);
+    CEupuLogger(const char* path);
 
-	virtual ~CEupuLogger();
+    virtual ~CEupuLogger();
 
 protected:
-	void InitLogger(const char* lpstrConfig);
+    void InitLogger(const char* lpstrConfig);
 
-	void Trace(LoggerPtr lpLogger, char* lpstrTrace);
-	void Info(LoggerPtr lpLogger, char* lpstrInfo);
-	void Debug(LoggerPtr lpLogger, char* lpstrDebug);
-	void Fatal(LoggerPtr lpLogger, char* lpstrFatal);
-	void Warn(LoggerPtr lpLogger, char* lpstrWarn);
-	void Error(LoggerPtr lpLogger, char* lpstrError);
+    void Trace(LoggerPtr lpLogger, char* lpstrTrace);
+    void Info(LoggerPtr lpLogger, char* lpstrInfo);
+    void Debug(LoggerPtr lpLogger, char* lpstrDebug);
+    void Fatal(LoggerPtr lpLogger, char* lpstrFatal);
+    void Warn(LoggerPtr lpLogger, char* lpstrWarn);
+    void Error(LoggerPtr lpLogger, char* lpstrError);
 
-	char szDataTime[30];
-	char szMsg[256];
+    char szDataTime[30];
+    char szMsg[256];
 
 };
 
