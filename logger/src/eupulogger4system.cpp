@@ -323,10 +323,10 @@ void CEupuLogger4System::WriteHex(const char *filename, int line, LOGLEVEL level
 		line, GETNULLPTR(title), GETNULLSTR(hexdata));
 #endif
 
-	if(m_IsDebug)
-	{
-		cout << msgbuf << endl; 
-	}
+	//if(m_IsDebug)
+	//{
+	//	cout << msgbuf << endl; 
+	//}
 
 	Error(m_ErrPtr, msgbuf);
 }
