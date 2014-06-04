@@ -12,8 +12,6 @@ CWSAThread::CWSAThread()
     , m_listenkey(NULL)
     , m_keepalivetimeout(0)
     , m_keepaliveinterval(0)
-    , m_checkkeepalivetime(0)
-    , m_lastkeepalivetime(0)
     , m_serverport(0)
     , m_readbufsize(0)
     , m_sendbufsize(0)
@@ -39,6 +37,8 @@ CWSAThread::CWSAThread()
     {
         WSACleanup();
     }
+    m_checkkeepalivetime = time(NULL);
+    m_lastkeepalivetime = time(NULL);
 }
 
 CWSAThread::~CWSAThread()
@@ -385,8 +385,8 @@ void CWSAThread::doKeepaliveTimeout()
                 if (itersocket->second->key != NULL)
                 {
                     bclosed = true;
-                    LOG(_ERROR_, "CWSAThread::doKeepaliveTimeout() error, close socket_set for timeout, fd=%d, time=%u, peerip=%s, port=%d",
-                        itersocket->first, itersocket->second->key->connect_time, GETNULLSTR(itersocket->second->peer_ip), itersocket->second->peer_port);
+                    //LOG(_ERROR_, "CWSAThread::doKeepaliveTimeout() error, close socket_set for timeout, fd=%d, time=%u, peerip=%s, port=%d",
+                    //    itersocket->first, itersocket->second->key->connect_time, GETNULLSTR(itersocket->second->peer_ip), itersocket->second->peer_port);
                     closeClient(itersocket->first, itersocket->second->key->connect_time);
                 }
             }
