@@ -174,11 +174,10 @@ void CWSAThread::doWSAEvent()
         //TODO check here, WSA_MAXIMUM_WAIT_EVENTS
         int nIndex = ::WSAWaitForMultipleEvents(m_nEventTotal, m_eventArray, FALSE, 10, FALSE);
         nIndex = nIndex - WSA_WAIT_EVENT_0;
-        for (int i = nIndex; i < WSA_MAXIMUM_WAIT_EVENTS; ++i)
+        for (int i = nIndex; i < m_nEventTotal; ++i)
         {
             if (m_eventArray[i] == WSA_INVALID_EVENT)
             {
-                LOG(_INFO_, "CWSAThread::doWSAEvent(), wait for invalid event");
                 continue;
             }
 

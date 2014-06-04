@@ -5,10 +5,10 @@
 #include "globaldef.h"
 
 typedef enum {
-    LL_DEBUG = 1,
-    LL_ERROR,
+    LL_ERROR = 1,
     LL_WARN,
     LL_INFO,
+    LL_DEBUG,
 }LOGLEVEL;
 
 #define _ERROR_ __FILE__,__LINE__,LL_ERROR
