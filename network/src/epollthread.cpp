@@ -53,8 +53,8 @@ CEpollThread::~CEpollThread()
 	}
 	m_socketmap.clear();
 
-	list<NET_DATA*>::iterator recviter = m_recvlist.begin();
-	for (; recviter != m_recvlist.end(); ++recviter)
+	list<NET_DATA*>::iterator recviter = m_recvtmplst.begin();
+	for (; recviter != m_recvtmplst.end(); ++recviter)
 	{
 		if ((*recviter) != NULL)
 		{
@@ -62,7 +62,7 @@ CEpollThread::~CEpollThread()
 			(*recviter) = NULL;
 		}
 	}
-	m_recvlist.clear();
+	m_recvtmplst.clear();
 
 	if (m_events)
 	{
@@ -223,12 +223,12 @@ void CEpollThread::doEpollEvent()
 		//// end handle epoll events /////
 
         /////////////////begin copy all recv message to recv list/////////////////
-		if (m_recvlist.size() > 0)
+		if (m_recvtmplst.size() > 0)
 		{
 			CSysQueue<NET_DATA>* precvlist = CGlobalMgr::getInstance()->getRecvQueue();
 			precvlist->Lock();
-			list<NET_DATA*>::iterator iter = m_recvlist.begin();
-			for (; iter != m_recvlist.end(); ++iter)
+			list<NET_DATA*>::iterator iter = m_recvtmplst.begin();
+			for (; iter != m_recvtmplst.end(); ++iter)
 			{
 				if ( (*iter) == NULL)
 					continue;
@@ -239,7 +239,7 @@ void CEpollThread::doEpollEvent()
 				}
 			}
 			precvlist->UnLock();
-			m_recvlist.clear();
+			m_recvtmplst.clear();
 		}
         /////////////////end copy all recv message to recv list/////////////////
 
@@ -810,7 +810,7 @@ bool CEpollThread::parsePacketToRecvQueue(SOCKET_SET* psockset, char* buf, int b
 
 		memcpy(pdata->pdata, buf + curpos, nlen);
 		pdata->data_len = nlen;
-		m_recvlist.push_back(pdata);
+		m_recvtmplst.push_back(pdata);
 		curpos += nlen;
 
 	}//end while
@@ -894,7 +894,7 @@ void CEpollThread::createClientCloseMsg(SOCKET_SET* psockset)
 
 	memcpy(pdata->pdata, buf, buflen);
 	pdata->data_len = buflen;
-	m_recvlist.push_back(pdata);
+	m_recvtmplst.push_back(pdata);
 }
 
 bool CEpollThread::addSocketToMap(SOCKET_SET* psockset)
@@ -1093,7 +1093,7 @@ bool CEpollThread::createConnectServerMsg(SOCKET_SET* psockset)
 
 	memcpy(pdata->pdata, buf, buflen);
 	pdata->data_len = buflen;
-	m_recvlist.push_back(pdata);
+	m_recvtmplst.push_back(pdata);
 	return true;
 }
 

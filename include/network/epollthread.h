@@ -71,7 +71,7 @@ private:
 
 	int m_maxepollsize;
 
-	list<NET_DATA*> m_recvlist;
+	list<NET_DATA*> m_recvtmplst;
 	time_t m_index;
 
 };

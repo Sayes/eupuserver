@@ -74,8 +74,8 @@ CWSAThread::~CWSAThread()
 	}
 	m_socketmap.clear();
 
-	list<NET_DATA*>::iterator iterdatalist = m_recvlist.begin();
-	for (; iterdatalist != m_recvlist.end(); ++iterdatalist)
+	list<NET_DATA*>::iterator iterdatalist = m_recvtmplst.begin();
+	for (; iterdatalist != m_recvtmplst.end(); ++iterdatalist)
 	{
 		if ( (*iterdatalist) != NULL)
 		{
@@ -83,7 +83,7 @@ CWSAThread::~CWSAThread()
 			(*iterdatalist) = NULL;
 		}
 	}
-	m_recvlist.clear();
+	m_recvtmplst.clear();
 
 	if (m_recvbuffer)
 	{
@@ -263,12 +263,12 @@ void CWSAThread::doWSAEvent()
 		//// end handle WSAWaitForMultipleEvents /////
 
 		/////////////////begin copy all recv message to recv list/////////////////
-		if (m_recvlist.size() > 0)
+		if (m_recvtmplst.size() > 0)
 		{
 			CSysQueue<NET_DATA>* precvlist = CGlobalMgr::getInstance()->getRecvQueue();
 			precvlist->Lock();
-			list<NET_DATA*>::iterator iter = m_recvlist.begin();
-			for (; iter != m_recvlist.end(); ++iter)
+			list<NET_DATA*>::iterator iter = m_recvtmplst.begin();
+			for (; iter != m_recvtmplst.end(); ++iter)
 			{
 				if ( (*iter) == NULL)
 					continue;
@@ -279,7 +279,7 @@ void CWSAThread::doWSAEvent()
 				}
 			}
 			precvlist->UnLock();
-			m_recvlist.clear();
+			m_recvtmplst.clear();
 		}
 		/////////////////end copy all recv message to recv list/////////////////
 
@@ -707,7 +707,7 @@ int CWSAThread::doSendMessage(SOCKET_KEY* pkey)
 		return 0;
 
 	map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(pkey->fd);
-	if (itersockmap == m_socketmap.end() || itersockmap->second || itersockmap->second->key)
+	if (itersockmap == m_socketmap.end() || itersockmap->second == NULL || itersockmap->second->key == NULL)
 	{
 		LOG(_ERROR_, "CWSAThread::doSendMessage() error, do not find socket in m_socketmap, fd=%d", pkey->fd);
 		deleteSendMsgFromSendMap(pkey->fd);
@@ -855,7 +855,7 @@ bool CWSAThread::parsePacketToRecvQueue(SOCKET_SET *psockset, char *buf, int buf
 
 		memcpy(pdata->pdata, buf + curpos, nlen);
 		pdata->data_len = nlen;
-		m_recvlist.push_back(pdata);
+		m_recvtmplst.push_back(pdata);
 		curpos += nlen;
 	}
 
@@ -955,7 +955,7 @@ void CWSAThread::createClientCloseMsg(SOCKET_SET *psockset)
 
 	memcpy(pdata->pdata, buf, buflen);
 	pdata->data_len = buflen;
-	m_recvlist.push_back(pdata);
+	m_recvtmplst.push_back(pdata);
 }
 
 bool CWSAThread::addSocketToMap(SOCKET_SET *psockset)
@@ -1156,7 +1156,7 @@ bool CWSAThread::createConnectServerMsg(SOCKET_SET *psockset)
 
 	memcpy(pdata->pdata, buf, buflen);
 	pdata->data_len = buflen;
-	m_recvlist.push_back(pdata);
+	m_recvtmplst.push_back(pdata);
 
 	return true;
 }

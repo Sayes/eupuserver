@@ -65,7 +65,7 @@ private:
 
 	unsigned int m_maxwsaeventsize;
 
-	list<NET_DATA*> m_recvlist;
+	list<NET_DATA*> m_recvtmplst;
 	time_t m_index;
 
 	//data for windows

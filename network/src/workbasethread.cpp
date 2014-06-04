@@ -91,10 +91,9 @@ void CWorkBaseThread::run()
 				}
 			}
 			delete pdata;
-			pdata = NULL;
-
-			loop();
+			//pdata = NULL;
 		}
+		loop();
 	}
 }
 
