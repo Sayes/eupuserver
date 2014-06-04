@@ -270,7 +270,6 @@ void CEpollThread::doEpollEvent()
                 m_delsendfdlist.push_back(itersendmap->first);
                 closeClient(itersockmap->second->key->fd, itersockmap->second->key->connect_time);
                 //TODO check here
-                continue;
             }
         }
 
@@ -765,7 +764,7 @@ bool CEpollThread::parsePacketToRecvQueue(SOCKET_SET* psockset, char* buf, int b
     {
         if (buflen - curpos < NET_HEAD_SIZE)
         {
-            memcpy(psockset->part_buf, buf + curpos, buflen - curpos);
+            memcpy(psockset->part_buf, buf, buflen - curpos); 
             psockset->part_len = buflen - curpos;
             return true;
         }
@@ -804,7 +803,6 @@ bool CEpollThread::parsePacketToRecvQueue(SOCKET_SET* psockset, char* buf, int b
                 psockset->key->fd, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
             LOGHEX(_DEBUG_, "recv message:", buf, buflen);
             delete pdata;
-            pdata = NULL;
             return false;
         }
 
@@ -858,7 +856,7 @@ void CEpollThread::closeClient(int fd, time_t conntime)
 
 void CEpollThread::createClientCloseMsg(SOCKET_SET* psockset)
 {
-    if (psockset == NULL || psockset->key == NULL)
+    if ((psockset == NULL) || (psockset->key == NULL))
     {
         LOG(_ERROR_, "CEpollThread::createClientCloseMsg() error, param psockset == NULL");
         return;
@@ -888,7 +886,6 @@ void CEpollThread::createClientCloseMsg(SOCKET_SET* psockset)
     {
         LOG(_ERROR_, "CEpollThread::createClientCloseMsg() error, pdata->init(fd...) failed, fd=%d, time=%u, type=%d", psockset->key->fd, psockset->key->connect_time, psockset->type);
         delete pdata;
-        pdata = NULL;
         return;
     }
 
@@ -1051,19 +1048,22 @@ void CEpollThread::doSystemEvent()
 
 bool CEpollThread::createConnectServerMsg(SOCKET_SET* psockset)
 {
-    if (psockset == NULL || psockset->key == NULL)
+    if ((psockset == NULL) || (psockset->key == NULL))
     {
         LOG(_ERROR_, "CEpollThread::createConnectServerMsg() error, param SOCKET_SET* is NULL");
         return false;
     }
 
 
+    MP_Server_Connected msg;
+    msg.m_nServer = psockset->type;
+
     char buf[MAX_SEND_SIZE];
     UINT buflen = sizeof(buf);
     memset(buf, 0, buflen);
 
-    MP_Server_Connected msg;
-    msg.m_nServer = psockset->type;
+
+
 
     if (!msg.Out((BYTE*)buf, buflen))
     {
@@ -1085,9 +1085,6 @@ bool CEpollThread::createConnectServerMsg(SOCKET_SET* psockset)
     {
         LOG(_ERROR_, "CEpollThread::createConnectServerMsg() error, NET_DATA init() failed, fd=%d, conn_time=%u, peer_ip=%s, port=%d",
             psockset->key->fd, psockset->key->connect_time, psockset->peer_ip, psockset->peer_port);
-        //TODO check here, delete pdata or not ?
-        delete pdata;
-        pdata = NULL;
         return false;
     }
 

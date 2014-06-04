@@ -65,6 +65,11 @@ bool CEupuThread::start()
     return true;
 }
 
+bool CEupuThread::stop()
+{
+    m_bOperate = false;
+    return true;
+}
 void CEupuThread::pause()
 {
     int sig;
@@ -88,11 +93,6 @@ void CEupuThread::continues()
 #endif
 }
 
-bool CEupuThread::stop()
-{
-    m_bOperate = false;
-    return true;
-}
 
 bool CEupuThread::isStarted()
 {

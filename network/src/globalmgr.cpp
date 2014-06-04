@@ -43,7 +43,6 @@ bool CGlobalMgr::createMsgToSendList(int fd, time_t conntime, const string& ip, 
     {
         LOG(_ERROR_, "CGlobalMgr::createMsgToSendList() error, NET_DATA init() failed");
         delete pdata;
-        pdata = NULL;
         return false;
     }
 
@@ -55,7 +54,6 @@ bool CGlobalMgr::createMsgToSendList(int fd, time_t conntime, const string& ip, 
         {
             LOG(_ERROR_, "CGlobalMgr::createMsgToSendList() error, param stream->Out() failed");
             delete pdata;
-            pdata = NULL;
             return false;
         }
         pdata->data_len = buflen + NET_HEAD_SIZE;
@@ -66,7 +64,6 @@ bool CGlobalMgr::createMsgToSendList(int fd, time_t conntime, const string& ip, 
         LOG(_ERROR_, "CGlobalMgr::createMsgToSendList() error, data size > MAX_SEND_SIZE, fd=%d, peer_ip=%s, port=%d, msg_id=%d, msg_size=%d, MAX_SEND_SIZE=%d",
             fd, GETNULLSTR(ip), port, mainid, pdata->data_len, MAX_SEND_SIZE);
         delete pdata;
-        pdata = NULL;
         return false;
     }
 
@@ -84,7 +81,6 @@ bool CGlobalMgr::createMsgToSendList(int fd, time_t conntime, const string& ip, 
         LOG(_ERROR_, "CGlobalMgr::createMsgToSendList() error, NetMessageHead.Out() failed, fd=%d, peer_ip=%s, port=%d, msg_id=%d",
             fd, GETNULLSTR(ip), port, mainid);
         delete pdata;
-        pdata = NULL;
         return false;
     }
 
@@ -93,7 +89,6 @@ bool CGlobalMgr::createMsgToSendList(int fd, time_t conntime, const string& ip, 
         LOG(_ERROR_, "CGlobalMgr::createMsgToSendList() error, addMsgToSendList(pdata) failed, fd=%d, peer_ip=%s, port=%d, msg_id=%d",
             fd, GETNULLSTR(ip), port, mainid);
         delete pdata;
-        pdata = NULL;
         return false;
     }
     return true;
@@ -126,25 +121,26 @@ bool CGlobalMgr::addMsgToSendList(NET_DATA* pmsg)
     else
     {
         list<NET_DATA*>* plst = iter->second;
-        if (!plst)
+        if (plst)
         {
             LOG(_ERROR_, "CGlobalMgr::addMsgToSendList() error, found NET_DATA list is NULL, fd=%d", fd);
-            m_pcursendmap->erase(iter); //never found
-            m_sendmaplock.UnLock();
-            return false;
-        }
-        if (plst->size() < m_nMaxSendList)
-        {
-            plst->push_back(pmsg);
+            if (plst->size() < m_nMaxSendList)
+            {
+                plst->push_back(pmsg);
+            }
+            else
+            {
+                m_sendmaplock.UnLock();
+                return false;
+            }
         }
         else
         {
             LOG(_ERROR_, "CGlobalMgr::addMsgToSendList() error, list > m_nMaxSendList");
+            m_pcursendmap->erase(iter); //never found
             m_sendmaplock.UnLock();
             return false;
         }
-        //TODO check here, we needn't insert send map here ?
-        //m_pcursendmap->insert(map<int, list<NET_DATA*>*>::value_type(fd, plst));
     }
     m_sendmaplock.UnLock();
 
@@ -221,56 +217,6 @@ CSysQueue<NET_EVENT>* CGlobalMgr::getEventQueue()
     return &m_eventlist;
 }
 
-bool CGlobalMgr::sendMsgToServer(int ntype, USHORT mainid, USHORT assistantid, BYTE code, BYTE reserve, CEupuStream* stream, UINT nlen, bool blocked)
-{
-    //TODO check here, will judge block here ?
-    if (blocked)
-        m_sendmaplock.Lock();
-
-    NET_DATA* pdata = NULL;
-
-    switch (ntype)
-    {
-    case MAINSVR_TYPE:
-        {
-            pdata = &m_mainkey;
-            break;
-        }
-    case DISSVR_TYPE:
-        {
-            pdata = &m_distributekey;
-            break;
-        }
-    case USERCENTERSVR_TYPE:
-        {
-            pdata = &m_usercenterkey;
-            break;
-        }
-    case LOGSVR_TYPE:
-        {
-            pdata = &m_logkey;
-            break;
-        }
-    default:
-        {
-            if (blocked)
-                m_sendmaplock.UnLock();
-            return false;
-        }
-    }
-
-    bool bret = false;
-
-    if (pdata->fd > 0)
-    {
-        bret = createMsgToSendList(pdata->fd, pdata->connect_time, pdata->peer_ip, pdata->peer_port, ntype, mainid, assistantid, code, reserve, stream, nlen);
-    }
-
-    if (blocked)
-        m_sendmaplock.UnLock();
-
-    return bret;
-}
 
 void CGlobalMgr::setServerSocket(int fd, time_t conntime, const string& ip, USHORT port, int ntype)
 {
@@ -309,41 +255,6 @@ void CGlobalMgr::setServerSocket(int fd, time_t conntime, const string& ip, USHO
     m_serverlock.UnLock();
 }
 
-void CGlobalMgr::setMainSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype)
-{
-    m_mainkey.fd = fd;
-    m_mainkey.connect_time = conntime;
-    m_mainkey.peer_ip = peerip;
-    m_mainkey.peer_port = peerport;
-    m_mainkey.type = ntype;
-}
-
-void CGlobalMgr::setDistributeSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype)
-{
-    m_distributekey.fd = fd;
-    m_distributekey.connect_time = conntime;
-    m_distributekey.peer_ip = peerip;
-    m_distributekey.peer_port = peerport;
-    m_distributekey.type = ntype;
-}
-
-void CGlobalMgr::setUserCenterSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype)
-{
-    m_usercenterkey.fd = fd;
-    m_usercenterkey.connect_time = conntime;
-    m_usercenterkey.peer_ip = peerip;
-    m_usercenterkey.peer_port = peerport;
-    m_usercenterkey.type = ntype;
-}
-
-void CGlobalMgr::setLogSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype)
-{
-    m_logkey.fd = fd;
-    m_logkey.connect_time = conntime;
-    m_logkey.peer_ip = peerip;
-    m_logkey.peer_port = peerport;
-    m_logkey.type = ntype;
-}
 
 void CGlobalMgr::switchSendMap()
 {
@@ -420,6 +331,105 @@ void CGlobalMgr::switchSendMap()
     m_sendmaplock.UnLock();
 
     return;
+}
+
+void CGlobalMgr::setUserCenterSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype)
+{
+    m_usercenterkey.fd = fd;
+    m_usercenterkey.connect_time = conntime;
+    m_usercenterkey.peer_ip = peerip;
+    m_usercenterkey.peer_port = peerport;
+    m_usercenterkey.type = ntype;
+}
+
+void CGlobalMgr::setMainSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype)
+{
+    m_mainkey.fd = fd;
+    m_mainkey.connect_time = conntime;
+    m_mainkey.peer_ip = peerip;
+    m_mainkey.peer_port = peerport;
+    m_mainkey.type = ntype;
+}
+void CGlobalMgr::setLogSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype)
+{
+    m_logkey.fd = fd;
+    m_logkey.connect_time = conntime;
+    m_logkey.peer_ip = peerip;
+    m_logkey.peer_port = peerport;
+    m_logkey.type = ntype;
+}
+
+
+void CGlobalMgr::setDistributeSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype)
+{
+    m_distributekey.fd = fd;
+    m_distributekey.connect_time = conntime;
+    m_distributekey.peer_ip = peerip;
+    m_distributekey.peer_port = peerport;
+    m_distributekey.type = ntype;
+}
+
+bool CGlobalMgr::sendMsgToServer(int ntype, USHORT mainid, USHORT assistantid, BYTE code, BYTE reserve, CEupuStream* stream, UINT nlen, bool blocked)
+{
+    //TODO check here, will judge block here ?
+    if (blocked)
+        m_serverlock.Lock();
+
+    NET_DATA* pdata = NULL;
+
+    switch (ntype)
+    {
+    case MAINSVR_TYPE:
+        {
+            pdata = &m_mainkey;
+            break;
+        }
+    case DISSVR_TYPE:
+        {
+            pdata = &m_distributekey;
+            break;
+        }
+    case USERCENTERSVR_TYPE:
+        {
+            pdata = &m_usercenterkey;
+            break;
+        }
+    case LOGSVR_TYPE:
+        {
+            pdata = &m_logkey;
+            break;
+        }
+    default:
+        {
+            if (blocked)
+                m_serverlock.UnLock();
+            return false;
+        }
+    }
+
+    bool bret = false;
+
+    if (pdata->fd >= 0)
+    {
+        bret = createMsgToSendList(pdata->fd, pdata->connect_time, pdata->peer_ip, pdata->peer_port, ntype, mainid, assistantid, code, reserve, stream, nlen);
+    }
+
+    if (blocked)
+        m_serverlock.UnLock();
+
+    return bret;
+}
+
+void CGlobalMgr::sendKeepaliveMsgToAllServer()
+{
+    m_serverlock.Lock();
+
+    sendMsgToServer(MAINSVR_TYPE, KEEP_ALIVE_PING, 0, 0, 0, NULL, 0, false);
+    sendMsgToServer(DISSVR_TYPE, KEEP_ALIVE_PING, 0, 0, 0, NULL, 0, false);
+    sendMsgToServer(LOGSVR_TYPE, KEEP_ALIVE_PING, 0, 0, 0, NULL, 0, false);
+    sendMsgToServer(USERCENTERSVR_TYPE, KEEP_ALIVE_PING, 0, 0, 0, NULL, 0, false);
+
+    m_serverlock.UnLock();
 }
 
 void CGlobalMgr::createServerConnect(int ntype)
@@ -509,7 +519,6 @@ void CGlobalMgr::createServerConnect(int ntype)
         closesocket(fd);
 #endif
         delete psockset;
-        psockset = NULL;
         exit(-1);
     }
 
@@ -521,15 +530,14 @@ void CGlobalMgr::createServerConnect(int ntype)
     if (!m_eventlist.inQueue(pevent, false))
     {
         LOG(_ERROR_, "CGlobalMgr::createServerConnect() error, EventQueue->inQueue() failed");
+        setServerSocket(-1, 0, "", 0, 1);//client type
+        delete psockset;
+        delete pevent;
 #ifdef OS_LINUX
         close(fd);
 #elif OS_WINDOWS
         closesocket(fd);
 #endif
-        delete psockset;
-        psockset = NULL;
-        delete pevent;
-        pevent = NULL;
     }
 
     LOG(_INFO_, "CGlobalMgr::createServerConnect() end"); 
@@ -545,10 +553,8 @@ bool CGlobalMgr::createCloseConnectEvent(int fd, time_t conntime)
         LOG(_ERROR_, "CGlobalMgr::createCloseConnectEvent() error, _new SOCKET_KEY || _new NET_EVENT failed");
         if (pkey)
             delete pkey;
-        pkey = NULL;
         if (pevent)
             delete pevent;
-        pevent = NULL;
         exit(-1);
     }
 
@@ -562,22 +568,9 @@ bool CGlobalMgr::createCloseConnectEvent(int fd, time_t conntime)
     {
         LOG(_ERROR_, "CGlobalMgr::createCloseConnectEvent() error, m_eventlist.inQueue() failed");
         delete pkey;
-        pkey = NULL;
         delete pevent;
-        pevent = NULL;
         return false;
     }
     return true;
 }
 
-void CGlobalMgr::sendKeepaliveMsgToAllServer()
-{
-    m_serverlock.Lock();
-
-    sendMsgToServer(MAINSVR_TYPE, KEEP_ALIVE_PING, 0, 0, 0, NULL, 0, false);
-    sendMsgToServer(DISSVR_TYPE, KEEP_ALIVE_PING, 0, 0, 0, NULL, 0, false);
-    sendMsgToServer(USERCENTERSVR_TYPE, KEEP_ALIVE_PING, 0, 0, 0, NULL, 0, false);
-    sendMsgToServer(LOGSVR_TYPE, KEEP_ALIVE_PING, 0, 0, 0, NULL, 0, false);
-
-    m_serverlock.UnLock();
-}
