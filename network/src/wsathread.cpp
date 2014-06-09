@@ -726,7 +726,7 @@ int CWSAThread::doSendMessage(SOCKET_KEY* pkey)
     if (itersendmap->second == NULL)
     {
         LOG(_ERROR_, "CWSAThread::doSendMessage() error, data in m_sendmap is NULL, fd=%d", pkey->fd);
-        psendmap->erase(itersend);
+        psendmap->erase(itersendmap);
         return 0;
     }
 
