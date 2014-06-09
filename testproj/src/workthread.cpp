@@ -65,7 +65,7 @@ int CWorkThread::processMessage(NET_DATA* pdata)
         }
 	default:
 		{
-            LOG(_ERROR_, "CWorkThread::processMessage() error, invalid message");
+            LOG(_ERROR_, "CWorkThread::processMessage() error, invalid message, header.uMainID=%d", header.uMainID);
             nret = -1;
 		}
 		break;
