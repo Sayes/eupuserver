@@ -257,7 +257,8 @@ void CEpollThread::doEpollEvent()
             map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(itersendmap->first);
             if (itersockmap == m_socketmap.end() || itersockmap->second == NULL || itersockmap->second->key == NULL)
             {
-                LOG(_ERROR_, "CEpollThread::doEpollEvent() error, m_socketmap.find(fd) failed");
+                LOG(_ERROR_, "CEpollThread::doEpollEvent() error, m_socketmap.find(fd) failed, itersockmap == m_socketmap.end() %s, itersockmap->second == NULL %s, itersockmap->second->key == NULL %s"
+                    , itersockmap == m_socketmap.end() ? "true" : "false", itersockmap->second == NULL ? "true" : "false", itersockmap->second->key == NULL ? "true" : "false");
                 m_delsendfdlist.push_back(itersendmap->first);
                 continue;
             }

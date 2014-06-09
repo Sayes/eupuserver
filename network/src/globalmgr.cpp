@@ -152,7 +152,7 @@ bool CGlobalMgr::init()
     LOG(_INFO_, "CGlobalMgr::init() start");
     m_nMaxSendList = CGlobalConfig::getInstance()->getSendQueueSize();
     m_recvlist.setQueueSize(CGlobalConfig::getInstance()->getRecvQueueSize());
-
+    LOG(_INFO_, "CGlobalMgr::init(), m_recvlist queue size %d", CGlobalConfig::getInstance()->getRecvQueueSize());
     return true;
 }
 
@@ -255,7 +255,6 @@ void CGlobalMgr::setServerSocket(int fd, time_t conntime, const string& ip, USHO
     m_serverlock.UnLock();
 }
 
-
 void CGlobalMgr::switchSendMap()
 {
     if (m_pcursendmap == NULL || m_pbaksendmap == NULL)
@@ -265,6 +264,15 @@ void CGlobalMgr::switchSendMap()
     }
 
     m_sendmaplock.Lock();
+
+    if (m_pcursendmap->size() == 0)
+    {
+        m_sendmaplock.UnLock();
+        return;
+    }
+
+    if (m_pcursendmap->size() > 0 || m_pbaksendmap->size() > 0)
+        LOG(_INFO_, "CGlobalMgr::switchSendMap(), m_pcursendmap->size()=%d m_pbaksendmap->size() = %d", m_pcursendmap->size(), m_pbaksendmap->size());
 
     map<int, list<NET_DATA*>*>::iterator iterbak = m_pbaksendmap->begin();
     for (; iterbak != m_pbaksendmap->end(); ++iterbak)
@@ -326,7 +334,6 @@ void CGlobalMgr::switchSendMap()
     map<int, list<NET_DATA*>*>* p = m_pcursendmap;
     m_pcursendmap = m_pbaksendmap;
     m_pbaksendmap = p;
-
 
     m_sendmaplock.UnLock();
 
@@ -540,7 +547,7 @@ void CGlobalMgr::createServerConnect(int ntype)
 #endif
     }
 
-    LOG(_INFO_, "CGlobalMgr::createServerConnect() end"); 
+    LOG(_INFO_, "CGlobalMgr::createServerConnect() end, fd=%d, time=%u, ip=%s, port=%d, type=%d, data_len=%d", pdata->fd, pdata->connect_time, pdata->peer_ip.c_str(), pdata->peer_port, pdata->type, pdata->data_len); 
 }
 
 bool CGlobalMgr::createCloseConnectEvent(int fd, time_t conntime)

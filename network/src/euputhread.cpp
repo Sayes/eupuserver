@@ -1,5 +1,6 @@
-#include "euputhread.h"
 #include "string.h"
+#include "eupulogger4system.h"
+#include "euputhread.h"
 
 CEupuThread::CEupuThread()
     : m_bOperate(false)
@@ -77,7 +78,9 @@ void CEupuThread::pause()
     sigwait(&m_waitSig, &sig);
 #elif OS_WINDOWS
     //TODO check here
+    LOG(_INFO_, "CEupuThread::pause() before");
     sem_wait(&m_waitSig);
+    LOG(_INFO_, "CEupuThread::pause() after");
 #endif
 }
 

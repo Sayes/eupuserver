@@ -298,7 +298,8 @@ void CWSAThread::doWSAEvent()
             map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(itersendmap->first);
             if (itersockmap == m_socketmap.end() || itersockmap->second == NULL || itersockmap->second->key == NULL)
             {
-                LOG(_ERROR_, "CWSAThread::doWSAEvent() error, m_socketmap.find(fd) failed");
+                LOG(_ERROR_, "CWSAThread::doWSAEvent() error, m_socketmap.find(fd=%d) failed, itersockmap == m_socketmap.end() %s, itersockmap->second == NULL %s, itersockmap->second->key == NULL %s",
+                    itersendmap->first, itersockmap == m_socketmap.end() ? "true" : "false", itersockmap->second == NULL ? "true" : "false", itersockmap->second->key == NULL ? "true" : "false");
                 m_delsendfdlist.push_back(itersendmap->first);
                 continue;
             }
@@ -719,13 +720,13 @@ int CWSAThread::doSendMessage(SOCKET_KEY* pkey)
     map<int, list<NET_DATA*>*>::iterator itersendmap = psendmap->find(pkey->fd);
     if (itersendmap == psendmap->end())
     {
-        LOG(_ERROR_, "CWSAThread::doSendMessage() error, do not find data in m_sendmap, fd=%d", pkey->fd);
+        LOG(_WARN_, "CWSAThread::doSendMessage(), do not find data in m_sendmap, fd=%d, mapsize=%d", pkey->fd, psendmap->size());
         return 0;
     }
 
     if (itersendmap->second == NULL)
     {
-        LOG(_ERROR_, "CWSAThread::doSendMessage() error, data in m_sendmap is NULL, fd=%d", pkey->fd);
+        LOG(_DEBUG_, "CWSAThread::doSendMessage() error, data in m_sendmap is NULL, fd=%d", pkey->fd);
         psendmap->erase(itersendmap);
         return 0;
     }
@@ -998,6 +999,9 @@ bool CWSAThread::addSocketToMap(SOCKET_SET *psockset)
     }
 
     m_socketmap.insert(map<int, SOCKET_SET*>::value_type(psockset->key->fd, psockset));
+
+    LOG(_INFO_, "CWSAThread::addSocketToMap() successed, fd=%d, time=%u, ip=%s, port=%d, type=%d", psockset->key->fd, psockset->key->connect_time, psockset->peer_ip.c_str(), psockset->peer_port, psockset->type);
+    LOG(_INFO_, "CWSAThread::addSocketToMap() successed, m_socketmap size=%d", m_socketmap.size());
 
     return true;
 }

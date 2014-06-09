@@ -30,7 +30,7 @@ SOCKET_SET* initSocketset(int fd, time_t conntime, const string& peerip, unsigne
         return NULL;
     }
 
-    LOG(_INFO_, "initSocketset() end");
+    LOG(_INFO_, "initSocketset() end, fd=%d, time=%u, ip=%s, port=%d, type=%d", fd, conntime, peerip.c_str(), peerport, ntype);
     return socketset;
 }
 
