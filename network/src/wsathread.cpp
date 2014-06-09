@@ -276,7 +276,7 @@ void CWSAThread::doWSAEvent()
                     continue;
                 if (!precvlist->inQueueWithoutLock(*iter, false))
                 {
-                    LOG(_ERROR_, "CWSAThread::doEpollEvent() error, inQueueWithoutLock() failed");
+                    LOG(_ERROR_, "CWSAThread::doWSAEvent() error, inQueueWithoutLock() failed");
                     delete (*iter);
                 }
             }
@@ -298,7 +298,7 @@ void CWSAThread::doWSAEvent()
             map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(itersendmap->first);
             if (itersockmap == m_socketmap.end() || itersockmap->second == NULL || itersockmap->second->key == NULL)
             {
-                LOG(_ERROR_, "CEpollThread::doEpollEvent() error, m_socketmap.find(fd) failed");
+                LOG(_ERROR_, "CEpollThread::doWSAEvent() error, m_socketmap.find(fd) failed");
                 m_delsendfdlist.push_back(itersendmap->first);
                 continue;
             }
