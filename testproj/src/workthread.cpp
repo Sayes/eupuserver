@@ -54,6 +54,15 @@ int CWorkThread::processMessage(NET_DATA* pdata)
             }
             break;
         }
+    case RS_SERVER_DISCONNECTED:
+        {
+            LOG(_INFO_, "CWorkThread::processMessage() deal with RS_SERVER_DISCONNECTED");
+            if (pdata->type == CLIENT_TYPE)
+            {
+                nret = 0;
+            }
+            break;
+        }
     case KEEP_ALIVE_PING:
         {
             if (pdata->type == CLIENT_TYPE)
