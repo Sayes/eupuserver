@@ -329,7 +329,7 @@ void CWSAThread::doWSAEvent()
         }
         m_delsendfdlist.clear();
 
-        doKeepaliveTimeout();
+        //doKeepaliveTimeout();
 
         doSendKeepaliveToServer();
     }//end while
@@ -524,6 +524,8 @@ bool CWSAThread::doAccept(int fd)
         string peerip = fgNtoA(ntohl(addr.sin_addr.S_un.S_addr));
         unsigned short port = ntohs(addr.sin_port);
         LOG(_INFO_, "CWSAThread::doAccept(), peerip=%s, port=%d", GETNULLSTR(peerip), port);
+
+        send(connfd, NULL, 0, 0);
 
         if (!setNonBlock(connfd))
         {
