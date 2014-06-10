@@ -41,8 +41,20 @@ int CWorkThread::processMessage(NET_DATA* pdata)
             LOG(_INFO_,"CWorkThread::processMessage(), deal with KEEP_ALIVE_PING");
             break;
         }
+    case RS_SERVER_CONNECTED:
+        {
+            LOG(_INFO_,"CWorkThread::processMessage(), deal with RS_SERVER_CONNECTED");
+            break;
+        }
+    case RS_SERVER_DISCONNECTED:
+        {
+            LOG(_INFO_,"CWorkThread::processMessage(), deal with RS_SERVER_DISCONNECTED");
+            break;
+        }
     default:
         {
+            LOG(_INFO_,"CWorkThread::processMessage(), deal with unknown message, mainid=%d", header.uMainID);
+            break;
         }
     }
 
