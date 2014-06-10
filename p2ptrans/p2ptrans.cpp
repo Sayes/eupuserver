@@ -14,6 +14,7 @@
 #include "workbasethread.h"
 #include "workthread.h"
 #include "eupu.base.pb.h"
+#include "ringbuffer.h"
 
 CWSAThread* g_wsathread = NULL;
 CWorkThread* g_workthread = NULL;

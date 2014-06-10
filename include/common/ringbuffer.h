@@ -15,10 +15,10 @@ public:
 
     ~CRingBuffer()
     {
-        freebuf();
+        release();
     }
 
-    void freebuf()
+    void release()
     {
         if (buf)
         {
@@ -37,9 +37,9 @@ public:
         memset(buf, 0, bufsize);
     }
 
-    void createbuf(int bfsz)
+    void init(int bfsz)
     {
-        freebuf();
+        release();
         buf = new unsigned char[bfsz];
         if (buf)
         {

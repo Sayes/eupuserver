@@ -126,6 +126,7 @@
     <ClInclude Include="..\..\include\common\eupu_inet.h" />
     <ClInclude Include="..\..\include\common\globalconfig.h" />
     <ClInclude Include="..\..\include\common\globaldef.h" />
+    <ClInclude Include="..\..\include\common\ringbuffer.h" />
     <ClInclude Include="..\..\include\common\utility.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
