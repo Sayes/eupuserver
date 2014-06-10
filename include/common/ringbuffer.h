@@ -40,10 +40,10 @@ public:
     void init(int bfsz)
     {
         release();
-        buf = new unsigned char[bfsz];
+        buf = new unsigned char[bfsz+1];
         if (buf)
         {
-            bufsize = bfsz;
+            bufsize = bfsz+1;
             memset(buf, 0, bufsize);
         }
     }
