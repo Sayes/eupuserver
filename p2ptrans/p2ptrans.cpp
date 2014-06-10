@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "json/json.h"
+#include "zlib.h"
 #include "eupulogger4system.h"
 #include "globaldef.h"
 #include "globalconfig.h"
