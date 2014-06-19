@@ -63,16 +63,16 @@ private:
     list<int> m_delsendfdlist;
     map<int, SOCKET_SET*> m_socketmap;
 
-    unsigned int m_maxwsaeventsize;
+    //unsigned int m_maxwsaeventsize;
 
     list<NET_DATA*> m_recvtmplst;
     time_t m_index;
 
     //data for windows
-    WSAEVENT m_eventArray[WSA_MAXIMUM_WAIT_EVENTS];
-    SOCKET m_sockArray[WSA_MAXIMUM_WAIT_EVENTS];
-    SOCKET_KEY* m_keymap[WSA_MAXIMUM_WAIT_EVENTS];
-    int m_nEventTotal;
+    //WSAEVENT m_eventArray[WSA_MAXIMUM_WAIT_EVENTS];
+    //SOCKET m_sockArray[WSA_MAXIMUM_WAIT_EVENTS];
+    //SOCKET_KEY* m_keymap[WSA_MAXIMUM_WAIT_EVENTS];
+    //int m_nEventTotal;
 };
 
 #endif//OS_WINDOWS
