@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "eupulogger4system.h"
 #include "netcommon.h"
 #include "globalmgr.h"
@@ -65,3 +66,4 @@ int CWorkThread::ProcessServerConnected(NET_DATA *pdata)
 {
     return 1;
 }
+
