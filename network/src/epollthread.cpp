@@ -1064,8 +1064,6 @@ bool CEpollThread::createConnectServerMsg(SOCKET_SET* psockset)
     memset(buf, 0, buflen);
 
 
-
-
     if (!msg.Out((BYTE*)buf, buflen))
     {
         LOG(_ERROR_, "CEpollThread::createConnectServerMsg() error, msg.Out() failed, fd=%d, conn_time=%u, peer_ip=%s, port=%d",
@@ -1077,7 +1075,7 @@ bool CEpollThread::createConnectServerMsg(SOCKET_SET* psockset)
     NET_DATA* pdata = new NET_DATA;
     if (pdata == NULL)
     {
-        LOG(_ERROR_, "CEpollThread::createConnectServerMsg() error, net NET_DATA failed, fd=%d, conn_time=%u, peer_ip=%s, port=%d",
+        LOG(_ERROR_, "CEpollThread::createConnectServerMsg() error, new NET_DATA failed, fd=%d, conn_time=%u, peer_ip=%s, port=%d",
             psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
         exit(-1);
     }
@@ -1085,7 +1083,7 @@ bool CEpollThread::createConnectServerMsg(SOCKET_SET* psockset)
     if (!pdata->init(psockset->key->fd, psockset->key->connect_time, psockset->peer_ip, psockset->peer_port, psockset->type, buflen))
     {
         LOG(_ERROR_, "CEpollThread::createConnectServerMsg() error, NET_DATA init() failed, fd=%d, conn_time=%u, peer_ip=%s, port=%d",
-            psockset->key->fd, psockset->key->connect_time, psockset->peer_ip, psockset->peer_port);
+            psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
         return false;
     }
 
