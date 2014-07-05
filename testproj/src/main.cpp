@@ -190,6 +190,7 @@ int main(int argc, char* argv[])
         int interval = 0;
         while (1)
         {
+            CGlobalMgr::getInstance()->createServerConnect(MAINSVR_TYPE);
             interval++;
             if (interval >= 12)
             {

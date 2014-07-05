@@ -215,11 +215,27 @@ PCONNECT_SERVER CGlobalConfig::getDistributeServer()
 
 PCONNECT_SERVER CGlobalConfig::getUserCenterServer()
 {
+    list<PCONNECT_SERVER>::iterator iter = m_serverlist.begin();
+    for (; iter != m_serverlist.end(); ++iter)
+    {
+        if ((*iter)->name == "usercenter")
+        {
+            return *iter;
+        }
+    }
     return NULL;
 }
 
 PCONNECT_SERVER CGlobalConfig::getLogServer()
 {
+    list<PCONNECT_SERVER>::iterator iter = m_serverlist.begin();
+    for (; iter != m_serverlist.end(); ++iter)
+    {
+        if ((*iter)->name == "log")
+        {
+            return *iter;
+        }
+    }
     return NULL;
 }
 

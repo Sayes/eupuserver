@@ -1,6 +1,6 @@
 {
 "sys_listen_port" : 3601,
-"sys_listen_ip" : "10.10.40.213",
+"sys_listen_ip" : "192.168.1.101",
 "sys_work_threads" : 5,
 "sys_update_interval" : 60,
 "sys_keepalive_timer" : 120,
@@ -17,7 +17,7 @@
     "connect_server" : [
         {
             "server_name" : "main",
-            "server_host" : "10.10.40.177",
+            "server_host" : "192.168.1.107",
             "server_port" : 3601,
             "send_buffer" : 8192,
             "recv_buffer" : 8192
