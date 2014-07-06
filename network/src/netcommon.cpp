@@ -72,7 +72,7 @@ int recv_msg(int fd, char* buf, int &nlen)
 #ifdef OS_LINUX
         nread = recv(fd, p, n, MSG_NOSIGNAL);
 #elif OS_WINDOWS
-        //TODO, be sure whith param replace MSG_NOSIGNAL
+        //TODO, be sure with param replace MSG_NOSIGNAL
         nread = recv(fd, p, n, 0);
 #endif
         if (nread < 0)
@@ -228,16 +228,16 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
     int nret = connect(fd, (struct sockaddr*)&addr, sizeof(addr));
     if (nret == 0)
     {
-        LOG(_ERROR_, "doNonblockConnect() done, connect() successed");
+        LOG(_INFO_, "doNonblockConnect() done, connect() successed");
         return fd;
     }
 
 #ifdef OS_LINUX
     if (nret < 0)
     {
-        LOG(_ERROR_, "doNonblockConnect() error, connect() failed");
         if (!(errno == EINPROGRESS || errno == EWOULDBLOCK))
         {
+            LOG(_ERROR_, "doNonblockConnect() error, connect() failed");
             close(fd);
             return -1;
         }

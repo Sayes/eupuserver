@@ -17,6 +17,7 @@ CWorkThread::~CWorkThread()
 int CWorkThread::processMessage(NET_DATA* pdata)
 {
     LOG(_INFO_, "CWorkThread::processMessage() begin");
+    //pdata will be NULL never
 	if (!pdata)
 	{
 		LOG(_ERROR_,"the message is null");
@@ -46,11 +47,15 @@ int CWorkThread::processMessage(NET_DATA* pdata)
 	{
     case RS_SERVER_CONNECTED:
         {
-            LOG(_INFO_, "CWorkThread::processMessage() deal with RS_SERVER_CONNECT");
+            LOG(_INFO_, "CWorkThread::processMessage() deal with RS_SERVER_CONNECT, type=%d", pdata->type);
             if (pdata->type == CLIENT_TYPE)
             {
                 LOG(_INFO_, "CWorkThread::processMessage(), new client connected");
-                nret = ProcessKeepalive(pdata);
+                nret = 0;
+            }
+            if (pdata->type == USERCENTERSVR_TYPE)
+            {
+                nret = 0;
             }
             break;
         }
@@ -61,6 +66,10 @@ int CWorkThread::processMessage(NET_DATA* pdata)
             {
                 nret = 0;
             }
+            if (pdata->type == USERCENTERSVR_TYPE)
+            {
+                nret = 0;
+            }
             break;
         }
     case KEEP_ALIVE_PING:
@@ -68,7 +77,11 @@ int CWorkThread::processMessage(NET_DATA* pdata)
             if (pdata->type == CLIENT_TYPE)
             {
                 LOG(_INFO_, "CWorkThread::processMessage() deal with KEEP_ALIVE_PING");
-                nret = ProcessKeepalive(pdata);
+                nret = 0;
+            }
+            if (pdata->type == USERCENTERSVR_TYPE)
+            {
+                nret = 0;
             }
             break;
         }
@@ -76,8 +89,8 @@ int CWorkThread::processMessage(NET_DATA* pdata)
 		{
             LOG(_ERROR_, "CWorkThread::processMessage() error, invalid message, header.uMainID=%d", header.uMainID);
             nret = -1;
+            break;
 		}
-		break;
 	}
 	
     return nret;

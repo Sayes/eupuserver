@@ -9,8 +9,8 @@ APRUTIL_PATH = /usr/local/apr-util
 PROTOBUF_PATH = /usr/local/protobuf
 JSON_PATH = /usr/local/json
 
-#TS_DIR = /home/syz/eupuserver-code/trunk
-TS_DIR = /home/shenyizhong/workshop/projects/eupuserver-code/trunk
+TS_DIR = /home/syz/eupuserver-code/trunk
+#TS_DIR = /home/shenyizhong/workshop/projects/eupuserver-code/trunk
 
 TS_INCLUDE = $(TS_DIR)/include
 

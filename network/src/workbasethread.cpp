@@ -95,6 +95,8 @@ void CWorkBaseThread::run()
         }
         loop();
     }
+    m_bIsExit = true;
+    return;
 }
 
 bool CWorkBaseThread::start()
