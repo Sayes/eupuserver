@@ -462,7 +462,8 @@ bool CWSAThread::doListen()
         }
         else
         {
-            serv_addr.sin_addr.S_un.S_addr = fgAtoN(m_serverip.c_str());
+            //serv_addr.sin_addr.S_un.S_addr = fgAtoN(m_serverip.c_str());
+            serv_addr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
         }
 
         int tmp = 1;

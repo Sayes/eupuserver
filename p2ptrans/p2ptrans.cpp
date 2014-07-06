@@ -134,7 +134,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
         while (true)
         {
-            CGlobalMgr::getInstance()->createServerConnect(MAINSVR_TYPE);
+            CGlobalMgr::getInstance()->createServerConnect(USERCENTERSVR_TYPE);
             interval++;
             if (interval >= 12)
             {

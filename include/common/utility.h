@@ -8,12 +8,11 @@ typedef struct tm tm;
 class cUtility
 {
 public:
-    static long GetTickCount();
     static string Int2String(int num);
     static string uInt2String(UINT num);
     //static string Char2String(char* str);
-    static ULONG String2UL(const char *str);
-    static long String2L(const char* str);
+    //static ULONG String2UL(const char *str);
+    //static long String2L(const char* str);
     static bool Compress(BYTE* pSrc, int nLen, BYTE* pDst, int&nDstLen);
     static bool Uncompress(BYTE* pSrc, int nLen, BYTE* pDst, int&nDstLen);
     //static DWORD MakeDWORD(BYTE bValue1, BYTE bValue2, BYTE bValue3, BYTE bValue4);
@@ -30,7 +29,7 @@ public:
     static void GetDateTime4Log(char* szDateTime);
     static void GetDateTime(char* szDateTime);
 
-    static LONG GetFileLines(char* szFileName);
+    //static LONG GetFileLines(char* szFileName);
 
     static bool CheckDate(INT32 year, INT32 month, INT32 day);
 

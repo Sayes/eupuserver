@@ -58,25 +58,25 @@ string cUtility::uInt2String(UINT num)
 }
 
 
-ULONG cUtility::String2UL(const char *str)
-{
-    if (str == NULL)
-    {
-        return 0;
-    }
+//ULONG cUtility::String2UL(const char *str)
+//{
+//    if (str == NULL)
+//    {
+//        return 0;
+//    }
+//
+//    return strtoul(str, NULL, 10);
+//}
 
-    return strtoul(str, NULL, 10);
-}
-
-long cUtility::String2L(const char* str)
-{
-    if (str == NULL)
-    {
-        return 0;
-    }
-
-    return strtol(str, NULL, 10);
-}
+//long cUtility::String2L(const char* str)
+//{
+//    if (str == NULL)
+//    {
+//        return 0;
+//    }
+//
+//    return strtol(str, NULL, 10);
+//}
 
 bool cUtility::Compress(BYTE* pSrc, int nLen, BYTE* pDst, int&nDstLen)
 {
@@ -358,32 +358,32 @@ ULONG cUtility::DiffTime(time_t tTime)
 
     return uCost;
 }
-LONG cUtility::GetFileLines(char* szFileName)
-{
-    FILE* fp;
-
-    fp = fopen(szFileName, "r"); // "r+t" );
-
-    if (fp == NULL)
-    {
-        return -1;
-    }
-
-    char str[ 4096 ];
-    memset(str, 0, sizeof(str));
-    LONG cnt = 0;
-
-    while (fgets(str, 4096, fp) != NULL)
-    {
-        cnt++;
-        memset(str, 0, sizeof(str));
-    }
-
-    fclose(fp);
-
-    return cnt;
-
-}
+//LONG cUtility::GetFileLines(char* szFileName)
+//{
+//    FILE* fp;
+//
+//    fp = fopen(szFileName, "r"); // "r+t" );
+//
+//    if (fp == NULL)
+//    {
+//        return -1;
+//    }
+//
+//    char str[ 4096 ];
+//    memset(str, 0, sizeof(str));
+//    LONG cnt = 0;
+//
+//    while (fgets(str, 4096, fp) != NULL)
+//    {
+//        cnt++;
+//        memset(str, 0, sizeof(str));
+//    }
+//
+//    fclose(fp);
+//
+//    return cnt;
+//
+//}
 
 bool cUtility::CheckDate(INT32 year, INT32 month, INT32 day)
 {

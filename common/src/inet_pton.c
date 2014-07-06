@@ -51,7 +51,8 @@ extern "C" {
     */
     int eupu_inet_pton(int af, const char *src, void *dst)
     {
-        switch (af) {
+        switch (af)
+        {
         case AF_INET:
             return (inet_pton4(src, dst));
 #ifdef AF_INET6
@@ -75,9 +76,8 @@ extern "C" {
     * author:
     *	Paul Vixie, 1996.
     */
-    int
-        inet_pton4(src, dst)
-        const char *src;
+    int inet_pton4(src, dst)
+    const char *src;
     unsigned char *dst;
     {
         static const char digits[] = "0123456789";
@@ -87,21 +87,26 @@ extern "C" {
         saw_digit = 0;
         octets = 0;
         *(tp = tmp) = 0;
-        while ((ch = *src++) != '\0') {
+        while ((ch = *src++) != '\0')
+        {
             const char *pch;
 
-            if ((pch = strchr(digits, ch)) != NULL) {
+            if ((pch = strchr(digits, ch)) != NULL)
+            {
                 unsigned int newvalue = *tp * 10 + (pch - digits);
 
                 if (newvalue > 255)
                     return (0);
                 *tp = newvalue;
-                if (! saw_digit) {
+                if (! saw_digit)
+                {
                     if (++octets > 4)
                         return (0);
                     saw_digit = 1;
                 }
-            } else if (ch == '.' && saw_digit) {
+            }
+            else if (ch == '.' && saw_digit)
+            {
                 if (octets == 4)
                     return (0);
                 *++tp = 0;
@@ -130,15 +135,20 @@ extern "C" {
     */
 #ifdef AF_INET6
     int
-        inet_pton6(src, dst)
-        const char *src;
+    inet_pton6(src, dst)
+    const char *src;
     unsigned char *dst;
     {
-        static const char xdigits_l[] = "0123456789abcdef",
-            xdigits_u[] = "0123456789ABCDEF";
-        unsigned char tmp[NS_IN6ADDRSZ], *tp, *endp, *colonp;
-        const char *xdigits, *curtok;
-        int ch, saw_xdigit;
+        static const char xdigits_l[] = "0123456789abcdef";
+        static const char xdigits_u[] = "0123456789ABCDEF";
+        unsigned char tmp[NS_IN6ADDRSZ];
+        unsigned char* tp;
+        unsigned char* endp;
+        unsigned char* colonp;
+        const char* xdigits;
+        const char* curtok;
+        int ch;
+        int saw_xdigit;
         unsigned int val;
 
         memset((tp = tmp), '\0', NS_IN6ADDRSZ);
@@ -151,12 +161,14 @@ extern "C" {
         curtok = src;
         saw_xdigit = 0;
         val = 0;
-        while ((ch = *src++) != '\0') {
+        while ((ch = *src++) != '\0')
+        {
             const char *pch;
 
             if ((pch = strchr((xdigits = xdigits_l), ch)) == NULL)
                 pch = strchr((xdigits = xdigits_u), ch);
-            if (pch != NULL) {
+            if (pch != NULL)
+            {
                 val <<= 4;
                 val |= (pch - xdigits);
                 if (val > 0xffff)
@@ -164,9 +176,11 @@ extern "C" {
                 saw_xdigit = 1;
                 continue;
             }
-            if (ch == ':') {
+            if (ch == ':')
+            {
                 curtok = src;
-                if (!saw_xdigit) {
+                if (!saw_xdigit)
+                {
                     if (colonp)
                         return (0);
                     colonp = tp;
@@ -181,20 +195,23 @@ extern "C" {
                 continue;
             }
             if (ch == '.' && ((tp + NS_INADDRSZ) <= endp) &&
-                inet_pton4(curtok, tp) > 0) {
+                inet_pton4(curtok, tp) > 0)
+            {
                     tp += NS_INADDRSZ;
                     saw_xdigit = 0;
                     break;	/** '\0' was seen by inet_pton4(). */
             }
             return (0);
         }
-        if (saw_xdigit) {
+        if (saw_xdigit)
+        {
             if (tp + NS_INT16SZ > endp)
                 return (0);
             *tp++ = (unsigned char) (val >> 8) & 0xff;
             *tp++ = (unsigned char) val & 0xff;
         }
-        if (colonp != NULL) {
+        if (colonp != NULL)
+        {
             /**
             * Since some memmove()'s erroneously fail to handle
             * overlapping regions, we'll do the shift by hand.
@@ -202,7 +219,8 @@ extern "C" {
             const int n = tp - colonp;
             int i;
 
-            for (i = 1; i <= n; i++) {
+            for (i = 1; i <= n; i++)
+            {
                 endp[- i] = colonp[n - i];
                 colonp[n - i] = 0;
             }
