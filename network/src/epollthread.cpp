@@ -121,14 +121,14 @@ bool CEpollThread::startup()
     if (!m_recvbuffer)
     {
         LOG(_ERROR_, "CEpollThread::startup() error, _new m_recvbuffer failed");
-        exit(-1);
+        ::exit(-1);
     }
 
     m_events = new epoll_event[m_maxepollsize];
     if (!m_events)
     {
         LOG(_ERROR_, "CEpollThread::startup() error, _new m_events failed");
-        exit(-1);
+        ::exit(-1);
     }
 
     m_epollfd = epoll_create(m_maxepollsize);
@@ -427,7 +427,7 @@ bool CEpollThread::doListen()
         if (!m_listenkey)
         {
             LOG(_ERROR_, "CEpollThread::doListen() _new SOCKET_KEY error");
-            exit(-1);
+            ::exit(-1);
         }
 
         m_listenkey->fd = m_listenfd;
@@ -795,7 +795,7 @@ bool CEpollThread::parsePacketToRecvQueue(SOCKET_SET* psockset, char* buf, int b
                 psockset->key->fd, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
             //TODO check here, buf or buf + curpos
             LOGHEX(_DEBUG_, "recv message:", buf + curpos, buflen);
-            exit(-1);
+            ::exit(-1);
         }
 
         if (!pdata->init(psockset->key->fd, psockset->key->connect_time, psockset->peer_ip, psockset->peer_port, psockset->type, nlen))
@@ -880,7 +880,7 @@ void CEpollThread::createClientCloseMsg(SOCKET_SET* psockset)
     if (!pdata)
     {
         LOG(_ERROR_, "CEpollThread::createClientCloseMsg() error, create NET_DATA failed, fd=%d, time=%u, type=%d", psockset->key->fd, psockset->key->connect_time, psockset->type);
-        exit(-1);
+        ::exit(-1);
     }
 
     if (!pdata->init(psockset->key->fd, psockset->key->connect_time, psockset->peer_ip, psockset->peer_port, psockset->type, buflen))
@@ -1077,7 +1077,7 @@ bool CEpollThread::createConnectServerMsg(SOCKET_SET* psockset)
     {
         LOG(_ERROR_, "CEpollThread::createConnectServerMsg() error, new NET_DATA failed, fd=%d, conn_time=%u, peer_ip=%s, port=%d",
             psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
-        exit(-1);
+        ::exit(-1);
     }
 
     if (!pdata->init(psockset->key->fd, psockset->key->connect_time, psockset->peer_ip, psockset->peer_port, psockset->type, buflen))

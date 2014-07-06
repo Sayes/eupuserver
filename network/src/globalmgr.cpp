@@ -36,7 +36,7 @@ bool CGlobalMgr::createMsgToSendList(int fd, time_t conntime, const string& ip, 
     if (pdata == NULL)
     {
         LOG(_ERROR_, "CGlobalMgr::createMsgToSendList() error, _new NET_DATA failed");
-        exit(-1);
+        ::exit(-1);
     }
 
     if (!pdata->init(fd, conntime, ip, port, ntype, nlen + NET_HEAD_SIZE))
@@ -113,7 +113,7 @@ bool CGlobalMgr::addMsgToSendList(NET_DATA* pmsg)
         {
             LOG(_ERROR_, "CGlobalMgr::addMsgToSendList() error, net list<NET_DATA*> failed");
             m_sendmaplock.UnLock();
-            exit(-1);
+            ::exit(-1);
         }
         plst->push_back(pmsg);
         m_pcursendmap->insert(map<int, list<NET_DATA*>*>::value_type(fd, plst));
@@ -511,9 +511,9 @@ void CGlobalMgr::createServerConnect(int ntype)
 #ifdef OS_LINUX
         close(fd);
 #elif OS_WINDOWS
-        closesocket(fd);
+        ::closesocket(fd);
 #endif
-        exit(-1);
+        ::exit(-1);
     }
 
     NET_EVENT* pevent = new NET_EVENT;
@@ -523,10 +523,10 @@ void CGlobalMgr::createServerConnect(int ntype)
 #ifdef OS_LINUX
         close(fd);
 #elif OS_WINDOWS
-        closesocket(fd);
+        ::closesocket(fd);
 #endif
         delete psockset;
-        exit(-1);
+        ::exit(-1);
     }
 
     setServerSocket(fd, conntime, pserver->host, pserver->port, ntype);
@@ -543,7 +543,7 @@ void CGlobalMgr::createServerConnect(int ntype)
 #ifdef OS_LINUX
         close(fd);
 #elif OS_WINDOWS
-        closesocket(fd);
+        ::closesocket(fd);
 #endif
     }
 
@@ -562,7 +562,7 @@ bool CGlobalMgr::createCloseConnectEvent(int fd, time_t conntime)
             delete pkey;
         if (pevent)
             delete pevent;
-        exit(-1);
+        ::exit(-1);
     }
 
     pkey->fd = fd;

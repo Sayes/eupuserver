@@ -8,7 +8,7 @@ SOCKET_SET* initSocketset(int fd, time_t conntime, const string& peerip, unsigne
     SOCKET_KEY* key = new SOCKET_KEY;
     if (!key)
     {
-        exit(-1);
+        ::exit(-1);
     }
 
     SOCKET_SET* socketset = new SOCKET_SET;
@@ -16,7 +16,7 @@ SOCKET_SET* initSocketset(int fd, time_t conntime, const string& peerip, unsigne
     {
         delete key;
         key = NULL;
-        exit(-1);
+        ::exit(-1);
     }
 
     key->fd = fd;
@@ -166,7 +166,7 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 #ifdef OS_LINUX
             close(fd);
 #elif OS_WINDOWS
-            closesocket(fd);
+            ::closesocket(fd);
 #endif
             return -1;
         }
@@ -183,7 +183,7 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 #ifdef OS_LINUX
         close(fd);
 #elif OS_WINDOWS
-        closesocket(fd);
+        ::closesocket(fd);
 #endif
         return -1;
     }
@@ -197,7 +197,7 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 #ifdef OS_LINUX
         close(fd);
 #elif OS_WINDOWS
-        closesocket(fd);
+        ::closesocket(fd);
 #endif
         return -1;
     }
@@ -208,7 +208,7 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 #ifdef OS_LINUX
         close(fd);
 #elif OS_WINDOWS
-        closesocket(fd);
+        ::closesocket(fd);
 #endif
         return -1;
     }
@@ -220,7 +220,7 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 #ifdef OS_LINUX
         close(fd);
 #elif OS_WINDOWS
-        closesocket(fd);
+        ::closesocket(fd);
 #endif
         return -1;
     }
@@ -249,7 +249,7 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
         if (!(err == WSAEINPROGRESS || err == WSAEWOULDBLOCK))
         {
             LOG(_ERROR_, "doNonblockConnect() error, connect() failed, error=%d", err);
-            closesocket(fd);
+            ::closesocket(fd);
             return -1;
         }
     }
@@ -271,7 +271,7 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 #ifdef OS_LINUX
         close(fd);
 #elif OS_WINDOWS
-        closesocket(fd);
+        ::closesocket(fd);
 #endif
         return -1;
     }
@@ -281,7 +281,7 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 #ifdef OS_LINUX
         close(fd);
 #elif OS_WINDOWS
-        closesocket(fd);
+        ::closesocket(fd);
 #endif
         return -1;
     }
@@ -296,7 +296,7 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 #ifdef OS_LINUX
         close(fd);
 #elif OS_WINDOWS
-        closesocket(fd);
+        ::closesocket(fd);
 #endif
         return -1;
     }

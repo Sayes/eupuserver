@@ -1,5 +1,7 @@
 #ifdef OS_WINDOWS
 
+#include <functional>  
+#include <typeinfo>
 #include "wsathread.h"
 #include "sysqueue.h"
 #include "common.h"
@@ -49,12 +51,12 @@ CWSAThread::~CWSAThread()
     //    if (m_eventArray[i] != WSA_INVALID_EVENT)
     //        ::WSACloseEvent(m_eventArray[i]);
     //    if (m_sockArray[i] != INVALID_SOCKET)
-    //        closesocket(m_sockArray[i]);
+    //        ::closesocket(m_sockArray[i]);
     //}
 
     if (m_listenfd > 0)
     {
-        closesocket(m_listenfd);
+        ::closesocket(m_listenfd);
     }
 
     if (m_listenkey != NULL)
@@ -104,8 +106,13 @@ void CWSAThread::run()
     m_bIsExit = true;
 }
 
+int add1(int i, int j, int k) {  
+    return i + j + k;  
+}
+
 void CWSAThread::reset()
 {
+    auto add2 = std::bind(add1, std::placeholders::_1, std::placeholders::_2, 10);
 }
 
 bool CWSAThread::startup()
@@ -134,7 +141,7 @@ bool CWSAThread::startup()
     if (!m_recvbuffer)
     {
         LOG(_ERROR_, "CWSAThread::startup() error, _new char[m_recvbuflen] failed, m_recvbuflen=%d", m_recvbuflen);
-        exit(-1);
+        ::exit(-1);
     }
 
     if (!doListen())
@@ -420,7 +427,7 @@ void CWSAThread::doKeepaliveTimeout()
             if (!bclosed)
             {
                 LOG(_ERROR_, "CWSAThread::doKeepaliveTimeout() error, close socket_set->key->fd close for timeout");
-                closesocket(itersockmap->first);
+                ::closesocket(itersockmap->first);
                 delete itersockmap->second;
                 m_socketmap.erase(itersockmap);
             }
@@ -479,13 +486,13 @@ bool CWSAThread::doListen()
             break;
         }
 
-        if (bind(m_listenfd, (sockaddr*)&serv_addr, sizeof(serv_addr)) == SOCKET_ERROR)
+        if (::bind(m_listenfd, (sockaddr*)&serv_addr, sizeof(serv_addr)) == SOCKET_ERROR)
         {
             LOG(_ERROR_, "CWSAThread::doListen() error, bind() failed, listen fd=%d, error=%ld", m_listenfd, WSAGetLastError());
             break;
         }
 
-        if (listen(m_listenfd, 4096) == SOCKET_ERROR)
+        if (::listen(m_listenfd, 4096) == SOCKET_ERROR)
         {
             LOG(_ERROR_, "CWSAThread::doListen() error, listen() failed, listen fd=%d, error=%ld", m_listenfd, WSAGetLastError());
             break;
@@ -495,9 +502,9 @@ bool CWSAThread::doListen()
         if (!m_listenkey)
         {
             LOG(_ERROR_, "CWSAThread::doListen() error, _new SOCKET_KEY failed, listen fd=%d", m_listenfd);
-            closesocket(m_listenfd);
+            ::closesocket(m_listenfd);
             m_listenfd = INVALID_SOCKET;
-            exit(-1);
+            ::exit(-1);
         }
 
         m_listenkey->fd = m_listenfd;
@@ -560,21 +567,21 @@ bool CWSAThread::doAccept(int fd)
         if (!setNonBlock(connfd))
         {
             LOG(_ERROR_, "CWSAThread::doAccept() error, fd=%d, connfd=%d", fd, connfd);
-            closesocket(connfd);
+            ::closesocket(connfd);
             continue;
         }
 
         if (setsockopt(connfd, SOL_SOCKET, SO_SNDBUF, (char*)&m_sendbufsize, sizeof(m_sendbufsize)) == SOCKET_ERROR)
         {
             LOG(_ERROR_, "CWSAThread::doAccept() error, setsockopt(SO_SNDBUF=%d) failed, fd=%d, connfd=%d, error=%d", m_sendbufsize, fd, connfd, WSAGetLastError());
-            closesocket(connfd);
+            ::closesocket(connfd);
             continue;
         }
 
         if (setsockopt(connfd, SOL_SOCKET, SO_RCVBUF, (char*)&m_readbufsize, sizeof(m_readbufsize)) == SOCKET_ERROR)
         {
             LOG(_ERROR_, "CWSAThread::doAccept() error, setsockopt(SO_RCVBUF=%d) failed, fd=%d, connfd=%d, error=%d", m_readbufsize, fd, connfd, WSAGetLastError());
-            closesocket(connfd);
+            ::closesocket(connfd);
             continue;
         }
 
@@ -582,7 +589,7 @@ bool CWSAThread::doAccept(int fd)
         if (setsockopt(connfd, IPPROTO_TCP, TCP_NODELAY, (char*)&opt, sizeof(opt)) < 0)
         {
             LOG(_ERROR_, "CWSAThread::doAccept() error, setsockopt(TCP_NODELAY) failed, fd=%d, connfd=%d, error=%d", fd, connfd, WSAGetLastError());
-            closesocket(connfd);
+            ::closesocket(connfd);
             continue;
         }
 
@@ -591,14 +598,14 @@ bool CWSAThread::doAccept(int fd)
         if (!psockset)
         {
             LOG(_ERROR_, "CWSAThread::doAccept() error, initSocketset() failed, fd=%d, connfd=%d, peerip=%s, port=%d", fd, connfd, GETNULLSTR(peerip), port);
-            closesocket(connfd);
+            ::closesocket(connfd);
             continue;
         }
 
         if (!createConnectServerMsg(psockset))
         {
             LOG(_ERROR_, "CWSAThread::doAccept() error, initSocketset() failed, fd=%d, connfd=%d, peerip=%s, port=%d", fd, connfd, GETNULLSTR(peerip), port);
-            closesocket(connfd);
+            ::closesocket(connfd);
             delete psockset;
             continue;
         }
@@ -607,7 +614,7 @@ bool CWSAThread::doAccept(int fd)
         {
             LOG(_ERROR_, "CWSAThread::doAccept() error, addClientToWSA() failed, fd=%d, connfd=%d, peerip=%s, port=%d", fd, connfd, GETNULLSTR(peerip), port);
             delete psockset;
-            closesocket(connfd);
+            ::closesocket(connfd);
             continue;
         }
     }
@@ -626,7 +633,7 @@ bool CWSAThread::addClientToWSA(SOCKET_SET* psockset)
     //if (newevent == WSA_INVALID_EVENT)
     //{
     //    LOG(_ERROR_, "CWSAThread::addClientToWSA() error, WSACreateEvent() failed, fd=%d", psockset->key->fd);
-    //    closesocket(psockset->key->fd);
+    //    ::closesocket(psockset->key->fd);
     //    return false;
     //}
     //if (::WSAEventSelect(psockset->key->fd, newevent, FD_READ | FD_WRITE | FD_CLOSE) == SOCKET_ERROR)
@@ -881,7 +888,7 @@ bool CWSAThread::parsePacketToRecvQueue(SOCKET_SET *psockset, char *buf, int buf
             LOG(_ERROR_, "CWSAThread::parsePacketToRecvQueue() error, _new NET_DATA failed, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
             //TODO check here, buf or buf + curpos
             LOGHEX(_DEBUG_, "recv message:", buf + curpos, buflen);
-            exit(-1);
+            ::exit(-1);
         }
 
         if (!pdata->init(psockset->key->fd, psockset->key->connect_time, psockset->peer_ip, psockset->peer_port, psockset->type, nlen))
@@ -930,7 +937,7 @@ void CWSAThread::closeClient(int fd, time_t conn_time)
     //m_sockArray[i] = INVALID_SOCKET;
 
     map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(fd);
-    closesocket(fd);
+    ::closesocket(fd);
 
     if (itersockmap == m_socketmap.end())
     {
@@ -981,7 +988,7 @@ void CWSAThread::createClientCloseMsg(SOCKET_SET *psockset)
     if (pdata == NULL)
     {
         LOG(_ERROR_, "CWSAThread::createClientCloseMsg() error, _new NET_DATA failed, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
-        exit(-1);
+        ::exit(-1);
     }
 
     if (!pdata->init(psockset->key->fd, psockset->key->connect_time, psockset->peer_ip, psockset->peer_port, psockset->type, buflen))
@@ -1123,7 +1130,7 @@ void CWSAThread::doSystemEvent()
 
                 if (!createConnectServerMsg(psockset))
                 {
-                    closesocket(psockset->key->fd);
+                    ::closesocket(psockset->key->fd);
                     delete psockset;
                     break;
                 }
@@ -1131,7 +1138,7 @@ void CWSAThread::doSystemEvent()
                 if (!addClientToWSA(psockset))
                 {
                     LOG(_ERROR_, "CWSATread::doSystemEvent() error, addClientToWSA() failed, fd=%d, time=%u", psockset->key->fd, psockset->key->connect_time);
-                    closesocket(psockset->key->fd);
+                    ::closesocket(psockset->key->fd);
                     delete psockset;
                     break;
                 }
@@ -1181,7 +1188,7 @@ bool CWSAThread::createConnectServerMsg(SOCKET_SET *psockset)
     if (pdata == NULL)
     {
         LOG(_ERROR_, "CWSAThread::createConnectServerMsg() error, _new NET_DATA failed, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
-        exit(-1);
+        ::exit(-1);
     }
 
     if (!pdata->init(psockset->key->fd, psockset->key->connect_time, psockset->peer_ip, psockset->peer_port, psockset->type, buflen))

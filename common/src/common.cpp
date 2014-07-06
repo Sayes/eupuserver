@@ -55,11 +55,11 @@ void daemonize()
     pid = fork();
     if (pid == -1)
     {
-        exit(-1);		
+        ::exit(-1);		
     }
     if (pid)
     {
-        exit(0);
+        ::exit(0);
     }
 
     for (int fd = 0; fd < 255; ++fd)
