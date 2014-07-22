@@ -9,7 +9,7 @@ include ../common.mak
 RELEASE_DIR = ../release
 
 CFLAGS += -DOS_LINUX $(LIB_CFLAGS) -I./src
-LDFLAGS = $(LIB_LFLAGS) -L$(RELEASE_DIR) -m32
+LDFLAGS = $(LIB_LFLAGS) -L$(RELEASE_DIR) -m64
 
 TARGETS = testproj 
 
