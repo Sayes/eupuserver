@@ -1,5 +1,5 @@
 {
-"sys_listen_port" : 3601,
+"sys_listen_port" : 3901,
 "sys_listen_ip" : "192.168.1.107",
 "sys_work_threads" : 5,
 "sys_update_interval" : 60,
