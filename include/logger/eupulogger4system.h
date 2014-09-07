@@ -25,13 +25,13 @@ public:
     static CEupuLogger4System* CreateInstance(const char *spath);
     static CEupuLogger4System* Logger();
     static void Release();
-    void Fatal4Sys(const string &strFatal);
-    void Error4Sys(const string &strError);
-    void Debug4Sys(const string &strDebug);
+    void Fatal4Sys(const std::string &strFatal);
+    void Error4Sys(const std::string &strError);
+    void Debug4Sys(const std::string &strDebug);
     void Fatal4Sys(char* strFatal);
     void Error4Sys(char* strError);
     void Debug4Sys(char* strDebug);
-    void WriteMonitorLog(UINT type, UINT mainid, UINT assiantid, UINT action, const char *username, const char *domain);
+    void WriteMonitorLog(unsigned int type, unsigned int mainid, unsigned int assiantid, unsigned int action, const char *username, const char *domain);
     void WriteLog(const char *filename, int line, LOGLEVEL level, const char *fmt, ...);
     void SetDebugMode(bool bdebug);
     void WriteHex(const char *filename, int line, LOGLEVEL level, const char *title, const char *buf, int buflen);
@@ -45,7 +45,7 @@ protected:
     LoggerPtr m_ErrPtr;
     LoggerPtr m_FtlPtr;
     LoggerPtr m_BugPtr;
-    string m_strTmp;
+    std::string m_strTmp;
     bool m_IsDebug;
     LOGLEVEL m_Level;
 private:

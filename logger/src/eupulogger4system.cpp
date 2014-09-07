@@ -203,7 +203,7 @@ void CEupuLogger4System::WriteLog(const char *filename, int line, LOGLEVEL level
 }
 
 
-void CEupuLogger4System::WriteMonitorLog(UINT type, UINT mainid, UINT assiantid, UINT action, const char *username, const char *domain)
+void CEupuLogger4System::WriteMonitorLog(unsigned int type, unsigned int mainid, unsigned int assiantid, unsigned int action, const char *username, const char *domain)
 {
     char buf[MAX_MSGSIZE];
     struct timeval tmv;
