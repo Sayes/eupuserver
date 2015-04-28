@@ -55,7 +55,7 @@ void daemonize()
     pid = fork();
     if (pid == -1)
     {
-        ::exit(-1);		
+        ::exit(-1);
     }
     if (pid)
     {
@@ -103,7 +103,7 @@ void daemonize()
     rl.rlim_cur = rl.rlim_max;
     if (setrlimit(RLIMIT_NOFILE, &rl) != 0)
     {
-        abort();	
+        abort();
     }
 
     signal(SIGPIPE, SIG_IGN);
@@ -111,7 +111,7 @@ void daemonize()
 }
 
 #ifdef OS_WINDOWS
-int gettimeofday(struct timeval *tp, void *tzp)
+int gettimeofday(struct timeval* tp, void* tzp)
 {
     time_t clock;
     struct tm tm;

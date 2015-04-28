@@ -7,7 +7,7 @@ public:
 
     CCounter()
     {
-        m_count = 0;	
+        m_count = 0;
     }
 
     ~CCounter()
@@ -48,7 +48,7 @@ public:
         m_lock.Lock();
         nret = m_count;
         m_lock.UnLock();
-        return nret;	
+        return nret;
     }
 
     int valueWithoutLock()
@@ -77,7 +77,7 @@ public:
             m_count = 0;
         nret = m_count;
         m_lock.UnLock();
-        return nret;	
+        return nret;
     }
 private:
     CThreadLock m_lock;

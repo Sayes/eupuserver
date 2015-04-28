@@ -38,7 +38,7 @@ typedef __uint16_t USHORT;
 typedef __uint16_t WORD;
 typedef __uint64_t UINT64;
 typedef __int64_t INT64;
-typedef short SHORT; 
+typedef short SHORT;
 typedef __int8_t INT8;
 typedef __int32_t INT32;
 #elif OS_WINDOWS
@@ -47,7 +47,7 @@ typedef __int32_t INT32;
 typedef UINT64 __uint64_t;
 #endif
 
-#define	MAX_SEND_SIZE	2048
+#define MAX_SEND_SIZE   2048
 #define NET_HEAD_SIZE   7
 
 

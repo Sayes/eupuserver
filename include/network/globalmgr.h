@@ -52,7 +52,7 @@ public:
     CSysQueue<NET_EVENT>* getEventQueue();
     CSysQueue<NET_DATA>* getRecvQueue();
 
-    map<int, list<NET_DATA*>* > * getBakSendMap()
+    map<int, list<NET_DATA*>* >* getBakSendMap()
     {
         return m_pbaksendmap;
     }

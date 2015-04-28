@@ -5,16 +5,15 @@
 #include "globaldef.h"
 
 typedef struct tm tm;
-class cUtility
-{
+class cUtility {
 public:
     static string Int2String(int num);
     static string uInt2String(UINT num);
     //static string Char2String(char* str);
     //static ULONG String2UL(const char *str);
     //static long String2L(const char* str);
-    static bool Compress(BYTE* pSrc, int nLen, BYTE* pDst, int&nDstLen);
-    static bool Uncompress(BYTE* pSrc, int nLen, BYTE* pDst, int&nDstLen);
+    static bool Compress(BYTE* pSrc, int nLen, BYTE* pDst, int& nDstLen);
+    static bool Uncompress(BYTE* pSrc, int nLen, BYTE* pDst, int& nDstLen);
     //static DWORD MakeDWORD(BYTE bValue1, BYTE bValue2, BYTE bValue3, BYTE bValue4);
     //static void MakeBYTE(DWORD dwValue, BYTE& bValue1, BYTE& bValue2, BYTE& bValue3, BYTE& bValue4);
 
@@ -37,14 +36,14 @@ public:
 
     static UINT GetCPUComsuming();
     static UINT GetMemComsuming();
-    static int Base64Decode(unsigned char *szSrc, unsigned char* szDst, int SrcSize);
+    static int Base64Decode(unsigned char* szSrc, unsigned char* szDst, int SrcSize);
     static int getIntDotNet(unsigned char* bb, int index);
     static INT64 getLongDotNet(unsigned char* bb, int index);
     static short getShortDotNet(BYTE* b, int index);
 
     static string& ReplaceAll(string& str, const char* old_value, const char* new_value);
 
-    static void Int2Bytes(int nRaw, unsigned char *pBuf)
+    static void Int2Bytes(int nRaw, unsigned char* pBuf)
     {
         *(pBuf) = (nRaw & 0xff000000) >> 24;
         *(pBuf + 1) = (nRaw & 0x00ff0000) >> 16;
@@ -52,7 +51,7 @@ public:
         *(pBuf + 3) = (nRaw & 0x000000ff);
 
     }
-    static int Bytes2Int(unsigned char *pBuf)
+    static int Bytes2Int(unsigned char* pBuf)
     {
         int mask = 0xff;
         int temp = 0;
@@ -68,7 +67,7 @@ public:
 
     static UINT str2Time(string strTm);
     static UINT64 GenerateKeyByIPAndPort(UINT uIp, UINT uPort);
-    static time_t FormatTime(char * szTime);
+    static time_t FormatTime(char* szTime);
     static ULONG DiffTime(time_t tTime);
     static int abs(int a);
 

@@ -5,15 +5,17 @@
 
 using namespace std;
 
-typedef struct log_cfg {
+typedef struct log_cfg
+{
     string filename;
     string filenum;
     string filepath;
     string filedataext;
     string filechkext;
-}LOG_CFG;
+} LOG_CFG;
 
-typedef struct st_global_cfg {
+typedef struct st_global_cfg
+{
     char db_hostname[256];
     UINT db_hostport;
     char db_username[256];
@@ -37,9 +39,10 @@ typedef struct st_global_cfg {
 
     UINT maxsendbuf;
     UINT maxrecvbuf;
-}st_global_cfg;
+} st_global_cfg;
 
-struct __CONNECT_SERVER__ {
+struct __CONNECT_SERVER__
+{
     string name;
     string host;
     unsigned short port;
@@ -53,9 +56,10 @@ struct __CONNECT_SERVER__ {
     }
 };
 
-typedef __CONNECT_SERVER__*	PCONNECT_SERVER;
+typedef __CONNECT_SERVER__* PCONNECT_SERVER;
 
-struct __MEM_SERVER__ {
+struct __MEM_SERVER__
+{
     string host;
     unsigned short port;
     unsigned int weight;
@@ -77,7 +81,7 @@ public:
 
     const vector<PMEM_SERVER>* getMemcacheServers()
     {
-        return &m_memlst;    
+        return &m_memlst;
     }
 
     UINT getListenPort()

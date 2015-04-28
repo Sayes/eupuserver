@@ -40,7 +40,7 @@ bool setNonBlock(int sockfd)
     int opts = fcntl(sockfd, F_GETFL);
     if (-1 == opts)
     {
-        return false;	
+        return false;
     }
 
     opts = opts | O_NONBLOCK;
@@ -60,7 +60,7 @@ bool setNonBlock(int sockfd)
     return true;
 }
 
-int recv_msg(int fd, char* buf, int &nlen)
+int recv_msg(int fd, char* buf, int& nlen)
 {
     int n = nlen;
     char* p = buf;
@@ -103,7 +103,7 @@ int recv_msg(int fd, char* buf, int &nlen)
     return nRet;
 }
 
-int send_msg(int fd, char* buf, int &nlen)
+int send_msg(int fd, char* buf, int& nlen)
 {
     int n = nlen;
     int nRet = 1;
@@ -132,7 +132,7 @@ int send_msg(int fd, char* buf, int &nlen)
             break;
         }
         n -= nsend;
-        p += nsend; 
+        p += nsend;
     }
 
     nlen = nlen - n;

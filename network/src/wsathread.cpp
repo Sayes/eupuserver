@@ -1,6 +1,6 @@
 #ifdef OS_WINDOWS
 
-#include <functional>  
+#include <functional>
 #include <typeinfo>
 #include "wsathread.h"
 #include "sysqueue.h"
@@ -10,17 +10,17 @@
 #include "sprotocol.h"
 
 CWSAThread::CWSAThread()
-: CEupuThread()
-, m_listenfd(INVALID_SOCKET)
-, m_listenkey(NULL)
-, m_keepalivetimeout(120)
-, m_keepaliveinterval(60)
-, m_serverport(0)
-, m_readbufsize(0)
-, m_sendbufsize(0)
-, m_recvbuffer(NULL)
-, m_recvbuflen(0)
-, m_index(0)
+    : CEupuThread()
+    , m_listenfd(INVALID_SOCKET)
+    , m_listenkey(NULL)
+    , m_keepalivetimeout(120)
+    , m_keepaliveinterval(60)
+    , m_serverport(0)
+    , m_readbufsize(0)
+    , m_sendbufsize(0)
+    , m_recvbuffer(NULL)
+    , m_recvbuflen(0)
+    , m_index(0)
 //, m_maxwsaeventsize(0)
 //, m_nEventTotal(0)
 {
@@ -79,9 +79,9 @@ CWSAThread::~CWSAThread()
     list<NET_DATA*>::iterator iterdatalist = m_recvtmplst.begin();
     for (; iterdatalist != m_recvtmplst.end(); ++iterdatalist)
     {
-        if ( (*iterdatalist) != NULL)
+        if ((*iterdatalist) != NULL)
         {
-            delete (*iterdatalist);
+            delete(*iterdatalist);
             (*iterdatalist) = NULL;
         }
     }
@@ -106,8 +106,9 @@ void CWSAThread::run()
     m_bIsExit = true;
 }
 
-int add1(int i, int j, int k) {  
-    return i + j + k;  
+int add1(int i, int j, int k)
+{
+    return i + j + k;
 }
 
 void CWSAThread::reset()
@@ -307,12 +308,12 @@ void CWSAThread::doWSAEvent()
             list<NET_DATA*>::iterator iter = m_recvtmplst.begin();
             for (; iter != m_recvtmplst.end(); ++iter)
             {
-                if ( (*iter) == NULL)
+                if ((*iter) == NULL)
                     continue;
                 if (!precvlist->inQueueWithoutLock(*iter, false))
                 {
                     LOG(_ERROR_, "CWSAThread::doWSAEvent() error, inQueueWithoutLock() failed");
-                    delete (*iter);
+                    delete(*iter);
                 }
             }
             precvlist->UnLock();
@@ -455,7 +456,8 @@ bool CWSAThread::doListen()
     bool bret = false;
     sockaddr_in serv_addr;
     m_listenfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    do {
+    do
+    {
         if (m_listenfd == INVALID_SOCKET)
         {
             LOG(_ERROR_, "CWSAThread::doListen() error, create listen socket failed");
@@ -534,7 +536,8 @@ bool CWSAThread::doListen()
 
         bret = true;
 
-    } while(false);
+    }
+    while (false);
 
     return bret;
 }
@@ -734,7 +737,7 @@ void CWSAThread::doRecvMessage(SOCKET_KEY* pkey)
 
         if (nret == 1)
         {
-            break;	//EAGAIN
+            break;  //EAGAIN
         }
     }
 }
@@ -837,7 +840,7 @@ int CWSAThread::doSendMessage(SOCKET_KEY* pkey)
     return 1;
 }
 
-bool CWSAThread::parsePacketToRecvQueue(SOCKET_SET *psockset, char *buf, int buflen)
+bool CWSAThread::parsePacketToRecvQueue(SOCKET_SET* psockset, char* buf, int buflen)
 {
     if (psockset == NULL || psockset->key == NULL)
     {
@@ -963,7 +966,7 @@ void CWSAThread::closeClient(int fd, time_t conn_time)
     }
 }
 
-void CWSAThread::createClientCloseMsg(SOCKET_SET *psockset)
+void CWSAThread::createClientCloseMsg(SOCKET_SET* psockset)
 {
     if (psockset == NULL || psockset->key == NULL)
     {
@@ -1003,7 +1006,7 @@ void CWSAThread::createClientCloseMsg(SOCKET_SET *psockset)
     m_recvtmplst.push_back(pdata);
 }
 
-bool CWSAThread::addSocketToMap(SOCKET_SET *psockset)
+bool CWSAThread::addSocketToMap(SOCKET_SET* psockset)
 {
     if (psockset == NULL || psockset->key == NULL || psockset->key->fd < 0)
     {
@@ -1098,61 +1101,61 @@ void CWSAThread::doSystemEvent()
 
         switch (pdata->eventid)
         {
-        case CLOSE_CLIENT:
-            {
-                if (pdata->data != NULL)
+            case CLOSE_CLIENT:
                 {
-                    SOCKET_KEY* pkey = (SOCKET_KEY*)pdata->data;
-                    LOG(_INFO_, "CWSATread::doSystemEvent() handle CLOSE_CLIENT");
-                    closeClient(pkey->fd, pkey->connect_time);
-                    delete pkey;
-                }
-                break;
-            }
-        case ADD_CLIENT:
-            {
-                if (pdata->data == NULL)
-                {
-                    LOG(_ERROR_, "CWSAThread::doSystemEvent() error, event data is NULL");
+                    if (pdata->data != NULL)
+                    {
+                        SOCKET_KEY* pkey = (SOCKET_KEY*)pdata->data;
+                        LOG(_INFO_, "CWSATread::doSystemEvent() handle CLOSE_CLIENT");
+                        closeClient(pkey->fd, pkey->connect_time);
+                        delete pkey;
+                    }
                     break;
                 }
-                SOCKET_SET* psockset = (SOCKET_SET*)pdata->data;
-                if (psockset->key == NULL)
+            case ADD_CLIENT:
                 {
-                    LOG(_ERROR_, "CWSAThread::doSystemEvent() error, event data->key is NULL");
-                    delete psockset;
-                    break;
-                }
+                    if (pdata->data == NULL)
+                    {
+                        LOG(_ERROR_, "CWSAThread::doSystemEvent() error, event data is NULL");
+                        break;
+                    }
+                    SOCKET_SET* psockset = (SOCKET_SET*)pdata->data;
+                    if (psockset->key == NULL)
+                    {
+                        LOG(_ERROR_, "CWSAThread::doSystemEvent() error, event data->key is NULL");
+                        delete psockset;
+                        break;
+                    }
 
-                psockset->key->connect_time = getIndex();
-                CGlobalMgr::getInstance()->setServerSocket(psockset->key->fd, psockset->key->connect_time, psockset->peer_ip, psockset->peer_port, psockset->type);
-                LOG(_INFO_, "CWSAThread::doSystemEvent(), handle ADD_CLIENT event, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
+                    psockset->key->connect_time = getIndex();
+                    CGlobalMgr::getInstance()->setServerSocket(psockset->key->fd, psockset->key->connect_time, psockset->peer_ip, psockset->peer_port, psockset->type);
+                    LOG(_INFO_, "CWSAThread::doSystemEvent(), handle ADD_CLIENT event, fd=%d, time=%u, peerip=%s, port=%d", psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
 
-                if (!createConnectServerMsg(psockset))
-                {
-                    ::closesocket(psockset->key->fd);
-                    delete psockset;
+                    if (!createConnectServerMsg(psockset))
+                    {
+                        ::closesocket(psockset->key->fd);
+                        delete psockset;
+                        break;
+                    }
+
+                    if (!addClientToWSA(psockset))
+                    {
+                        LOG(_ERROR_, "CWSATread::doSystemEvent() error, addClientToWSA() failed, fd=%d, time=%u", psockset->key->fd, psockset->key->connect_time);
+                        ::closesocket(psockset->key->fd);
+                        delete psockset;
+                        break;
+                    }
                     break;
                 }
-
-                if (!addClientToWSA(psockset))
+            default:
                 {
-                    LOG(_ERROR_, "CWSATread::doSystemEvent() error, addClientToWSA() failed, fd=%d, time=%u", psockset->key->fd, psockset->key->connect_time);
-                    ::closesocket(psockset->key->fd);
-                    delete psockset;
+                    LOG(_ERROR_, "CWSAThread::doSystemEvent() error, invalid event, event=%d", pdata->eventid);
+                    if (pdata->data != NULL)
+                    {
+                        delete pdata->data;
+                    }
                     break;
                 }
-                break;
-            }
-        default:
-            {
-                LOG(_ERROR_, "CWSAThread::doSystemEvent() error, invalid event, event=%d", pdata->eventid);
-                if (pdata->data != NULL)
-                {
-                    delete pdata->data;
-                }
-                break;
-            }
         }
         //TODO check here, delete pdata or not ?
         delete pdata;
@@ -1161,7 +1164,7 @@ void CWSAThread::doSystemEvent()
     pevent->UnLock();
 }
 
-bool CWSAThread::createConnectServerMsg(SOCKET_SET *psockset)
+bool CWSAThread::createConnectServerMsg(SOCKET_SET* psockset)
 {
     if (psockset == NULL || psockset->key == NULL)
     {

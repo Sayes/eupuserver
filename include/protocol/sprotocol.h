@@ -10,7 +10,8 @@
 
 #define KEEP_ALIVE_PING                 20
 
-struct MP_Server_Connected : public CEupuStream {
+struct MP_Server_Connected : public CEupuStream
+{
     MP_Server_Connected()
     {
         msgHead.uMainID = RS_SERVER_CONNECTED;
@@ -75,7 +76,8 @@ struct MP_Server_Connected : public CEupuStream {
     }
 };
 
-struct MP_Server_DisConnected : public CEupuStream {
+struct MP_Server_DisConnected : public CEupuStream
+{
     MP_Server_DisConnected()
     {
         msgHead.uMainID = RS_SERVER_DISCONNECTED;
@@ -88,9 +90,9 @@ struct MP_Server_DisConnected : public CEupuStream {
 
     void Debug()
     {
-        LOG(_DEBUG_,"struct MP_Server_DisConnected object members:");
+        LOG(_DEBUG_, "struct MP_Server_DisConnected object members:");
         msgHead.Debug();
-        LOG(_DEBUG_,"\tm_nServer: %d", m_nServer);
+        LOG(_DEBUG_, "\tm_nServer: %d", m_nServer);
     }
 
     bool Out(BYTE* pDest, UINT& nlen)

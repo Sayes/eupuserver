@@ -4,12 +4,13 @@
 #include "eupulogger.h"
 #include "globaldef.h"
 
-typedef enum {
+typedef enum
+{
     LL_ERROR = 1,
     LL_WARN,
     LL_INFO,
     LL_DEBUG,
-}LOGLEVEL;
+} LOGLEVEL;
 
 #define _ERROR_ __FILE__,__LINE__,LL_ERROR
 #define _WARN_ __FILE__,__LINE__,LL_WARN
@@ -19,27 +20,26 @@ typedef enum {
 #define GETNULLPTR(s) (s) == NULL || strlen((s)) <= 0 ? "NULL":(s)
 #define GETNULLSTR(s) (s).empty() ? "NULL":(s).c_str()
 
-class CEupuLogger4System : public CEupuLogger
-{
+class CEupuLogger4System : public CEupuLogger {
 public:
-    static CEupuLogger4System* CreateInstance(const char *spath);
+    static CEupuLogger4System* CreateInstance(const char* spath);
     static CEupuLogger4System* Logger();
     static void Release();
-    void Fatal4Sys(const std::string &strFatal);
-    void Error4Sys(const std::string &strError);
-    void Debug4Sys(const std::string &strDebug);
+    void Fatal4Sys(const std::string& strFatal);
+    void Error4Sys(const std::string& strError);
+    void Debug4Sys(const std::string& strDebug);
     void Fatal4Sys(char* strFatal);
     void Error4Sys(char* strError);
     void Debug4Sys(char* strDebug);
-    void WriteMonitorLog(unsigned int type, unsigned int mainid, unsigned int assiantid, unsigned int action, const char *username, const char *domain);
-    void WriteLog(const char *filename, int line, LOGLEVEL level, const char *fmt, ...);
+    void WriteMonitorLog(unsigned int type, unsigned int mainid, unsigned int assiantid, unsigned int action, const char* username, const char* domain);
+    void WriteLog(const char* filename, int line, LOGLEVEL level, const char* fmt, ...);
     void SetDebugMode(bool bdebug);
-    void WriteHex(const char *filename, int line, LOGLEVEL level, const char *title, const char *buf, int buflen);
+    void WriteHex(const char* filename, int line, LOGLEVEL level, const char* title, const char* buf, int buflen);
     void SetLogLevel(LOGLEVEL level);
-    const char *GetLogLevelStr(LOGLEVEL);
+    const char* GetLogLevelStr(LOGLEVEL);
 protected:
     CEupuLogger4System();
-    CEupuLogger4System(const char *spath);
+    CEupuLogger4System(const char* spath);
     virtual ~CEupuLogger4System();
 protected:
     LoggerPtr m_ErrPtr;

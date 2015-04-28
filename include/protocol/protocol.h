@@ -79,7 +79,7 @@ public:
         INT32 buflen = nLen;
         INT32 ntmp = 0;
 
-        nret = InputValue(pSrc + ntmp, buflen - ntmp, uMessageSize); 
+        nret = InputValue(pSrc + ntmp, buflen - ntmp, uMessageSize);
         if (nret < 0)
             return false;
         ntmp += nret;

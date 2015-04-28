@@ -58,7 +58,7 @@ CEpollThread::~CEpollThread()
     {
         if ((*recviter) != NULL)
         {
-            delete (*recviter);
+            delete(*recviter);
             (*recviter) = NULL;
         }
     }
@@ -230,12 +230,12 @@ void CEpollThread::doEpollEvent()
             list<NET_DATA*>::iterator iter = m_recvtmplst.begin();
             for (; iter != m_recvtmplst.end(); ++iter)
             {
-                if ( (*iter) == NULL)
+                if ((*iter) == NULL)
                     continue;
                 if (!precvlist->inQueueWithoutLock(*iter, false))
                 {
                     LOG(_ERROR_, "CEpollThread::doEpollEvent() error, inQueueWithoutLock() failed");
-                    delete (*iter);
+                    delete(*iter);
                 }
             }
             precvlist->UnLock();
@@ -380,7 +380,8 @@ bool CEpollThread::doListen()
     sockaddr_in serv_addr;
     m_listenfd = socket(AF_INET, SOCK_STREAM, 0);
 
-    do {
+    do
+    {
         if (m_listenfd < 0)
         {
             LOG(_ERROR_, "CEpollThread::doListen() create listen socket error");
@@ -446,7 +447,8 @@ bool CEpollThread::doListen()
         LOG(_INFO_, "CEpollThread::doListen() successed, listen and add to epoll poll, m_listenfd=%d, m_epollfd=%d ", m_listenfd, m_epollfd);
         bret = true;
 
-    } while (false);
+    }
+    while (false);
 
     return bret;
 }
@@ -540,7 +542,7 @@ bool CEpollThread::addClientToEpoll(SOCKET_SET* psockset)
 {
     if (psockset == NULL || psockset->key == NULL)
     {
-        LOG(_ERROR_, "CEpollThread::addClientToEpoll() error"); 
+        LOG(_ERROR_, "CEpollThread::addClientToEpoll() error");
         return false;
     }
 
@@ -602,7 +604,7 @@ void CEpollThread::doRecvMessage(SOCKET_KEY* pkey)
         if (nret < 0)
         {
             LOG(_ERROR_, "CEpollThread::doRecvMessage() recv_msg() error, fd=%d, time=%u, peerip=%s, port=%d", pkey->fd, pkey->connect_time, GETNULLSTR(iter->second->peer_ip), iter->second->peer_port);
-            closeClient(pkey->fd, pkey->connect_time); 
+            closeClient(pkey->fd, pkey->connect_time);
             return;
         }
 
@@ -623,7 +625,7 @@ void CEpollThread::doRecvMessage(SOCKET_KEY* pkey)
 
         if (nret == 0)
         {
-            LOG(_INFO_,"the peer have closed the connection, fd:%d, time:%u, peerip:%s, port:%d",
+            LOG(_INFO_, "the peer have closed the connection, fd:%d, time:%u, peerip:%s, port:%d",
                 pkey->fd, pkey->connect_time, GETNULLSTR(iter->second->peer_ip), iter->second->peer_port);
         }
 
@@ -656,7 +658,7 @@ int CEpollThread::doSendMessage(SOCKET_KEY* pkey)
 
     int num = 0;
     int buflen = 0;
-    map<int, list<NET_DATA*> *> * psendmap = CGlobalMgr::getInstance()->getBakSendMap();
+    map<int, list<NET_DATA*> *>* psendmap = CGlobalMgr::getInstance()->getBakSendMap();
     map<int, list<NET_DATA*> *>::iterator itersend = psendmap->find(pkey->fd);
     if (itersend == psendmap->end())
     {
@@ -681,7 +683,7 @@ int CEpollThread::doSendMessage(SOCKET_KEY* pkey)
             continue;
         }
 
-        if ( !((itermap->second->key->fd == pdata->fd) && (itermap->second->key->connect_time == pdata->connect_time)) )
+        if (!((itermap->second->key->fd == pdata->fd) && (itermap->second->key->connect_time == pdata->connect_time)))
         {
             LOG(_ERROR_, "CEpollThread::doSendMessage(), send message data connect time is not match, cur=%u, old=%u", pdata->connect_time, itermap->second->key->connect_time);
             LOGHEX(_ERROR_, "the send message:", pdata->pdata, pdata->data_len);
@@ -739,7 +741,7 @@ int CEpollThread::doSendMessage(SOCKET_KEY* pkey)
         itersend->second = NULL;
         psendmap->erase(itersend);
     }
-    return 1; 
+    return 1;
 }
 
 bool CEpollThread::parsePacketToRecvQueue(SOCKET_SET* psockset, char* buf, int buflen)
@@ -765,12 +767,12 @@ bool CEpollThread::parsePacketToRecvQueue(SOCKET_SET* psockset, char* buf, int b
     {
         if (buflen - curpos < NET_HEAD_SIZE)
         {
-            memcpy(psockset->part_buf, buf, buflen - curpos); 
+            memcpy(psockset->part_buf, buf, buflen - curpos);
             psockset->part_len = buflen - curpos;
             return true;
         }
 
-        unsigned short nmsgsize = *((unsigned short *)(buf + curpos));
+        unsigned short nmsgsize = *((unsigned short*)(buf + curpos));
         unsigned short nlen = ntohs(nmsgsize);
 
         if (nlen > MAX_SEND_SIZE || nlen < NET_HEAD_SIZE)
@@ -986,59 +988,59 @@ void CEpollThread::doSystemEvent()
 
         switch (pdata->eventid)
         {
-        case CLOSE_CLIENT:
-            {
-                if (pdata->data != NULL)
+            case CLOSE_CLIENT:
                 {
-                    SOCKET_KEY* pkey = (SOCKET_KEY*)pdata->data;
-                    LOG(_INFO_, "CEpollThread::doSystemEvent(), closeClient(), fd=%d, conn_time=%u", pkey->fd, pkey->connect_time);
-                    closeClient(pkey->fd, pkey->connect_time);
-                    delete pkey;
-                }
-                break;
-            }
-        case ADD_CLIENT:
-            {
-                if (pdata->data == NULL)
-                {
-                    LOG(_ERROR_, "CEpollThread::doSystemEvent(), ADD_CLIENT event data is null");
+                    if (pdata->data != NULL)
+                    {
+                        SOCKET_KEY* pkey = (SOCKET_KEY*)pdata->data;
+                        LOG(_INFO_, "CEpollThread::doSystemEvent(), closeClient(), fd=%d, conn_time=%u", pkey->fd, pkey->connect_time);
+                        closeClient(pkey->fd, pkey->connect_time);
+                        delete pkey;
+                    }
                     break;
                 }
-                SOCKET_SET* psockset = (SOCKET_SET*)pdata->data;
-                if (psockset->key == NULL)
+            case ADD_CLIENT:
                 {
-                    LOG(_ERROR_, "CEpollThread::doSystemEvent(), ADD_CLIENT socket->key is null");
-                    delete psockset;
-                    break;
-                }
+                    if (pdata->data == NULL)
+                    {
+                        LOG(_ERROR_, "CEpollThread::doSystemEvent(), ADD_CLIENT event data is null");
+                        break;
+                    }
+                    SOCKET_SET* psockset = (SOCKET_SET*)pdata->data;
+                    if (psockset->key == NULL)
+                    {
+                        LOG(_ERROR_, "CEpollThread::doSystemEvent(), ADD_CLIENT socket->key is null");
+                        delete psockset;
+                        break;
+                    }
 
-                psockset->key->connect_time = getIndex();
-                CGlobalMgr::getInstance()->setServerSocket(psockset->key->fd, psockset->key->connect_time, psockset->peer_ip, psockset->peer_port, psockset->type);
+                    psockset->key->connect_time = getIndex();
+                    CGlobalMgr::getInstance()->setServerSocket(psockset->key->fd, psockset->key->connect_time, psockset->peer_ip, psockset->peer_port, psockset->type);
 
-                if (!createConnectServerMsg(psockset))
-                {
-                    close(psockset->key->fd);
-                    delete psockset;
+                    if (!createConnectServerMsg(psockset))
+                    {
+                        close(psockset->key->fd);
+                        delete psockset;
+                        break;
+                    }
+
+                    if (!addClientToEpoll(psockset))
+                    {
+                        LOG(_ERROR_, "CEpollThread::doSystemEvent() error, addClientToEpoll() failed, fd=%d, time=%u, peer_ip=%s, port=%d",
+                            psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
+                        close(psockset->key->fd);
+                        delete psockset;
+                        break;
+                    }
                     break;
                 }
-
-                if (!addClientToEpoll(psockset))
+            default:
                 {
-                    LOG(_ERROR_, "CEpollThread::doSystemEvent() error, addClientToEpoll() failed, fd=%d, time=%u, peer_ip=%s, port=%d",
-                        psockset->key->fd, psockset->key->connect_time, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
-                    close(psockset->key->fd);
-                    delete psockset;
+                    LOG(_ERROR_, "CEpollThread::doSystemEvent() error, invalid event");
+                    if (pdata->data != NULL)
+                        delete(char*)pdata->data;
                     break;
                 }
-                break;
-            }
-        default:
-            {
-                LOG(_ERROR_, "CEpollThread::doSystemEvent() error, invalid event");
-                if (pdata->data != NULL)
-                    delete (char*)pdata->data;
-                break;
-            }
         } //end switch
         //TODO check here, delete pdata or not ?
         delete pdata;

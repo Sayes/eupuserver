@@ -15,8 +15,7 @@
 
 using namespace std;
 
-class CEupuStream
-{
+class CEupuStream {
 public:
     CEupuStream();
     virtual ~CEupuStream();
@@ -130,7 +129,7 @@ public:
 
         memcpy(buf + sizeof(INT32), szSrc, nStrLen);
         nLen += nStrLen;
-        return nLen; 
+        return nLen;
     }
 
     template<class T> int InputValue(BYTE* buf, UINT buflen, T& value)
@@ -144,21 +143,21 @@ public:
             memcpy(&value, buf, nLen);
             return nLen;
         }
-        else if(nLen == sizeof(USHORT))
+        else if (nLen == sizeof(USHORT))
         {
             USHORT tmp = 0;
             memcpy(&tmp, buf, nLen);
             value = (T)ntohs(tmp);
             return nLen;
         }
-        else if(nLen == sizeof(INT32))
+        else if (nLen == sizeof(INT32))
         {
             UINT tmp = 0;
             memcpy(&tmp, buf, nLen);
             value = (T)ntohl(tmp);
             return nLen;
         }
-        else if(nLen == sizeof(INT64))
+        else if (nLen == sizeof(INT64))
         {
             if (is_big_endian())
             {

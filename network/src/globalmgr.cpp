@@ -67,7 +67,7 @@ bool CGlobalMgr::createMsgToSendList(int fd, time_t conntime, const string& ip, 
         return false;
     }
 
-    NetMessageHead msgHead; 
+    NetMessageHead msgHead;
     msgHead.uMessageSize = pdata->data_len;
     msgHead.uMainID = mainid;
     msgHead.bAssistantID = assistantid;
@@ -159,7 +159,7 @@ bool CGlobalMgr::init()
 void CGlobalMgr::clean()
 {
     m_sendmaplock.Lock();
-    map<int, list<NET_DATA * > * >::iterator iter = m_pcursendmap->begin();
+    map<int, list<NET_DATA* > * >::iterator iter = m_pcursendmap->begin();
     for (; iter != m_pcursendmap->end(); ++iter)
     {
         list<NET_DATA*>* plst = iter->second;
@@ -224,32 +224,32 @@ void CGlobalMgr::setServerSocket(int fd, time_t conntime, const string& ip, USHO
 
     switch (ntype)
     {
-    case MAINSVR_TYPE:
-        {
-            setMainSocket(fd, conntime, ip, port, ntype);
-            break;
-        }
-    case DISSVR_TYPE:
-        {
-            setDistributeSocket(fd, conntime, ip, port, ntype);
-            break;
-        }
-    case USERCENTERSVR_TYPE:
-        {
-            setUserCenterSocket(fd, conntime, ip, port, ntype);
-            break;
-        }
-    case LOGSVR_TYPE:
-        {
-            setLogSocket(fd, conntime, ip, port, ntype);
-            break;
-        }
-    default:
-        {
-            LOG(_DEBUG_, "CGlobalMgr::setServerSocket(), invalid server type, fd=%d, time=%u, ip=%s, port=%d, type=%d",
-                fd, conntime, GETNULLSTR(ip), port, ntype);
-            break;
-        }
+        case MAINSVR_TYPE:
+            {
+                setMainSocket(fd, conntime, ip, port, ntype);
+                break;
+            }
+        case DISSVR_TYPE:
+            {
+                setDistributeSocket(fd, conntime, ip, port, ntype);
+                break;
+            }
+        case USERCENTERSVR_TYPE:
+            {
+                setUserCenterSocket(fd, conntime, ip, port, ntype);
+                break;
+            }
+        case LOGSVR_TYPE:
+            {
+                setLogSocket(fd, conntime, ip, port, ntype);
+                break;
+            }
+        default:
+            {
+                LOG(_DEBUG_, "CGlobalMgr::setServerSocket(), invalid server type, fd=%d, time=%u, ip=%s, port=%d, type=%d",
+                    fd, conntime, GETNULLSTR(ip), port, ntype);
+                break;
+            }
     }
 
     m_serverlock.UnLock();
@@ -386,32 +386,32 @@ bool CGlobalMgr::sendMsgToServer(int ntype, USHORT mainid, USHORT assistantid, B
 
     switch (ntype)
     {
-    case MAINSVR_TYPE:
-        {
-            pdata = &m_mainkey;
-            break;
-        }
-    case DISSVR_TYPE:
-        {
-            pdata = &m_distributekey;
-            break;
-        }
-    case USERCENTERSVR_TYPE:
-        {
-            pdata = &m_usercenterkey;
-            break;
-        }
-    case LOGSVR_TYPE:
-        {
-            pdata = &m_logkey;
-            break;
-        }
-    default:
-        {
-            if (blocked)
-                m_serverlock.UnLock();
-            return false;
-        }
+        case MAINSVR_TYPE:
+            {
+                pdata = &m_mainkey;
+                break;
+            }
+        case DISSVR_TYPE:
+            {
+                pdata = &m_distributekey;
+                break;
+            }
+        case USERCENTERSVR_TYPE:
+            {
+                pdata = &m_usercenterkey;
+                break;
+            }
+        case LOGSVR_TYPE:
+            {
+                pdata = &m_logkey;
+                break;
+            }
+        default:
+            {
+                if (blocked)
+                    m_serverlock.UnLock();
+                return false;
+            }
     }
 
     bool bret = false;
@@ -448,35 +448,35 @@ void CGlobalMgr::createServerConnect(int ntype)
 
     switch (ntype)
     {
-    case MAINSVR_TYPE:
-        {
-            pserver = CGlobalConfig::getInstance()->getMainServer();
-            pdata = &m_mainkey;
-            break;
-        }
-    case DISSVR_TYPE:
-        {
-            pserver = CGlobalConfig::getInstance()->getDistributeServer();
-            pdata = &m_distributekey;
-            break;
-        }
-    case USERCENTERSVR_TYPE:
-        {
-            pserver = CGlobalConfig::getInstance()->getUserCenterServer();
-            pdata = &m_usercenterkey;
-            break;
-        }
-    case LOGSVR_TYPE:
-        {
-            pserver = CGlobalConfig::getInstance()->getLogServer();
-            pdata = &m_logkey;
-            break;
-        }
-    default:
-        {
-            LOG(_ERROR_, "CGlobalMgr::createServerConnect() error, invalid server type, type=%d", ntype);
-            break;
-        }
+        case MAINSVR_TYPE:
+            {
+                pserver = CGlobalConfig::getInstance()->getMainServer();
+                pdata = &m_mainkey;
+                break;
+            }
+        case DISSVR_TYPE:
+            {
+                pserver = CGlobalConfig::getInstance()->getDistributeServer();
+                pdata = &m_distributekey;
+                break;
+            }
+        case USERCENTERSVR_TYPE:
+            {
+                pserver = CGlobalConfig::getInstance()->getUserCenterServer();
+                pdata = &m_usercenterkey;
+                break;
+            }
+        case LOGSVR_TYPE:
+            {
+                pserver = CGlobalConfig::getInstance()->getLogServer();
+                pdata = &m_logkey;
+                break;
+            }
+        default:
+            {
+                LOG(_ERROR_, "CGlobalMgr::createServerConnect() error, invalid server type, type=%d", ntype);
+                break;
+            }
     }//end switch
 
     if (pserver == NULL)
@@ -547,7 +547,7 @@ void CGlobalMgr::createServerConnect(int ntype)
 #endif
     }
 
-    LOG(_INFO_, "CGlobalMgr::createServerConnect() end, fd=%d, time=%u, ip=%s, port=%d, type=%d, data_len=%d", pdata->fd, pdata->connect_time, pdata->peer_ip.c_str(), pdata->peer_port, pdata->type, pdata->data_len); 
+    LOG(_INFO_, "CGlobalMgr::createServerConnect() end, fd=%d, time=%u, ip=%s, port=%d, type=%d, data_len=%d", pdata->fd, pdata->connect_time, pdata->peer_ip.c_str(), pdata->peer_port, pdata->type, pdata->data_len);
 }
 
 bool CGlobalMgr::createCloseConnectEvent(int fd, time_t conntime)

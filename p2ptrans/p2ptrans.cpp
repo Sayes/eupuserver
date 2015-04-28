@@ -123,7 +123,8 @@ void exitSystem()
 int _tmain(int argc, _TCHAR* argv[])
 {
 
-    do {
+    do
+    {
 
         if (!initSystem())
         {
@@ -144,7 +145,8 @@ int _tmain(int argc, _TCHAR* argv[])
             Sleep(5000);
         }
 
-    } while (false);
+    }
+    while (false);
 
     exitSystem();
 

@@ -8,21 +8,22 @@
 #include "globaldef.h"
 #include "globalconfig.h"
 
-#define	CLOSE_CLIENT	100
-#define ADD_CLIENT	    101
+#define CLOSE_CLIENT    100
+#define ADD_CLIENT      101
 
-#define	LISTEN_TYPE	    0
-#define	CLIENT_TYPE	    1
-#define	MAINSVR_TYPE	2
-#define	DISSVR_TYPE	    3
-#define	USERCENTERSVR_TYPE	4
-#define	CENTER_TYPE	    5
-#define	LOGSVR_TYPE	    6
+#define LISTEN_TYPE     0
+#define CLIENT_TYPE     1
+#define MAINSVR_TYPE    2
+#define DISSVR_TYPE     3
+#define USERCENTERSVR_TYPE  4
+#define CENTER_TYPE     5
+#define LOGSVR_TYPE     6
 
 
 using namespace std;
 
-typedef struct socket_key {
+typedef struct socket_key
+{
     int fd;
     time_t connect_time;
     socket_key()
@@ -33,7 +34,8 @@ typedef struct socket_key {
 } SOCKET_KEY;
 
 
-typedef struct socket_set {
+typedef struct socket_set
+{
     SOCKET_KEY* key;
     char part_buf[MAX_SEND_SIZE];
     int part_len;
@@ -42,7 +44,7 @@ typedef struct socket_set {
     unsigned short peer_port;
 
     time_t refresh_time;
-    int type;	//0: listen, 1: client, 2: mainsvr, 3: dissvr, 4: usercentersvr, 5: centersvr, 6: logsvr
+    int type;   //0: listen, 1: client, 2: mainsvr, 3: dissvr, 4: usercentersvr, 5: centersvr, 6: logsvr
 
     bool init(SOCKET_KEY* pkey, const string& ip, unsigned short port, int ntype)
     {
@@ -77,7 +79,8 @@ typedef struct socket_set {
     }
 } SOCKET_SET;
 
-typedef struct net_data {
+typedef struct net_data
+{
     int fd;
     time_t connect_time;
     string peer_ip;
@@ -93,7 +96,7 @@ typedef struct net_data {
         peer_port = 0;
         type = 0;
         pdata = NULL;
-        data_len = 0;	
+        data_len = 0;
     }
 
     ~net_data()
@@ -128,7 +131,8 @@ typedef struct net_data {
 } NET_DATA;
 
 
-typedef struct net_event {
+typedef struct net_event
+{
     int eventid;
     char* data;
     net_event()

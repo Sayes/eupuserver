@@ -18,12 +18,12 @@
 #define SEND_QUEUE_SIZE "sys_send_queue_size"
 #define RECV_QUEUE_SIZE "sys_recv_queue_size"
 #define EPOLL_MAX_SIZE  "sys_epoll_max_size"
-#define CONNECT_SERVER	"connect_server"
-#define SERVER_NAME		"server_name"
-#define SERVER_HOST		"server_host"
-#define SERVER_PORT		"server_port"
-#define SERVER_SNDBUF	"send_buffer"
-#define SERVER_RCVBUF	"recv_buffer"
+#define CONNECT_SERVER  "connect_server"
+#define SERVER_NAME     "server_name"
+#define SERVER_HOST     "server_host"
+#define SERVER_PORT     "server_port"
+#define SERVER_SNDBUF   "send_buffer"
+#define SERVER_RCVBUF   "recv_buffer"
 
 #define NODE_ID         ""
 #define GAME_ID         ""
@@ -79,7 +79,7 @@ CGlobalConfig::~CGlobalConfig()
     for (; iterserver != m_serverlist.end(); ++iterserver)
     {
         if ((*iterserver))
-            delete (*iterserver);
+            delete(*iterserver);
     }
     m_serverlist.clear();
 
@@ -87,7 +87,7 @@ CGlobalConfig::~CGlobalConfig()
     for (; iter < m_memlst.end(); ++iter)
     {
         if (*iter)
-            delete (*iter);
+            delete(*iter);
     }
     m_memlst.clear();
 }
@@ -139,7 +139,7 @@ bool CGlobalConfig::initSysConfig(const std::string& path)
     {
         if ((*iterserver))
         {
-            delete (*iterserver);
+            delete(*iterserver);
         }
     }
     m_serverlist.clear();
@@ -164,7 +164,7 @@ bool CGlobalConfig::initSysConfig(const std::string& path)
 
 UINT CGlobalConfig::getQueueTimer()
 {
-    return m_cfg.que_savetime; 
+    return m_cfg.que_savetime;
 }
 
 UINT CGlobalConfig::getPingTimer()

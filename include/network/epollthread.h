@@ -51,8 +51,8 @@ private:
     int m_epollfd;
     int m_listenfd;
     SOCKET_KEY* m_listenkey;
-    int m_keepalivetimeout;		//connection timeout time
-    int m_keepaliveinterval;	//send keepalive message to server time interval
+    int m_keepalivetimeout;     //connection timeout time
+    int m_keepaliveinterval;    //send keepalive message to server time interval
     time_t m_checkkeepalivetime;
     time_t m_lastkeepalivetime;
 

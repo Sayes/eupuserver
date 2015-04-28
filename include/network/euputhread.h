@@ -27,7 +27,7 @@ public:
 
 protected:
     void setMaskSIGUSR1();
-    static void* ThreadFunc(void *arg);
+    static void* ThreadFunc(void* arg);
     virtual void run() = 0;
 
 protected:
