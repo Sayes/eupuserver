@@ -11,7 +11,7 @@ TARGETS = libeupu.base.pb.a
 
 all: $(TARGETS)
 
-libeupu.base.pb.a: $(OBJS)
+$(TARGETS): $(OBJS)
 	test -d ../release || mkdir -p ../release
 	ar -r $@ $^
 	cp $@ $(RELEASE_DIR)
@@ -19,4 +19,4 @@ libeupu.base.pb.a: $(OBJS)
 clean:
 	rm -f $(OBJS) $(TARGETS)
 	rm -f *.o src/*.d
-	rm -f $(RELEASE_DIR)/libeupu.base.pb.a
+	rm -f $(RELEASE_DIR)/$(TARGETS)

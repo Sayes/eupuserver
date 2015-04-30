@@ -15,7 +15,7 @@ TARGETS = libnetwork.so
 
 all: $(TARGETS)
 
-libnetwork.so : $(OBJS)
+$(TARGETS): $(OBJS)
 	test -d ../release || mkdir -p ../release
 	$(LINK) $(LDFLAGS) -o $@ $^
 	cp $@ $(RELEASE_DIR)

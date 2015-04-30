@@ -11,7 +11,7 @@ TARGETS = libcommon.a
 
 all: $(TARGETS)
 
-libcommon.a: $(OBJS)
+$(TARGETS): $(OBJS)
 	test -d ../release || mkdir -p ../release
 	ar -r $@ $^
 	cp $@ $(RELEASE_DIR)
@@ -19,4 +19,4 @@ libcommon.a: $(OBJS)
 clean:
 	rm -f $(OBJS) $(TARGETS)
 	rm -f *.o src/*.d
-	rm -f $(RELEASE_DIR)/libcommon.a
+	rm -f $(RELEASE_DIR)/$(TARGETS)

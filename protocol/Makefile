@@ -14,7 +14,7 @@ TARGETS = libprotocol.a
 
 all: $(TARGETS)
 
-libprotocol.a: $(OBJS)
+$(TARGETS): $(OBJS)
 	test -d ../release || mkdir -p ../release
 	ar -r $@ $^
 	cp $@ $(RELEASE_DIR)
@@ -22,4 +22,4 @@ libprotocol.a: $(OBJS)
 clean:
 	rm -f $(OBJS) $(TARGETS)
 	rm -f *.o src/*.d
-	rm -f $(RELEASE_DIR)/libprotocol.a
+	rm -f $(RELEASE_DIR)/$(TARGETS)

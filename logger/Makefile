@@ -16,7 +16,7 @@ TARGETS = libeupulogger.so
 
 all: $(TARGETS) 
 
-libeupulogger.so: $(OBJS)
+$(TARGETS) : $(OBJS)
 	test -d ../release || mkdir -p ../release
 	$(LINK) $(LDFLAGS) -o $@ $^
 	cp $@ ${RELEASE_DIR}
@@ -24,4 +24,4 @@ libeupulogger.so: $(OBJS)
 clean:
 	rm -f $(OBJS) $(TARGETS)
 	rm -f *.o *.so src/*.d
-	rm -f ${RELEASE_DIR}/libeupulogger.so
+	rm -f ${RELEASE_DIR}/$(TARGETS)
