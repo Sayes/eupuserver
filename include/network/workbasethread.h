@@ -9,10 +9,6 @@ public:
     void reset();
     bool start();
     virtual bool stop();
-    bool isStop()
-    {
-        return m_bIsExit;
-    }
 
     CWorkBaseThread();
     virtual ~CWorkBaseThread();

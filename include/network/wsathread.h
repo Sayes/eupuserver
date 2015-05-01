@@ -17,11 +17,6 @@ public:
     virtual void run();
     virtual void reset();
 
-    bool isStop()
-    {
-        return false;
-    }
-
     bool startup();
 
 private:
