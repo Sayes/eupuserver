@@ -20,11 +20,6 @@ public:
     virtual void run();
     virtual void reset();
 
-    bool isStop()
-    {
-        return false;
-    }
-
     bool startup();
 
 private:
@@ -73,7 +68,6 @@ private:
 
     list<NET_DATA*> m_recvtmplst;
     time_t m_index;
-
 };
 
 #endif//OS_LINUX

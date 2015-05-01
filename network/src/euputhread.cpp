@@ -71,6 +71,7 @@ bool CEupuThread::stop()
     m_bOperate = false;
     return true;
 }
+
 void CEupuThread::pause()
 {
     int sig;
