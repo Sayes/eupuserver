@@ -45,38 +45,33 @@ int CWorkThread::processMessage(NET_DATA* pdata)
 	switch (header.uMainID)
 	{
     case RS_SERVER_CONNECTED:
+        LOG(_INFO_, "CWorkThread::processMessage() deal with RS_SERVER_CONNECT");
+        if (pdata->type == CLIENT_TYPE)
         {
-            LOG(_INFO_, "CWorkThread::processMessage() deal with RS_SERVER_CONNECT");
-            if (pdata->type == CLIENT_TYPE)
-            {
-                LOG(_INFO_, "CWorkThread::processMessage(), new client connected");
-                nret = ProcessKeepalive(pdata);
-            }
-            break;
+            LOG(_INFO_, "CWorkThread::processMessage(), new client connected");
+            nret = ProcessKeepalive(pdata);
         }
+        break;
+
     case RS_SERVER_DISCONNECTED:
+        LOG(_INFO_, "CWorkThread::processMessage() deal with RS_SERVER_DISCONNECTED");
+        if (pdata->type == CLIENT_TYPE)
         {
-            LOG(_INFO_, "CWorkThread::processMessage() deal with RS_SERVER_DISCONNECTED");
-            if (pdata->type == CLIENT_TYPE)
-            {
-                nret = 0;
-            }
-            break;
+            nret = 0;
         }
+        break;
+
     case KEEP_ALIVE_PING:
+        if (pdata->type == CLIENT_TYPE)
         {
-            if (pdata->type == CLIENT_TYPE)
-            {
-                LOG(_INFO_, "CWorkThread::processMessage() deal with KEEP_ALIVE_PING");
-                nret = ProcessKeepalive(pdata);
-            }
-            break;
+            LOG(_INFO_, "CWorkThread::processMessage() deal with KEEP_ALIVE_PING");
+            nret = ProcessKeepalive(pdata);
         }
+        break;
+
 	default:
-		{
-            LOG(_ERROR_, "CWorkThread::processMessage() error, invalid message, header.uMainID=%d", header.uMainID);
-            nret = -1;
-		}
+        LOG(_ERROR_, "CWorkThread::processMessage() error, invalid message, header.uMainID=%d", header.uMainID);
+        nret = -1;
 		break;
 	}
 	
