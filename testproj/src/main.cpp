@@ -184,9 +184,6 @@ int main(int argc, char* argv[])
             break;
         }
 
-        eupu::NetMessageHead msghead;
-        eupu::NetData msgdata;
-
         int interval = 0;
         while (1)
         {
