@@ -5,16 +5,20 @@
 #include "eupustream.h"
 #include "protocol.h"
 
-#define RS_SERVER_CONNECTED             11
-#define RS_SERVER_DISCONNECTED          12
+#define RC_CONNECTED             1
+#define RC_DISCONNECTED          2
 
-#define KEEP_ALIVE_PING                 20
+#define RS_CONNECTED             11
+#define RS_DISCONNECTED          12
+
+#define KEEP_ALIVE_PING          20
+#define C2S_DATA                 30
 
 struct MP_Server_Connected : public CEupuStream
 {
     MP_Server_Connected()
     {
-        msgHead.uMainID = RS_SERVER_CONNECTED;
+        msgHead.uMainID = RS_CONNECTED;
         msgHead.uMessageSize = NET_HEAD_SIZE + sizeof(int);
         m_nServer = 0;
     }
@@ -80,7 +84,7 @@ struct MP_Server_DisConnected : public CEupuStream
 {
     MP_Server_DisConnected()
     {
-        msgHead.uMainID = RS_SERVER_DISCONNECTED;
+        msgHead.uMainID = RS_DISCONNECTED;
         msgHead.uMessageSize = NET_HEAD_SIZE + sizeof(int);
         m_nServer = 0;
     }

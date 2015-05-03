@@ -45,9 +45,9 @@ int CWorkThread::processMessage(NET_DATA* pdata)
     int nret = -1;
     switch (header.uMainID)
     {
-        case RS_SERVER_CONNECTED:
+        case RS_CONNECTED:
         {
-            LOG(_INFO_, "CWorkThread::processMessage() deal with RS_SERVER_CONNECT, type=%d", pdata->type);
+            LOG(_INFO_, "CWorkThread::processMessage() deal with RS_CONNECT, type=%d", pdata->type);
             if (pdata->type == CLIENT_TYPE)
             {
                 LOG(_INFO_, "CWorkThread::processMessage(), new client connected");
@@ -59,9 +59,9 @@ int CWorkThread::processMessage(NET_DATA* pdata)
             }
             break;
         }
-        case RS_SERVER_DISCONNECTED:
+        case RS_DISCONNECTED:
         {
-            LOG(_INFO_, "CWorkThread::processMessage() deal with RS_SERVER_DISCONNECTED");
+            LOG(_INFO_, "CWorkThread::processMessage() deal with RS_DISCONNECTED");
             if (pdata->type == CLIENT_TYPE)
             {
                 nret = 0;
@@ -78,6 +78,10 @@ int CWorkThread::processMessage(NET_DATA* pdata)
             {
                 LOG(_INFO_, "CWorkThread::processMessage() deal with KEEP_ALIVE_PING");
                 nret = 0;
+            }
+            else
+            {
+                LOG(_INFO_, "CWorkThread::processMessage() deal with KEEP_ALIVE_PING, pdata->type = %d", pdata->type);
             }
             if (pdata->type == USERCENTERSVR_TYPE)
             {

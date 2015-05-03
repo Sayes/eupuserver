@@ -74,7 +74,7 @@ CEupuLogger4System::CEupuLogger4System() :
     m_ErrPtr(0), m_FtlPtr(0), m_BugPtr(0)
 {
     m_strTmp = "";
-    m_Level = LL_INFO;
+    m_Level = LL_DEBUG;
     m_IsDebug = false;
     m_ErrPtr = Logger::getLogger("err4sys");
     m_FtlPtr = Logger::getLogger("fatal4sys");

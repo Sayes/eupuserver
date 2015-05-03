@@ -36,16 +36,12 @@ int CWorkThread::processMessage(NET_DATA* pdata)
     {
 		header.Debug();
     }
-    else
-    {
-        LOG(_INFO_, "CWorkThread::processMessage() deal with KEEP_ALIVE_PING");
-    }
 
     int nret = -1;
 	switch (header.uMainID)
 	{
-    case RS_SERVER_CONNECTED:
-        LOG(_INFO_, "CWorkThread::processMessage() deal with RS_SERVER_CONNECT");
+    case RS_CONNECTED:
+        LOG(_INFO_, "CWorkThread::processMessage() deal with RS_CONNECT");
         if (pdata->type == CLIENT_TYPE)
         {
             LOG(_INFO_, "CWorkThread::processMessage(), new client connected");
@@ -53,12 +49,15 @@ int CWorkThread::processMessage(NET_DATA* pdata)
         }
         break;
 
-    case RS_SERVER_DISCONNECTED:
-        LOG(_INFO_, "CWorkThread::processMessage() deal with RS_SERVER_DISCONNECTED");
+    case RS_DISCONNECTED:
+        LOG(_INFO_, "CWorkThread::processMessage() deal with RS_DISCONNECTED");
         if (pdata->type == CLIENT_TYPE)
         {
             nret = 0;
         }
+        break;
+
+    case C2S_DATA:
         break;
 
     case KEEP_ALIVE_PING:
