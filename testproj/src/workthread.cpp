@@ -18,24 +18,24 @@ int CWorkThread::processMessage(NET_DATA* pdata)
 {
     LOG(_INFO_, "CWorkThread::processMessage() begin");
     //pdata will be NULL never
-	if (!pdata)
-	{
-		LOG(_ERROR_,"the message is null");
-		return 0;
-	}
-
-	UINT uTmp = pdata->data_len;
-	NetMessageHead header;
-
-	if(!header.In((BYTE *)pdata->pdata, uTmp))
-	{
-		LOG(_ERROR_,"parse message head failed");
-		return -1;
-	}
-
-	if(header.uMainID != KEEP_ALIVE_PING)
+    if (!pdata)
     {
-		header.Debug();
+        LOG(_ERROR_,"the message is null");
+        return 0;
+    }
+
+    UINT uTmp = pdata->data_len;
+    NetMessageHead header;
+
+    if(!header.In((BYTE *)pdata->pdata, uTmp))
+    {
+        LOG(_ERROR_,"parse message head failed");
+        return -1;
+    }
+
+    if(header.uMainID != KEEP_ALIVE_PING)
+    {
+        header.Debug();
     }
     else
     {
@@ -43,9 +43,9 @@ int CWorkThread::processMessage(NET_DATA* pdata)
     }
 
     int nret = -1;
-	switch (header.uMainID)
-	{
-    case RS_SERVER_CONNECTED:
+    switch (header.uMainID)
+    {
+        case RS_SERVER_CONNECTED:
         {
             LOG(_INFO_, "CWorkThread::processMessage() deal with RS_SERVER_CONNECT, type=%d", pdata->type);
             if (pdata->type == CLIENT_TYPE)
@@ -59,7 +59,7 @@ int CWorkThread::processMessage(NET_DATA* pdata)
             }
             break;
         }
-    case RS_SERVER_DISCONNECTED:
+        case RS_SERVER_DISCONNECTED:
         {
             LOG(_INFO_, "CWorkThread::processMessage() deal with RS_SERVER_DISCONNECTED");
             if (pdata->type == CLIENT_TYPE)
@@ -72,7 +72,7 @@ int CWorkThread::processMessage(NET_DATA* pdata)
             }
             break;
         }
-    case KEEP_ALIVE_PING:
+        case KEEP_ALIVE_PING:
         {
             if (pdata->type == CLIENT_TYPE)
             {
@@ -85,36 +85,36 @@ int CWorkThread::processMessage(NET_DATA* pdata)
             }
             break;
         }
-	default:
-		{
+        default:
+        {
             LOG(_ERROR_, "CWorkThread::processMessage() error, invalid message, header.uMainID=%d", header.uMainID);
             nret = -1;
             break;
-		}
-	}
-	
+        }
+    }
+
     return nret;
 }
 
 bool CWorkThread::ProcessServerConnected(NET_DATA* pdata)
 {
-	return false;
+    return false;
 }
 
 bool CWorkThread::ProcessDistributeConnect(NET_DATA* pdata)
 {
-	return false;
+    return false;
 }
 
 bool CWorkThread::ProcessMainConnected(NET_DATA* pdata)
 {
-	return true;
+    return true;
 }
 
 int CWorkThread::ProcessKeepalive(NET_DATA* pdata)
 {
     if (pdata == NULL)
-        return 0;
+    return 0;
 
     bool bret = CGlobalMgr::getInstance()->createMsgToSendList(pdata->fd, pdata->connect_time, pdata->peer_ip, pdata->peer_port, pdata->type, KEEP_ALIVE_PING, 0, 0, 0, NULL, 0);
     return (bret ? 1 : 0);
