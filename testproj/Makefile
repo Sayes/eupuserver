@@ -15,7 +15,7 @@ TARGETS = testproj
 
 all: $(TARGETS) 
 
-testproj: $(OBJS)
+$(TARGETS) : $(OBJS)
 	test -d ../release || mkdir -p ../release
 	$(LINK) $(LDFLAGS) -o $@ $^ -lnetwork -lprotocol -leupulogger -llog4cxx -lcommon -leupu.base.pb -lprotobuf -lprotobuf-lite -lprotoc -ljsoncpp -lapr-1 -laprutil-1  
 	cp $@ ${RELEASE_DIR}
@@ -24,4 +24,4 @@ testproj: $(OBJS)
 clean:
 	rm -f $(OBJS) $(TARGETS)
 	rm -f src/*.o src/*.d
-	rm -f ${RELEASE_DIR}/testproj
+	rm -f ${RELEASE_DIR}/$(TARGETS)
