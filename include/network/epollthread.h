@@ -64,7 +64,7 @@ private:
     list<int> m_delsendfdlist;
     map<int, SOCKET_SET*> m_socketmap;
 
-    int m_maxepollsize;
+    UINT m_maxepollsize;
 
     list<NET_DATA*> m_recvtmplst;
     time_t m_index;

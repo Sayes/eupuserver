@@ -13,13 +13,16 @@ CEpollThread::CEpollThread()
     , m_epollfd(-1)
     , m_listenfd(-1)
     , m_listenkey(NULL)
-    , m_maxepollsize(5000)
     , m_keepalivetimeout(120)
     , m_keepaliveinterval(60)
+    , m_serverip("")
     , m_serverport(0)
-    , m_events(NULL)
+    , m_readbufsize(0)
+    , m_sendbufsize(0)
     , m_recvbuffer(NULL)
     , m_recvbuflen(0)
+    , m_events(NULL)
+    , m_maxepollsize(5000)
     , m_index(0)
 {
     m_checkkeepalivetime = time(NULL);
@@ -158,7 +161,7 @@ bool CEpollThread::startup()
 time_t CEpollThread::getIndex()
 {
     m_index++;
-    if (m_index == 0xFFFFFFFF)
+    if ((UINT)m_index == 0xFFFFFFFF)
         m_index = 1;
     return m_index;
 }
@@ -905,7 +908,7 @@ bool CEpollThread::addSocketToMap(SOCKET_SET* psockset)
         return false;
     }
 
-    if (m_maxepollsize <= m_socketmap.size())
+    if ((UINT)m_maxepollsize <= m_socketmap.size())
     {
         LOG(_ERROR_, "CEpollThread::addSocketToMap() error, the epoll poll is full, fd=%d, peerip=%s, port=%d", psockset->key->fd, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
         return false;

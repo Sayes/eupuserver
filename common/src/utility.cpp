@@ -2,7 +2,7 @@
 #include  <stdlib.h>
 #include "utility.h"
 
-const char cUtility::base64_decode_map[256] =
+const unsigned char cUtility::base64_decode_map[256] =
 {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
 

@@ -79,7 +79,7 @@ public:
 
     template<class T> int OutputValue(BYTE* buf, INT32 buflen, T value)
     {
-        INT32 nLen = sizeof(value);
+        UINT nLen = sizeof(value);
         if (nLen > buflen)
             return -1;
 
@@ -118,9 +118,9 @@ public:
 
     int OutputString(BYTE* buf, INT32 buflen, char* szSrc)
     {
-        INT32 nLen = 0;
-        UINT nStrLen = strlen(szSrc);
-        if (nStrLen + (UINT)sizeof(INT32) > buflen)
+        UINT nLen = 0;
+        size_t nStrLen = strlen(szSrc);
+        if (nStrLen + sizeof(INT32) > (UINT)buflen)
             return -1;
 
         UINT tmp = htonl(nStrLen);
@@ -134,7 +134,7 @@ public:
 
     template<class T> int InputValue(BYTE* buf, UINT buflen, T& value)
     {
-        INT32 nLen = sizeof(value);
+        UINT nLen = sizeof(value);
         if (nLen > buflen)
             return -1;
 
@@ -176,19 +176,19 @@ public:
 
     int InputString(BYTE* buf, INT32 buflen, char* szDst, INT32& dstbuflen)
     {
-        INT32 nLen = 0;
-        unsigned int nStrLen = 0;
+        UINT nLen = 0;
+        UINT nStrLen = 0;
 
-        if (buflen < sizeof(INT32))
+        if ((UINT)buflen < sizeof(INT32))
             return -1;
 
         memcpy((BYTE*)&nStrLen, buf, sizeof(INT32));
-        unsigned int tmp = ntohl(nStrLen);
+        UINT tmp = ntohl(nStrLen);
 
-        if (buflen < sizeof(INT32) + tmp)
+        if ((UINT)buflen < sizeof(INT32) + tmp)
             return -1;
 
-        if (dstbuflen < tmp + 1)
+        if ((UINT)dstbuflen < tmp + 1)
             return -2;
 
         nLen += sizeof(INT32);

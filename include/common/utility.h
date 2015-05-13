@@ -76,7 +76,7 @@ protected:
     virtual ~cUtility();
 
 private:
-    static const char base64_decode_map[256];
+    static const unsigned char base64_decode_map[256];
 public:
     //static time_t timep;
     //static struct tm* p;

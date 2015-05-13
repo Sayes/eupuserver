@@ -56,6 +56,8 @@ bool initSystem(bool isdaemon)
     if (!g_epollthread->startup())
     {
         LOG(_ERROR_, "initSystem() error, g_epollthread->startup() failed");
+        delete g_epollthread;
+        g_epollthread = NULL;
         return false;
     }
 
@@ -97,7 +99,6 @@ void exitSystem()
         g_workthread = NULL;
     }
 
-
     if (!g_epollthread)
     {
         LOG(_ERROR_, "exitSystem() error, g_epollthread == NULL");
@@ -138,7 +139,6 @@ int main(int argc, char* argv[])
 {
 
     int ch = 0;
-    int opterr = 0;
     bool isdaemon = false;
 
     while ( (ch = getopt(argc, argv, "h:v:d")) != EOF)

@@ -19,7 +19,7 @@ void CGlobalMgr::release()
     m_pInstance = NULL;
 }
 
-bool CGlobalMgr::createMsgToSendList(int fd, time_t conntime, const string& ip, USHORT port, int ntype, USHORT mainid, USHORT assistantid, BYTE code, BYTE reserve, CEupuStream* pstream, UINT nlen)
+bool CGlobalMgr::createMsgToSendList(int fd, time_t conntime, const std::string& ip, USHORT port, int ntype, USHORT mainid, USHORT assistantid, BYTE code, BYTE reserve, CEupuStream* pstream, UINT nlen)
 {
     if (fd < 0)
     {
@@ -124,7 +124,7 @@ bool CGlobalMgr::addMsgToSendList(NET_DATA* pmsg)
         if (plst)
         {
             LOG(_ERROR_, "CGlobalMgr::addMsgToSendList() error, found NET_DATA list is NULL, fd=%d", fd);
-            if (plst->size() < m_nMaxSendList)
+            if (plst->size() < (UINT)m_nMaxSendList)
             {
                 plst->push_back(pmsg);
             }
@@ -289,7 +289,7 @@ void CGlobalMgr::switchSendMap()
                 continue;
             }
 
-            if (itercur->second->size() + iterbak->second->size() > m_nMaxSendList)
+            if (itercur->second->size() + iterbak->second->size() > (UINT)m_nMaxSendList)
             {
                 int needmove = m_nMaxSendList - itercur->second->size();
                 int idx = 0;
