@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -54,8 +54,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\include\appmsg;..\include\logger;..\include\common;..\include\network;..\include\protocol;Y:\json\include;Y:\protobuf\include;Y:\log4cxx\include;Y:\pthread\include;Y:\zlib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;OS_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\include\appmsg;..\include\logger;..\include\common;..\include\network;..\include\protocol;Y:\jsoncpp\include;Y:\protobuf\include;Y:\log4cxx\include;Y:\pthread\include;Y:\zlib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;OS_WINDOWS;WITHOUTLOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -69,7 +69,7 @@
       <AdditionalDependencies>ws2_32.lib;jsond.lib;libprotobufd.lib;log4cxxd.lib;pthreadVC2.lib;appmsgd.lib;commond.lib;eupuloggerd.lib;protocold.lib;zlibd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>LinkVerboseLib</ShowProgress>
       <OutputFile>..\release\win\$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>..\lib;Y:\json\lib;Y:\log4cxx\lib;Y:\protobuf\lib;Y:\pthread\lib;Y:\zlib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\lib;Y:\jsoncpp\lib;Y:\log4cxx\lib;Y:\protobuf\lib;Y:\pthread\lib;Y:\zlib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
@@ -80,7 +80,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\include\appmsg;..\include\logger;..\include\common;..\include\network;..\include\protocol;Y:\json\include;Y:\protobuf\include;Y:\log4cxx\include;Y:\pthread\include;Y:\zlib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include\appmsg;..\include\logger;..\include\common;..\include\network;..\include\protocol;Y:\protobuf\include;Y:\log4cxx\include;Y:\pthread\include;Y:\zlib\include;Y:\jsoncpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;OS_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -92,7 +92,7 @@
     <Link>
       <AdditionalDependencies>ws2_32.lib;json.lib;libprotobuf.lib;log4cxx.lib;pthreadVC2.lib;appmsg.lib;common.lib;eupulogger.lib;protocol.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>..\release\win\$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>..\lib;Y:\json\lib;Y:\log4cxx\lib;Y:\protobuf\lib;Y:\pthread\lib;Y:\zlib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\lib;Y:\jsoncpp\lib;Y:\log4cxx\lib;Y:\protobuf\lib;Y:\pthread\lib;Y:\zlib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>

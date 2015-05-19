@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\include\common;..\..\include\logger;Y:\log4cxx\include;Y:\json\include"
+				AdditionalIncludeDirectories="..\..\include\common;..\..\include\logger;Y:\log4cxx\include;Y:\jsoncpp\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;OS_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -108,7 +108,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\..\include\common;..\..\include\logger;Y:\log4cxx\include;Y:\json\include"
+				AdditionalIncludeDirectories="..\..\include\common;..\..\include\logger;Y:\log4cxx\include;Y:\jsoncpp\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;OS_WINDOWS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"

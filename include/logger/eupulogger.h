@@ -1,6 +1,11 @@
 #ifndef _EUPULOGGER_H_
 #define _EUPULOGGER_H_
 
+#ifdef WITHOUTLOG
+class LoggerPtr{
+
+};
+#else
 #include <log4cxx/logger.h>
 #include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/basicconfigurator.h>
@@ -10,6 +15,7 @@
 #include <log4cxx/logstring.h>
 
 using namespace log4cxx;
+#endif
 
 class CEupuLogger {
 public:

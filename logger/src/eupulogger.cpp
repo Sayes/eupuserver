@@ -1,5 +1,17 @@
 #include "eupulogger.h"
 
+#ifdef WITHOUTLOG
+CEupuLogger::CEupuLogger(){}
+CEupuLogger::CEupuLogger(const char* path){}
+CEupuLogger::~CEupuLogger(){}
+void CEupuLogger::InitLogger(const char* lpstrConfig){}
+void CEupuLogger::Trace(LoggerPtr lpLogger, char* lpstrTrace){}
+void CEupuLogger::Info(LoggerPtr lpLogger, char* lpstrInfo){}
+void CEupuLogger::Debug(LoggerPtr lpLogger, char* lpstrDebug){}
+void CEupuLogger::Fatal(LoggerPtr lpLogger, char* lpstrFatal){}
+void CEupuLogger::Warn(LoggerPtr lpLogger, char* lpstrWarn){}
+void CEupuLogger::Error(LoggerPtr lpLogger, char* lpstrError){}
+#else
 CEupuLogger::CEupuLogger()
 {
     PropertyConfigurator::configure("loggercfg.cfg");
@@ -42,3 +54,4 @@ void CEupuLogger::Fatal(LoggerPtr lpLogger, char* lpstrFatal)
 {
     LOG4CXX_FATAL(lpLogger, lpstrFatal);
 }
+#endif

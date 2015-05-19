@@ -13,6 +13,27 @@
 #include "eupulogger4system.h"
 #include "utility.h"
 
+#ifdef WITHOUTLOG
+CEupuLogger4System* CEupuLogger4System::CreateInstance(const char* spath){ return NULL; }
+CEupuLogger4System* CEupuLogger4System::Logger(){ return NULL; }
+void CEupuLogger4System::Release(){}
+void CEupuLogger4System::Fatal4Sys(const std::string& strFatal){}
+void CEupuLogger4System::Error4Sys(const std::string& strError){}
+void CEupuLogger4System::Debug4Sys(const std::string& strDebug){}
+void CEupuLogger4System::Fatal4Sys(char* strFatal){}
+void CEupuLogger4System::Error4Sys(char* strError){}
+void CEupuLogger4System::Debug4Sys(char* strDebug){}
+void CEupuLogger4System::WriteMonitorLog(unsigned int type, unsigned int mainid, unsigned int assiantid, unsigned int action, const char* username, const char* domain){}
+void CEupuLogger4System::WriteLog(const char* filename, int line, LOGLEVEL level, const char* fmt, ...){}
+void CEupuLogger4System::SetDebugMode(bool bdebug){}
+void CEupuLogger4System::WriteHex(const char* filename, int line, LOGLEVEL level, const char* title, const char* buf, int buflen){}
+void CEupuLogger4System::SetLogLevel(LOGLEVEL level){}
+const char* CEupuLogger4System::GetLogLevelStr(LOGLEVEL){ return NULL; }
+CEupuLogger4System::CEupuLogger4System(){}
+CEupuLogger4System::CEupuLogger4System(const char* spath){}
+CEupuLogger4System::~CEupuLogger4System(){}
+#else
+
 #define MAX_MSGSIZE 2048
 
 using std::cout;
@@ -350,3 +371,5 @@ const char* CEupuLogger4System::GetLogLevelStr(LOGLEVEL level)
     }
     return "UNUSE";
 }
+
+#endif
