@@ -80,7 +80,7 @@ public:
     template<class T> int OutputValue(BYTE* buf, INT32 buflen, T value)
     {
         UINT nLen = sizeof(value);
-        if (nLen > buflen)
+        if (nLen > (UINT)buflen)
             return -1;
 
         if (nLen == sizeof(BYTE))

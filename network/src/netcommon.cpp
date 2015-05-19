@@ -8,12 +8,14 @@ SOCKET_SET* initSocketset(int fd, time_t conntime, const string& peerip, unsigne
     SOCKET_KEY* key = new SOCKET_KEY;
     if (!key)
     {
+        LOG(_ERROR_, "initSocketset() error, new SOCKET_KEY failed");
         ::exit(-1);
     }
 
     SOCKET_SET* socketset = new SOCKET_SET;
     if (!socketset)
     {
+        LOG(_ERROR_, "initSocketset() error, new SOCKET_SET failed");
         delete key;
         key = NULL;
         ::exit(-1);
@@ -23,6 +25,7 @@ SOCKET_SET* initSocketset(int fd, time_t conntime, const string& peerip, unsigne
     key->connect_time = conntime;
     if (!socketset->init(key, peerip, peerport, ntype))
     {
+        LOG(_ERROR_, "initSocketset() error, socketset->init() failed fd=%d, time = %u, ip=%s, prot=%d, type=%d", fd, conntime, peerip, peerip.c_str(), peerport, ntype);
         delete key;
         key = NULL;
         delete socketset;
@@ -40,6 +43,7 @@ bool setNonBlock(int sockfd)
     int opts = fcntl(sockfd, F_GETFL);
     if (-1 == opts)
     {
+        LOG(_ERROR_, "setNonBlock() error, fd=%d", sockfd);
         return false;
     }
 
@@ -57,6 +61,7 @@ bool setNonBlock(int sockfd)
         return false;
     }
 #endif
+    LOG(_INFO_, "setNonBlock() end, fd=%d", sockfd);
     return true;
 }
 
