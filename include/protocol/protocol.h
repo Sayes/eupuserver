@@ -8,7 +8,7 @@ struct NetMessageHead : public CEupuStream
 {
     USHORT uMessageSize;
     USHORT uMainID;
-    BYTE bAssistantID;
+    USHORT bAssistantID;
     BYTE bHandleCode;
     BYTE bReserve;
 public:

@@ -74,8 +74,8 @@ bool CEupuThread::stop()
 
 void CEupuThread::pause()
 {
-    int sig;
 #ifdef OS_LINUX
+    int sig;
     sigwait(&m_waitSig, &sig);
 #elif OS_WINDOWS
     //TODO check here

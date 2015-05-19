@@ -44,11 +44,12 @@ typedef __int32_t INT32;
 #elif OS_WINDOWS
 #include <WinDef.h>
 #define snprintf sprintf_s
+#define vsnprintf vsnprintf_s
 typedef UINT64 __uint64_t;
 #endif
 
 #define MAX_SEND_SIZE   2048
-#define NET_HEAD_SIZE   7
+#define NET_HEAD_SIZE   8
 
 
 #endif//__GLOBAL_DEF__
