@@ -1,11 +1,12 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-#ifdef OS_WINDOWS
-#include "myunistd.h"
-#else
+#ifdef OS_LINUX
 #include<unistd.h>
+#elif OS_WINDOWS
+#include "myunistd.h"
 #endif
+
 #include <string>
 using std::string;
 
