@@ -25,7 +25,7 @@ SOCKET_SET* initSocketset(int fd, time_t conntime, const string& peerip, unsigne
     key->connect_time = conntime;
     if (!socketset->init(key, peerip, peerport, ntype))
     {
-        LOG(_ERROR_, "initSocketset() error, socketset->init() failed fd=%d, time = %u, ip=%s, prot=%d, type=%d", fd, conntime, peerip, peerip.c_str(), peerport, ntype);
+        LOG(_ERROR_, "initSocketset() error, socketset->init() failed fd=%d, time = %u, ip=%s, prot=%d, type=%d", fd, conntime, peerip.c_str(), peerport, ntype);
         delete key;
         key = NULL;
         delete socketset;
