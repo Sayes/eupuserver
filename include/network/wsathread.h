@@ -3,7 +3,7 @@
 
 #ifdef OS_WINDOWS
 
-#include <map>
+#include <unordered_map>
 #include "globaldef.h"
 #include "euputhread.h"
 #include "netcommon.h"
@@ -56,7 +56,7 @@ private:
     int m_recvbuflen;
 
     list<int> m_delsendfdlist;
-    map<int, SOCKET_SET*> m_socketmap;
+    std::unordered_map<int, SOCKET_SET*> m_socketmap;
 
     //unsigned int m_maxwsaeventsize;
 

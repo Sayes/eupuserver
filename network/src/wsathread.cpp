@@ -65,7 +65,7 @@ CWSAThread::~CWSAThread()
         m_listenkey = NULL;
     }
 
-    map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.begin();
+    std::unordered_map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.begin();
     for (; itersockmap != m_socketmap.end(); ++itersockmap)
     {
         if (itersockmap->second)
@@ -177,7 +177,7 @@ void CWSAThread::doWSAEvent()
     while (m_bOperate)
     {
 
-        for (map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.begin(); itersockmap != m_socketmap.end(); ++itersockmap)
+        for (std::unordered_map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.begin(); itersockmap != m_socketmap.end(); ++itersockmap)
         {
             if (itersockmap->second == NULL || itersockmap->second->key == NULL)
             {
@@ -331,7 +331,7 @@ void CWSAThread::doWSAEvent()
 
         for (map<int, list<NET_DATA*>*>::iterator itersendmap = psendmap->begin(); itersendmap != psendmap->end(); ++itersendmap)
         {
-            map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(itersendmap->first);
+            std::unordered_map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(itersendmap->first);
             if (itersockmap == m_socketmap.end() || itersockmap->second == NULL || itersockmap->second->key == NULL)
             {
                 LOG(_ERROR_, "CWSAThread::doWSAEvent() error, m_socketmap.find(fd=%d) failed, itersockmap == m_socketmap.end() %s, itersockmap->second == NULL %s, itersockmap->second->key == NULL %s",
@@ -390,7 +390,7 @@ void CWSAThread::doKeepaliveTimeout()
     }
 
     list<int> timelist;
-    map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.begin();
+    std::unordered_map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.begin();
     for (; itersockmap != m_socketmap.end(); ++itersockmap)
     {
         if (itersockmap->second != NULL)
@@ -678,7 +678,7 @@ void CWSAThread::doRecvMessage(SOCKET_KEY* pkey)
     int buflen = 0;
     int nret = 0;
 
-    map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(pkey->fd);
+    std::unordered_map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(pkey->fd);
     if (itersockmap == m_socketmap.end() || itersockmap->second == NULL || itersockmap->second->key == NULL)
     {
         LOG(_ERROR_, "CWSAThread::doRecvMessage() error, can't find socket in map, fd=%d", pkey->fd);
@@ -747,7 +747,7 @@ int CWSAThread::doSendMessage(SOCKET_KEY* pkey)
     if (pkey == NULL)
         return 0;
 
-    map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(pkey->fd);
+    std::unordered_map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(pkey->fd);
     if (itersockmap == m_socketmap.end() || itersockmap->second == NULL || itersockmap->second->key == NULL)
     {
         LOG(_ERROR_, "CWSAThread::doSendMessage() error, do not find socket in m_socketmap, fd=%d", pkey->fd);
@@ -939,7 +939,7 @@ void CWSAThread::closeClient(int fd, time_t conn_time)
     //m_eventArray[i] = WSA_INVALID_EVENT;
     //m_sockArray[i] = INVALID_SOCKET;
 
-    map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(fd);
+    std::unordered_map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(fd);
     ::closesocket(fd);
 
     if (itersockmap == m_socketmap.end())
@@ -1020,7 +1020,7 @@ bool CWSAThread::addSocketToMap(SOCKET_SET* psockset)
     //    return false;
     //}
 
-    map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(psockset->key->fd);
+    std::unordered_map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(psockset->key->fd);
     if (itersockmap != m_socketmap.end())
     {
         if (itersockmap->second && itersockmap->second->key)
@@ -1040,7 +1040,7 @@ bool CWSAThread::addSocketToMap(SOCKET_SET* psockset)
         m_socketmap.erase(itersockmap);
     }
 
-    m_socketmap.insert(map<int, SOCKET_SET*>::value_type(psockset->key->fd, psockset));
+    m_socketmap.insert(std::unordered_map<int, SOCKET_SET*>::value_type(psockset->key->fd, psockset));
 
     LOG(_INFO_, "CWSAThread::addSocketToMap() successed, fd=%d, time=%u, ip=%s, port=%d, type=%d", psockset->key->fd, psockset->key->connect_time, psockset->peer_ip.c_str(), psockset->peer_port, psockset->type);
     LOG(_INFO_, "CWSAThread::addSocketToMap() successed, m_socketmap size=%d", m_socketmap.size());
