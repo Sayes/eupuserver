@@ -119,6 +119,7 @@ bool CEpollThread::startup()
         m_recvbuflen = MAX_SEND_SIZE;
     }
 
+    //double MAX_SEND_SIZE
     m_recvbuflen += MAX_SEND_SIZE;
     m_recvbuffer = new char[m_recvbuflen];
     if (!m_recvbuffer)
@@ -130,6 +131,8 @@ bool CEpollThread::startup()
     m_events = new epoll_event[m_maxepollsize];
     if (!m_events)
     {
+        delete m_recvbuffer;
+        m_recvbuffer = NULL;
         LOG(_ERROR_, "CEpollThread::startup() error, _new m_events failed");
         ::exit(-1);
     }
@@ -583,7 +586,7 @@ void CEpollThread::doRecvMessage(SOCKET_KEY* pkey)
         LOG(_ERROR_, "CEpollThread::doRecvMessage() fd not found in m_socketmap, fd=%d, time=%u", pkey->fd, pkey->connect_time);
         closeClient(pkey->fd, pkey->connect_time);
         //TODO check here, will return or not
-        //return;
+        return;
     }
 
     if (iter->second->key != pkey)
@@ -591,7 +594,7 @@ void CEpollThread::doRecvMessage(SOCKET_KEY* pkey)
         LOG(_ERROR_, "CEpollThread::doRecvMessage() the found socket doesn't match, fd=%d, cur=%p, old=%p", pkey->fd, pkey, iter->second->key);
         closeClient(pkey->fd, pkey->connect_time);
         //TODO check here, will return or not
-        //return;
+        return;
     }
 
     SOCKET_SET* psockset = iter->second;
@@ -757,7 +760,7 @@ bool CEpollThread::parsePacketToRecvQueue(SOCKET_SET* psockset, char* buf, int b
 
     if (buf == NULL || buflen <= 0)
     {
-        LOG(_ERROR_, "CEpollThread::parsePackageToRecvQueue() error, buflen < 0");
+        LOG(_ERROR_, "CEpollThread::parsePackateToRecvQueue() error, buflen < 0");
         //TODO check here, return true or false ?
         return true;
     }
