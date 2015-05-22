@@ -3,12 +3,10 @@
 
 #ifdef OS_LINUX
 
-#include <map>
+#include <unordered_map>
 #include <globaldef.h>
 #include <euputhread.h>
 #include <netcommon.h>
-
-using std::map;
 
 class CEpollThread : public CEupuThread {
 public:
@@ -62,7 +60,7 @@ private:
     struct epoll_event* m_events;
 
     list<int> m_delsendfdlist;
-    map<int, SOCKET_SET*> m_socketmap;
+    std::unordered_map<int, SOCKET_SET*> m_socketmap;
 
     UINT m_maxepollsize;
 

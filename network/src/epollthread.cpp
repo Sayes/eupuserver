@@ -48,7 +48,7 @@ CEpollThread::~CEpollThread()
         m_listenkey = NULL;
     }
 
-    map<int, SOCKET_SET*>::iterator it = m_socketmap.begin();
+    std::unordered_map<int, SOCKET_SET*>::iterator it = m_socketmap.begin();
     for (; it != m_socketmap.end(); ++it)
     {
         delete it->second;
@@ -257,7 +257,7 @@ void CEpollThread::doEpollEvent()
 
         for (map<int, list<NET_DATA*>*>::iterator itersendmap = psendmap->begin(); itersendmap != psendmap->end(); ++itersendmap)
         {
-            map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(itersendmap->first);
+            std::unordered_map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(itersendmap->first);
             if (itersockmap == m_socketmap.end() || itersockmap->second == NULL || itersockmap->second->key == NULL)
             {
                 LOG(_ERROR_, "CEpollThread::doEpollEvent() error, m_socketmap.find(fd) failed, itersockmap == m_socketmap.end() %s, itersockmap->second == NULL %s, itersockmap->second->key == NULL %s"
@@ -314,7 +314,7 @@ void CEpollThread::doKeepaliveTimeout()
     }
 
     list<int> timelist;
-    map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.begin();
+    std::unordered_map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.begin();
     for (; itersockmap != m_socketmap.end(); ++itersockmap)
     {
         if (itersockmap->second != NULL)
@@ -576,7 +576,7 @@ void CEpollThread::doRecvMessage(SOCKET_KEY* pkey)
     int buflen = 0;
     int nret = 0;
 
-    map<int, SOCKET_SET*>::iterator iter = m_socketmap.find(pkey->fd);
+    std::unordered_map<int, SOCKET_SET*>::iterator iter = m_socketmap.find(pkey->fd);
 
     if (iter == m_socketmap.end() || iter->second == NULL || iter->second->key == NULL)
     {
@@ -650,7 +650,7 @@ int CEpollThread::doSendMessage(SOCKET_KEY* pkey)
     if (!pkey)
         return 0;
 
-    map<int, SOCKET_SET*>::iterator itermap = m_socketmap.find(pkey->fd);
+    std::unordered_map<int, SOCKET_SET*>::iterator itermap = m_socketmap.find(pkey->fd);
 
     if (itermap == m_socketmap.end() || itermap->second == NULL || itermap->second->key == NULL)
     {
@@ -834,7 +834,7 @@ void CEpollThread::closeClient(int fd, time_t conntime)
         LOG(_ERROR_, "CEpollThread::closeClient() error, delete socket from epoll failed, fd=%d, error=%s", fd, strerror(errno));
     }
 
-    map<int, SOCKET_SET*>::iterator iter = m_socketmap.find(fd);
+    std::unordered_map<int, SOCKET_SET*>::iterator iter = m_socketmap.find(fd);
     close(fd);
     if (iter == m_socketmap.end())
     {
@@ -914,7 +914,7 @@ bool CEpollThread::addSocketToMap(SOCKET_SET* psockset)
         return false;
     }
 
-    map<int, SOCKET_SET*>::iterator iter = m_socketmap.find(psockset->key->fd);
+    std::unordered_map<int, SOCKET_SET*>::iterator iter = m_socketmap.find(psockset->key->fd);
     if (iter != m_socketmap.end())
     {
         if (iter->second && iter->second->key)
@@ -935,7 +935,7 @@ bool CEpollThread::addSocketToMap(SOCKET_SET* psockset)
         m_socketmap.erase(iter);
     }
 
-    m_socketmap.insert(map<int, SOCKET_SET*>::value_type(psockset->key->fd, psockset));
+    m_socketmap.insert(std::unordered_map<int, SOCKET_SET*>::value_type(psockset->key->fd, psockset));
     return true;
 }
 
