@@ -152,6 +152,12 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
         return -1;
     }
 
+    if (localip.empty())
+    {
+        LOG(_ERROR_, "doNonblockConnect() error, localip is empty");
+        return -1;
+    }
+
     int fd = socket(AF_INET, SOCK_STREAM, 0);
     if (fd < 0)
     {
@@ -159,22 +165,18 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
         return -1;
     }
 
-    if (!localip.empty())
+    struct sockaddr_in localaddr = {0};
+    localaddr.sin_family = AF_INET;
+    localaddr.sin_addr.s_addr = fgAtoN(localip.c_str());
+    if (!bind(fd, (struct sockaddr*)&localaddr, sizeof(localaddr)) < 0)
     {
-        struct sockaddr_in localaddr = {0};
-        localaddr.sin_family = AF_INET;
-        localaddr.sin_addr.s_addr = fgAtoN(localip.c_str());
-
-        if (!bind(fd, (struct sockaddr*)&localaddr, sizeof(localaddr)) < 0)
-        {
-            LOG(_ERROR_, "doNonblockConnect() error, bind() failed");
+        LOG(_ERROR_, "doNonblockConnect() error, bind() failed");
 #ifdef OS_LINUX
-            close(fd);
+        close(fd);
 #elif OS_WINDOWS
-            ::closesocket(fd);
+        ::closesocket(fd);
 #endif
-            return -1;
-        }
+        return -1;
     }
 
     struct sockaddr_in addr = {0};

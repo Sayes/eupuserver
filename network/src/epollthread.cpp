@@ -762,7 +762,7 @@ bool CEpollThread::parsePacketToRecvQueue(SOCKET_SET* psockset, char* buf, int b
     {
         LOG(_ERROR_, "CEpollThread::parsePackateToRecvQueue() error, buflen < 0");
         //TODO check here, return true or false ?
-        return true;
+        return false;
     }
 
     LOGHEX(_DEBUG_, "recv message:", buf, buflen);
@@ -1063,14 +1063,12 @@ bool CEpollThread::createConnectServerMsg(SOCKET_SET* psockset)
         return false;
     }
 
-
     MP_Server_Connected msg;
     msg.m_nServer = psockset->type;
 
     char buf[MAX_SEND_SIZE];
     UINT buflen = sizeof(buf);
     memset(buf, 0, buflen);
-
 
     if (!msg.Out((BYTE*)buf, buflen))
     {
