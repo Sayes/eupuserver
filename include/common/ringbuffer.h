@@ -2,10 +2,10 @@
 #define _RINGBUFFER_H_
 #include <string>
 
-class CRingBuffer
+class RingBuffer
 {
 public:
-    CRingBuffer()
+    RingBuffer()
     : buf(NULL)
     , bufsize(0)
     , h(0)
@@ -13,7 +13,7 @@ public:
     {
     }
 
-    ~CRingBuffer()
+    ~RingBuffer()
     {
         release();
     }
