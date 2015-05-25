@@ -207,12 +207,12 @@ void CGlobalMgr::clean()
     m_eventlist.clearQueue();
 }
 
-CSysQueue<NET_DATA>* CGlobalMgr::getRecvQueue()
+SysQueue<NET_DATA>* CGlobalMgr::getRecvQueue()
 {
     return &m_recvlist;
 }
 
-CSysQueue<NET_EVENT>* CGlobalMgr::getEventQueue()
+SysQueue<NET_EVENT>* CGlobalMgr::getEventQueue()
 {
     return &m_eventlist;
 }

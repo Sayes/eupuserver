@@ -41,7 +41,7 @@ void CEupuThread::setMaskSIGUSR1()
     sigaddset(&sig, SIGUSR1);
     pthread_sigmask(SIG_BLOCK, &sig, NULL);
 #elif OS_WINDOWS
-    //TODO
+    //TODO, implement setMaskSIGUSR1
 #endif
 }
 

@@ -7,7 +7,7 @@
 using std::list;
 
 template <class T>
-class CSysQueue {
+class SysQueue {
 public:
     void clearQueue()
     {
@@ -25,12 +25,12 @@ public:
         UnLock();
     }
 
-    virtual ~CSysQueue()
+    virtual ~SysQueue()
     {
 
     }
 
-    CSysQueue()
+    SysQueue()
     {
         m_maxSize = 15000;
     }

@@ -56,13 +56,13 @@ CEpollThread::~CEpollThread()
     }
     m_socketmap.clear();
 
-    list<NET_DATA*>::iterator recviter = m_recvtmplst.begin();
-    for (; recviter != m_recvtmplst.end(); ++recviter)
+    list<NET_DATA*>::iterator iterrecv = m_recvtmplst.begin();
+    for (; iterrecv != m_recvtmplst.end(); ++iterrecv)
     {
-        if ((*recviter) != NULL)
+        if ((*iterrecv) != NULL)
         {
-            delete(*recviter);
-            (*recviter) = NULL;
+            delete(*iterrecv);
+            (*iterrecv) = NULL;
         }
     }
     m_recvtmplst.clear();
@@ -86,9 +86,7 @@ CEpollThread::~CEpollThread()
 void CEpollThread::run()
 {
     pause();
-
     m_bIsExit = false;
-
     doEpollEvent();
     m_bIsExit = true;
 }
@@ -104,7 +102,6 @@ bool CEpollThread::startup()
     m_keepaliveinterval = m_keepalivetimeout / 2;
     m_serverip = CGlobalConfig::getInstance()->getListenIp();
     m_serverport = CGlobalConfig::getInstance()->getListenPort();
-
     m_sendbufsize = CGlobalConfig::getInstance()->getSocketSendBuf();
     m_readbufsize = CGlobalConfig::getInstance()->getSocketRecvBuf();
 
@@ -231,17 +228,17 @@ void CEpollThread::doEpollEvent()
         /////////////////begin copy all recv message to recv list/////////////////
         if (m_recvtmplst.size() > 0)
         {
-            CSysQueue<NET_DATA>* precvlist = CGlobalMgr::getInstance()->getRecvQueue();
+            SysQueue<NET_DATA>* precvlist = CGlobalMgr::getInstance()->getRecvQueue();
             precvlist->Lock();
-            list<NET_DATA*>::iterator iter = m_recvtmplst.begin();
-            for (; iter != m_recvtmplst.end(); ++iter)
+            list<NET_DATA*>::iterator iterrecv = m_recvtmplst.begin();
+            for (; iterrecv != m_recvtmplst.end(); ++iterrecv)
             {
-                if ((*iter) == NULL)
+                if ((*iterrecv) == NULL)
                     continue;
-                if (!precvlist->inQueueWithoutLock(*iter, false))
+                if (!precvlist->inQueueWithoutLock(*iterrecv, false))
                 {
                     LOG(_ERROR_, "CEpollThread::doEpollEvent() error, inQueueWithoutLock() failed");
-                    delete(*iter);
+                    delete(*iterrecv);
                 }
             }
             precvlist->UnLock();
@@ -290,6 +287,7 @@ void CEpollThread::doEpollEvent()
         /////////////////////////begin handle keepalive timeout////////////////////////////////
         doKeepaliveTimeout();
         /////////////////////////end handle keepalive timeout////////////////////////////////
+
         /////////////////////////begin send keepalive message to server///////////////////////////
         doSendKeepaliveToServer();
         /////////////////////////end send keepalive message to server////////////////////////////
@@ -585,7 +583,6 @@ void CEpollThread::doRecvMessage(SOCKET_KEY* pkey)
     {
         LOG(_ERROR_, "CEpollThread::doRecvMessage() fd not found in m_socketmap, fd=%d, time=%u", pkey->fd, pkey->connect_time);
         closeClient(pkey->fd, pkey->connect_time);
-        //TODO check here, will return or not
         return;
     }
 
@@ -593,7 +590,6 @@ void CEpollThread::doRecvMessage(SOCKET_KEY* pkey)
     {
         LOG(_ERROR_, "CEpollThread::doRecvMessage() the found socket doesn't match, fd=%d, cur=%p, old=%p", pkey->fd, pkey, iter->second->key);
         closeClient(pkey->fd, pkey->connect_time);
-        //TODO check here, will return or not
         return;
     }
 
@@ -761,7 +757,6 @@ bool CEpollThread::parsePacketToRecvQueue(SOCKET_SET* psockset, char* buf, int b
     if (buf == NULL || buflen <= 0)
     {
         LOG(_ERROR_, "CEpollThread::parsePackateToRecvQueue() error, buflen < 0");
-        //TODO check here, return true or false ?
         return false;
     }
 
@@ -975,7 +970,7 @@ void CEpollThread::deleteSendMsgFromSendMap(int fd)
 
 void CEpollThread::doSystemEvent()
 {
-    CSysQueue<NET_EVENT>* pevent = CGlobalMgr::getInstance()->getEventQueue();
+    SysQueue<NET_EVENT>* pevent = CGlobalMgr::getInstance()->getEventQueue();
     if (pevent == NULL)
     {
         return;
@@ -1048,7 +1043,6 @@ void CEpollThread::doSystemEvent()
                     break;
                 }
         } //end switch
-        //TODO check here, delete pdata or not ?
         delete pdata;
         pdata = NULL;
     }//end while

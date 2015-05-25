@@ -49,8 +49,8 @@ public:
     void setUserCenterSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype);
     void setLogSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype);
 
-    CSysQueue<NET_EVENT>* getEventQueue();
-    CSysQueue<NET_DATA>* getRecvQueue();
+    SysQueue<NET_EVENT>* getEventQueue();
+    SysQueue<NET_DATA>* getRecvQueue();
 
     map<int, list<NET_DATA*>* >* getBakSendMap()
     {
@@ -69,8 +69,8 @@ private:
     map<int, list<NET_DATA*> *>* m_pbaksendmap;
     CThreadLock m_sendmaplock;
 
-    CSysQueue<NET_DATA> m_recvlist;
-    CSysQueue<NET_EVENT> m_eventlist;
+    SysQueue<NET_DATA> m_recvlist;
+    SysQueue<NET_EVENT> m_eventlist;
 
     static CGlobalMgr* m_pInstance;
     int m_nMaxSendList;

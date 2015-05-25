@@ -44,8 +44,8 @@ void CWorkBaseThread::run()
 
     m_bIsExit = false;
 
-    CSysQueue<NET_DATA>* precvlist = CGlobalMgr::getInstance()->getRecvQueue();
-    CSysQueue<NET_EVENT>* peventlist = CGlobalMgr::getInstance()->getEventQueue();
+    SysQueue<NET_DATA>* precvlist = CGlobalMgr::getInstance()->getRecvQueue();
+    SysQueue<NET_EVENT>* peventlist = CGlobalMgr::getInstance()->getEventQueue();
     if (precvlist == NULL || peventlist == NULL)
     {
         LOG(_ERROR_, "CWorkBaseThread::run() error, recvlist == NULL || eventlist == NULL");
