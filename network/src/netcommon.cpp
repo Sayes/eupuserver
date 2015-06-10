@@ -77,7 +77,7 @@ int recv_msg(int fd, char* buf, int& nlen)
 #ifdef OS_LINUX
         nread = recv(fd, p, n, MSG_NOSIGNAL);
 #elif OS_WINDOWS
-        //TODO, be sure with param replace MSG_NOSIGNAL
+        //TODO, suspend, be sure with param replace MSG_NOSIGNAL
         nread = recv(fd, p, n, 0);
 #endif
         if (nread < 0)

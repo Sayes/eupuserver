@@ -378,7 +378,6 @@ void CGlobalMgr::setDistributeSocket(int fd, time_t conntime, const string& peer
 
 bool CGlobalMgr::sendMsgToServer(int ntype, USHORT mainid, USHORT assistantid, BYTE code, BYTE reserve, CEupuStream* stream, UINT nlen, bool blocked)
 {
-    //TODO check here, will judge block here ?
     if (blocked)
         m_serverlock.Lock();
 

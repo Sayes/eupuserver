@@ -320,7 +320,6 @@ void CEpollThread::doKeepaliveTimeout()
     {
         if (itersockmap->second != NULL)
         {
-            //TODO check here, > or < ?
             if (itersockmap->second->refresh_time + m_keepalivetimeout < curtime)
             {
                 timelist.push_back(itersockmap->first);

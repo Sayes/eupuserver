@@ -41,7 +41,7 @@ void CEupuThread::setMaskSIGUSR1()
     sigaddset(&sig, SIGUSR1);
     pthread_sigmask(SIG_BLOCK, &sig, NULL);
 #elif OS_WINDOWS
-    //TODO, implement setMaskSIGUSR1
+    //TODO, suspend, implement setMaskSIGUSR1
 #endif
 }
 
@@ -78,7 +78,7 @@ void CEupuThread::pause()
     int sig;
     sigwait(&m_waitSig, &sig);
 #elif OS_WINDOWS
-    //TODO check here
+    //TODO, suspend, check here
     LOG(_INFO_, "CEupuThread::pause() before");
     sem_wait(&m_waitSig);
     LOG(_INFO_, "CEupuThread::pause() after");
@@ -92,7 +92,7 @@ void CEupuThread::continues()
 #ifdef OS_LINUX
     pthread_kill(m_pid, SIGUSR1);
 #elif OS_WINDOWS
-    //TODO check here
+    //TODO, suspend, check here
     sem_post(&m_waitSig);
 #endif
 }
