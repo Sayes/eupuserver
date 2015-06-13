@@ -303,7 +303,7 @@ continue;
         /////////////////begin copy all recv message to recv list/////////////////
         if (m_recvtmplst.size() > 0)
         {
-                CSysQueue<NET_DATA>* precvlist = CGlobalMgr::getInstance()->getRecvQueue();
+                SysQueue<NET_DATA>* precvlist = CGlobalMgr::getInstance()->getRecvQueue();
                 precvlist->Lock();
                 list<NET_DATA*>::iterator iter = m_recvtmplst.begin();
                 for (; iter != m_recvtmplst.end(); ++iter)
@@ -1079,7 +1079,7 @@ void CWSAThread::deleteSendMsgFromSendMap(int fd)
 
 void CWSAThread::doSystemEvent()
 {
-        CSysQueue<NET_EVENT>* pevent = CGlobalMgr::getInstance()->getEventQueue();
+        SysQueue<NET_EVENT>* pevent = CGlobalMgr::getInstance()->getEventQueue();
         if (pevent == NULL)
         {
                 return;
