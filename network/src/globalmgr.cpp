@@ -497,7 +497,6 @@ void CGlobalMgr::createServerConnect(int ntype)
 
     if (fd < 0)
     {
-        LOG(_ERROR_, "CGlobalMgr::createServerConnect() error, doNonblockConnect() failed");
         return;
     }
 
