@@ -4,6 +4,7 @@
 #include "globalmgr.h"
 #include "protocol.h"
 #include "sprotocol.h"
+#include "eupu.base.pb.h"
 
 CWorkThread::CWorkThread()
 : m_iUserCount(0)
@@ -118,8 +119,19 @@ bool CWorkThread::ProcessMainConnected(NET_DATA* pdata)
 int CWorkThread::ProcessKeepalive(NET_DATA* pdata)
 {
     if (pdata == NULL)
-    return 0;
+        return 0;
+
+    std::string str;
+
+    eupu::UserInfo usrinf;
+    usrinf.set_u32userid(0);
+    usrinf.SerializeToString(&str);
 
     bool bret = CGlobalMgr::getInstance()->createMsgToSendList(pdata->fd, pdata->connect_time, pdata->peer_ip, pdata->peer_port, pdata->type, KEEP_ALIVE_PING, 0, 0, 0, NULL, 0);
+
+    if (bret)
+        bret = CGlobalMgr::getInstance()->createMsgToSendList(pdata->fd, pdata->connect_time, pdata->peer_ip, pdata->peer_port, pdata->type, C2S_DATA, 0, 0, 0, str.c_str(), str.size());
+
     return (bret ? 1 : 0);
+
 }
