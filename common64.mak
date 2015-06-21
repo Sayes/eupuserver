@@ -14,7 +14,7 @@ OPENSSL_PATH = /usr/local
 
 #TS_DIR = /home/loogen/workshop/eupuserver-code/trunk
 #TS_DIR = /home/shenyizhong/workshop/projects/eupuserver-code/trunk
-TS_DIR = /home/pi/workshop/projects/eupuserver-code/trunk
+#TS_DIR = /home/pi/workshop/projects/eupuserver-code/trunk
 
 TS_INCLUDE = $(TS_DIR)/include
 
