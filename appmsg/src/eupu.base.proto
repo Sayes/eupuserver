@@ -2,6 +2,6 @@ package eupu;
 
 message UserInfo
 {
-    required uint32 u32UserId = 1;
-    required string strUserName = 2;
+    required uint32 age = 1;
+    required string name = 2;
 }
