@@ -1,7 +1,11 @@
 
 OBJS = src/eupu.base.pb.o
 
+ifeq ($(ARCH), 64)
+include ../common64.mak
+else
 include ../common.mak
+endif
 
 RELEASE_DIR = ../release
 
