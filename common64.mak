@@ -1,7 +1,7 @@
 
-CC = gcc -g
-CXX = g++ -g
-LINK = g++ -g
+CC = gcc
+CXX = g++
+LINK = g++
 
 LOG4CXX_PATH = /usr/local/log4cxx
 APR_PATH = /usr/local/apr
