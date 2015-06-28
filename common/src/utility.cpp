@@ -2,7 +2,7 @@
 #include  <stdlib.h>
 #include "utility.h"
 
-const unsigned char cUtility::base64_decode_map[256] =
+const unsigned char Utility::base64_decode_map[256] =
 {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
 
@@ -31,17 +31,17 @@ const unsigned char cUtility::base64_decode_map[256] =
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255
 };
 
-cUtility::cUtility()
+Utility::Utility()
 {
     //ctor
 }
 
-cUtility::~cUtility()
+Utility::~Utility()
 {
     //dtor
 }
 
-string cUtility::Int2String(int num)
+string Utility::Int2String(int num)
 {
     char tmp[100];
     memset(tmp, 0, sizeof(tmp));
@@ -49,7 +49,7 @@ string cUtility::Int2String(int num)
     return string(tmp);
 }
 
-string cUtility::uInt2String(UINT num)
+string Utility::uInt2String(uint32 num)
 {
     char tmp[100];
     memset(tmp, 0, sizeof(tmp));
@@ -58,7 +58,7 @@ string cUtility::uInt2String(UINT num)
 }
 
 
-//ULONG cUtility::String2UL(const char *str)
+//uint32 Utility::String2UL(const char *str)
 //{
 //    if (str == NULL)
 //    {
@@ -68,7 +68,7 @@ string cUtility::uInt2String(UINT num)
 //    return strtoul(str, NULL, 10);
 //}
 
-//long cUtility::String2L(const char* str)
+//long Utility::String2L(const char* str)
 //{
 //    if (str == NULL)
 //    {
@@ -78,19 +78,19 @@ string cUtility::uInt2String(UINT num)
 //    return strtol(str, NULL, 10);
 //}
 
-bool cUtility::Compress(BYTE* pSrc, int nLen, BYTE* pDst, int& nDstLen)
+bool Utility::Compress(uint8* pSrc, int nLen, uint8* pDst, int& nDstLen)
 {
     //int nCompleteLen = compress2(pDst,(uLongf*)&nDstLen,pSrc,nLen,5);
     return true;
 }
 
-bool cUtility::Uncompress(BYTE* pSrc, int nLen, BYTE* pDst, int& nDstLen)
+bool Utility::Uncompress(uint8* pSrc, int nLen, uint8* pDst, int& nDstLen)
 {
     return true;
 }
 
 /*
-DWORD cUtility::MakeDWORD(BYTE bValue1, BYTE bValue2, BYTE bValue3, BYTE bValue4)
+DWORD Utility::MakeDWORD(uint8 bValue1, uint8 bValue2, uint8 bValue3, uint8 bValue4)
 {
 	DWORD dwValue = 0;
 	dwValue |= (bValue1 << 24);
@@ -102,18 +102,18 @@ DWORD cUtility::MakeDWORD(BYTE bValue1, BYTE bValue2, BYTE bValue3, BYTE bValue4
 }
 */
 
-UINT cUtility::GetCPUComsuming()
+uint32 Utility::GetCPUComsuming()
 {
     return 0;
 }
 
-UINT cUtility::GetMemComsuming()
+uint32 Utility::GetMemComsuming()
 {
     return 0;
 }
 
 /*
-void cUtility::MakeBYTE(DWORD dwValue, BYTE& bValue1, BYTE& bValue2, BYTE& bValue3, BYTE& bValue4)
+void Utility::MakeBYTE(DWORD dwValue, uint8& bValue1, uint8& bValue2, uint8& bValue3, uint8& bValue4)
 {
 	bValue1 = ((dwValue & 0xff000000)>>24);
 	bValue2 = ((dwValue & 0x00ff0000)>>16);
@@ -123,9 +123,9 @@ void cUtility::MakeBYTE(DWORD dwValue, BYTE& bValue1, BYTE& bValue2, BYTE& bValu
 */
 
 /*
-string cUtility::Ip2String(UINT ip)
+string Utility::Ip2String(uint32 ip)
 {
-	BYTE value1, value2, value3, value4;
+	uint8 value1, value2, value3, value4;
 	MakeBYTE(ip, value1, value2, value3, value4);
 
 	string strIp = (Int2String(value1, 10)+"."+Int2String(value2, 10)+"." +Int2String(value3, 10)+"."+Int2String(value4, 10));
@@ -135,14 +135,14 @@ string cUtility::Ip2String(UINT ip)
 */
 
 /*
-UINT cUtility::Ip2uInt(char* ip)
+uint32 Utility::Ip2uInt(char* ip)
 {
 	char* p = strtok(ip, ".");
-	BYTE value[4];
+	uint8 value[4];
 	int i=0;
 	while (p != NULL)
 	{
-		value[i] = (BYTE)atoi(p);
+		value[i] = (uint8)atoi(p);
 		p = strtok(NULL,".");
 		i++;
 	}
@@ -152,14 +152,14 @@ UINT cUtility::Ip2uInt(char* ip)
 */
 
 /*
-UINT cUtility::Ip2S_addr(char* ip)
+uint32 Utility::Ip2S_addr(char* ip)
 {
 	char* p = strtok(ip, ".");
-	BYTE value[4];
+	uint8 value[4];
 	int i=0;
 	while (p != NULL)
 	{
-		value[i] = (BYTE)atoi(p);
+		value[i] = (uint8)atoi(p);
 		p = strtok(NULL,".");
 		i++;
 	}
@@ -168,12 +168,12 @@ UINT cUtility::Ip2S_addr(char* ip)
 }
 */
 
-UINT cUtility::GetMillionTime()
+uint32 Utility::GetMillionTime()
 {
-    return (UINT)time(0);
+    return (uint32)time(0);
 }
 
-void cUtility::GetTime4Log(char* szTime)
+void Utility::GetTime4Log(char* szTime)
 {
 #ifdef OS_LINUX
     if (szTime == NULL)
@@ -200,7 +200,7 @@ void cUtility::GetTime4Log(char* szTime)
 #endif
 }
 
-void cUtility::GetDate4Log(char* szDate)
+void Utility::GetDate4Log(char* szDate)
 {
 #ifdef OS_LINUX
     if (szDate == NULL)
@@ -231,7 +231,7 @@ void cUtility::GetDate4Log(char* szDate)
 #endif
 }
 
-void cUtility::GetDate(char* szDate)
+void Utility::GetDate(char* szDate)
 {
     if (szDate == NULL)
     {
@@ -257,7 +257,7 @@ void cUtility::GetDate(char* szDate)
 #endif
 }
 
-void cUtility::GetDateTime4Log(char* szDateTime)
+void Utility::GetDateTime4Log(char* szDateTime)
 {
     if (szDateTime == NULL)
     {
@@ -282,7 +282,7 @@ void cUtility::GetDateTime4Log(char* szDateTime)
 #endif
 }
 
-void cUtility::GetDateTime(char* szDateTime)
+void Utility::GetDateTime(char* szDateTime)
 {
     if (szDateTime == NULL)
     {
@@ -306,7 +306,7 @@ void cUtility::GetDateTime(char* szDateTime)
         sprintf(szDateTime, "%d-%.2d-%.2d %.2d:%.2d:%.2d", (1900 + p->tm_year), (1 + p->tm_mon), p->tm_mday, p->tm_hour, p->tm_min, p->tm_sec);
 #endif
 }
-time_t cUtility::FormatTime(char* szTime)
+time_t Utility::FormatTime(char* szTime)
 {
     if (!(szTime && szTime[0]))
     {
@@ -349,16 +349,16 @@ time_t cUtility::FormatTime(char* szTime)
 
 
 }
-ULONG cUtility::DiffTime(time_t tTime)
+uint32 Utility::DiffTime(time_t tTime)
 {
     time_t currentTime;
     time(&currentTime);
     double cost = difftime(currentTime, tTime);
-    ULONG uCost = ULONG(cost);
+    uint32 uCost = uint32(cost);
 
     return uCost;
 }
-//LONG cUtility::GetFileLines(char* szFileName)
+//LONG Utility::GetFileLines(char* szFileName)
 //{
 //    FILE* fp;
 //
@@ -385,7 +385,7 @@ ULONG cUtility::DiffTime(time_t tTime)
 //
 //}
 
-bool cUtility::CheckDate(INT32 year, INT32 month, INT32 day)
+bool Utility::CheckDate(int32 year, int32 month, int32 day)
 {
     if (year < 1900 || month <= 0 || month > 12 || day <= 0 || day > 31)
     {
@@ -442,7 +442,7 @@ bool cUtility::CheckDate(INT32 year, INT32 month, INT32 day)
 }
 
 /*
-LONG cUtility::GetFileSize(char* strFileName)
+LONG Utility::GetFileSize(char* strFileName)
 {
 	if (strFileName == NULL)
 	{
@@ -458,7 +458,7 @@ LONG cUtility::GetFileSize(char* strFileName)
 }
 */
 
-int cUtility::Base64Decode(unsigned char* szSrc, unsigned char* szDst, int SrcSize)
+int Utility::Base64Decode(unsigned char* szSrc, unsigned char* szDst, int SrcSize)
 {
     int i = 0, j = 0;
 
@@ -494,26 +494,26 @@ int cUtility::Base64Decode(unsigned char* szSrc, unsigned char* szDst, int SrcSi
     return count;
 }
 
-int cUtility::getIntDotNet(unsigned char* bb, int index)
+int Utility::getIntDotNet(unsigned char* bb, int index)
 {
     return (int)((((bb[index + 3] & 0xff) << 24) | ((bb[index + 2] & 0xff) << 16) | ((bb[index + 1] & 0xff) << 8)
                   | ((bb[index + 0] & 0xff) << 0)));
 }
 
-INT64 cUtility::getLongDotNet(unsigned char* bb, int index)
+int64 Utility::getLongDotNet(unsigned char* bb, int index)
 {
-    return ((((INT64) bb[index + 7] & 0xff) << 56) | (((INT64) bb[index + 6] & 0xff) << 48) | (((INT64) bb[index + 5]
-            & 0xff) << 40) | (((INT64) bb[index + 4] & 0xff) << 32) | (((INT64) bb[index + 3] & 0xff) << 24)
-            | (((INT64) bb[index + 2] & 0xff) << 16) | (((INT64) bb[index + 1] & 0xff) << 8) | (((INT64) bb[index + 0]
+    return ((((int64) bb[index + 7] & 0xff) << 56) | (((int64) bb[index + 6] & 0xff) << 48) | (((int64) bb[index + 5]
+            & 0xff) << 40) | (((int64) bb[index + 4] & 0xff) << 32) | (((int64) bb[index + 3] & 0xff) << 24)
+            | (((int64) bb[index + 2] & 0xff) << 16) | (((int64) bb[index + 1] & 0xff) << 8) | (((int64) bb[index + 0]
                     & 0xff) << 0));
 }
 
-short cUtility::getShortDotNet(BYTE* b, int index)
+short Utility::getShortDotNet(uint8* b, int index)
 {
     return (short)(((b[index + 1] << 8) | (b[index] & 0xff)));
 }
 
-string& cUtility::ReplaceAll(string& str, const char* old_value, const char* new_value)
+string& Utility::ReplaceAll(string& str, const char* old_value, const char* new_value)
 {
     string::size_type pos = str.find(old_value);
 
@@ -532,7 +532,7 @@ string& cUtility::ReplaceAll(string& str, const char* old_value, const char* new
     return str;
 }
 
-UINT cUtility::str2Time(string strTm)
+uint32 Utility::str2Time(string strTm)
 {
     time_t uTime = 0;
     int index = strTm.find(" ");
@@ -562,7 +562,7 @@ UINT cUtility::str2Time(string strTm)
     string Second = strTmp2.substr(0, index);
 
     struct tm tm1;
-    //UINT64 uNowTime = cUtility::GetMillionTime();
+    //uint64 uNowTime = Utility::GetMillionTime();
     //struct tm *tmUTC = gmtime((time_t*)&uNowTime);
 
     tm1.tm_year = atoi(strYear.c_str()) - 1900;
@@ -585,14 +585,14 @@ UINT cUtility::str2Time(string strTm)
     return uTime;
 }
 
-UINT64 cUtility::GenerateKeyByIPAndPort(UINT uIp, UINT uPort)
+uint64 Utility::GenerateKeyByIPAndPort(uint32 uIp, uint32 uPort)
 {
-    UINT64 uKey = (((UINT64)uIp & 0xffffffff) << 16) | uPort;
+    uint64 uKey = (((uint64)uIp & 0xffffffff) << 16) | uPort;
 
     return uKey;
 }
 
-int cUtility::abs(int a)
+int Utility::abs(int a)
 {
     if (a < 0)
     {

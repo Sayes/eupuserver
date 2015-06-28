@@ -41,12 +41,12 @@ typedef struct socket_set
     int part_len;
 
     string peer_ip;
-    unsigned short peer_port;
+    uint16 peer_port;
 
     time_t refresh_time;
     int type;   //0: listen, 1: client, 2: mainsvr, 3: dissvr, 4: usercentersvr, 5: centersvr, 6: logsvr
 
-    bool init(SOCKET_KEY* pkey, const string& ip, unsigned short port, int ntype)
+    bool init(SOCKET_KEY* pkey, const string& ip, uint16 port, int ntype)
     {
         if (!pkey)
             return false;
@@ -84,10 +84,10 @@ typedef struct net_data
     int fd;
     time_t connect_time;
     string peer_ip;
-    unsigned short peer_port;
-    int type;
+    uint16 peer_port;
+    int32 type;
     char* pdata;
-    unsigned int data_len;
+    uint32 data_len;
 
     net_data()
     {
@@ -108,7 +108,7 @@ typedef struct net_data
         }
     }
 
-    bool init(int _fd, time_t conntime, const string& ip, unsigned short port, int ntype, unsigned int nlen)
+    bool init(int _fd, time_t conntime, const string& ip, uint16 port, int ntype, uint32 nlen)
     {
         fd = _fd;
         connect_time = conntime;
@@ -143,7 +143,7 @@ typedef struct net_event
 } NET_EVENT;
 
 
-SOCKET_SET* initSocketset(int fd, time_t conntime, const string& peerip, unsigned short peerport, int ntype);
+SOCKET_SET* initSocketset(int fd, time_t conntime, const string& peerip, uint16 peerport, int ntype);
 bool setNonBlock(int fd);
 
 int recv_msg(int fd, char* buf, int& nlen);

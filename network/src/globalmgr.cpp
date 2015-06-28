@@ -19,7 +19,7 @@ void CGlobalMgr::release()
     m_pInstance = NULL;
 }
 
-bool CGlobalMgr::createMsgToSendList(int fd, time_t conntime, const std::string& ip, USHORT port, int ntype, USHORT mainid, USHORT assistantid, BYTE code, BYTE reserve, CEupuStream* pstream, UINT nlen)
+bool CGlobalMgr::createMsgToSendList(int fd, time_t conntime, const std::string& ip, uint16 port, int ntype, uint16 mainid, uint16 assistantid, BYTE code, BYTE reserve, CEupuStream* pstream, uint32 nlen)
 {
     if (fd < 0)
     {
@@ -46,7 +46,7 @@ bool CGlobalMgr::createMsgToSendList(int fd, time_t conntime, const std::string&
         return false;
     }
 
-    UINT buflen = pdata->data_len - NET_HEAD_SIZE;
+    uint32 buflen = pdata->data_len - NET_HEAD_SIZE;
 
     if (pstream)
     {
@@ -124,7 +124,7 @@ bool CGlobalMgr::addMsgToSendList(NET_DATA* pmsg)
         if (plst)
         {
             LOG(_ERROR_, "CGlobalMgr::addMsgToSendList() error, found NET_DATA list is NULL, fd=%d", fd);
-            if (plst->size() < (UINT)m_nMaxSendList)
+            if (plst->size() < (uint32)m_nMaxSendList)
             {
                 plst->push_back(pmsg);
             }
@@ -218,7 +218,7 @@ SysQueue<NET_EVENT>* CGlobalMgr::getEventQueue()
 }
 
 
-void CGlobalMgr::setServerSocket(int fd, time_t conntime, const string& ip, USHORT port, int ntype)
+void CGlobalMgr::setServerSocket(int fd, time_t conntime, const string& ip, uint16 port, int ntype)
 {
     m_serverlock.Lock();
 
@@ -289,7 +289,7 @@ void CGlobalMgr::switchSendMap()
                 continue;
             }
 
-            if (itercur->second->size() + iterbak->second->size() > (UINT)m_nMaxSendList)
+            if (itercur->second->size() + iterbak->second->size() > (uint32)m_nMaxSendList)
             {
                 int needmove = m_nMaxSendList - itercur->second->size();
                 int idx = 0;
@@ -340,7 +340,7 @@ void CGlobalMgr::switchSendMap()
     return;
 }
 
-void CGlobalMgr::setUserCenterSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype)
+void CGlobalMgr::setUserCenterSocket(int fd, time_t conntime, const string& peerip, uint16 peerport, int ntype)
 {
     m_usercenterkey.fd = fd;
     m_usercenterkey.connect_time = conntime;
@@ -349,7 +349,7 @@ void CGlobalMgr::setUserCenterSocket(int fd, time_t conntime, const string& peer
     m_usercenterkey.type = ntype;
 }
 
-void CGlobalMgr::setMainSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype)
+void CGlobalMgr::setMainSocket(int fd, time_t conntime, const string& peerip, uint16 peerport, int ntype)
 {
     m_mainkey.fd = fd;
     m_mainkey.connect_time = conntime;
@@ -357,7 +357,7 @@ void CGlobalMgr::setMainSocket(int fd, time_t conntime, const string& peerip, US
     m_mainkey.peer_port = peerport;
     m_mainkey.type = ntype;
 }
-void CGlobalMgr::setLogSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype)
+void CGlobalMgr::setLogSocket(int fd, time_t conntime, const string& peerip, uint16 peerport, int ntype)
 {
     m_logkey.fd = fd;
     m_logkey.connect_time = conntime;
@@ -367,7 +367,7 @@ void CGlobalMgr::setLogSocket(int fd, time_t conntime, const string& peerip, USH
 }
 
 
-void CGlobalMgr::setDistributeSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype)
+void CGlobalMgr::setDistributeSocket(int fd, time_t conntime, const string& peerip, uint16 peerport, int ntype)
 {
     m_distributekey.fd = fd;
     m_distributekey.connect_time = conntime;
@@ -376,7 +376,7 @@ void CGlobalMgr::setDistributeSocket(int fd, time_t conntime, const string& peer
     m_distributekey.type = ntype;
 }
 
-bool CGlobalMgr::sendMsgToServer(int ntype, USHORT mainid, USHORT assistantid, BYTE code, BYTE reserve, CEupuStream* stream, UINT nlen, bool blocked)
+bool CGlobalMgr::sendMsgToServer(int ntype, uint16 mainid, uint16 assistantid, BYTE code, BYTE reserve, CEupuStream* stream, uint32 nlen, bool blocked)
 {
     if (blocked)
         m_serverlock.Lock();

@@ -23,7 +23,7 @@ int CWorkThread::processMessage(NET_DATA* pdata)
 		return 0;
 	}
 
-	UINT uTmp = pdata->data_len;
+	uint32 uTmp = pdata->data_len;
 	NetMessageHead header;
 
 	if(!header.In((BYTE *)pdata->pdata, uTmp))

@@ -81,7 +81,7 @@ public:
     }
 private:
     CThreadLock m_lock;
-    unsigned int m_count;
+    uint32 m_count;
 };
 
 #endif//__COUNTER_H__

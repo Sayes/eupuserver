@@ -161,7 +161,7 @@ bool CEpollThread::startup()
 time_t CEpollThread::getIndex()
 {
     m_index++;
-    if ((UINT)m_index == 0xFFFFFFFF)
+    if ((uint32)m_index == 0xFFFFFFFF)
         m_index = 1;
     return m_index;
 }
@@ -866,7 +866,7 @@ void CEpollThread::createClientCloseMsg(SOCKET_SET* psockset)
     }
 
     char buf[MAX_SEND_SIZE];
-    UINT buflen = sizeof(buf);
+    uint32 buflen = sizeof(buf);
     memset(buf, 0, buflen);
 
     MP_Server_DisConnected msg;
@@ -905,7 +905,7 @@ bool CEpollThread::addSocketToMap(SOCKET_SET* psockset)
         return false;
     }
 
-    if ((UINT)m_maxepollsize <= m_socketmap.size())
+    if ((uint32)m_maxepollsize <= m_socketmap.size())
     {
         LOG(_ERROR_, "CEpollThread::addSocketToMap() error, the epoll poll is full, fd=%d, peerip=%s, port=%d", psockset->key->fd, GETNULLSTR(psockset->peer_ip), psockset->peer_port);
         return false;
@@ -1060,7 +1060,7 @@ bool CEpollThread::createConnectServerMsg(SOCKET_SET* psockset)
     msg.m_nServer = psockset->type;
 
     char buf[MAX_SEND_SIZE];
-    UINT buflen = sizeof(buf);
+    uint32 buflen = sizeof(buf);
     memset(buf, 0, buflen);
 
     if (!msg.Out((BYTE*)buf, buflen))

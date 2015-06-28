@@ -36,18 +36,18 @@ public:
 
     void createServerConnect(int ntype);
     bool createCloseConnectEvent(int fd, time_t conntime);
-    bool createMsgToSendList(int fd, time_t conntime, const string& ip, USHORT port, int ntype,  USHORT mainid, USHORT assistantid, BYTE code, BYTE reserve, CEupuStream* stream, UINT nlen);
+    bool createMsgToSendList(int fd, time_t conntime, const string& ip, uint16 port, int ntype,  uint16 mainid, uint16 assistantid, BYTE code, BYTE reserve, CEupuStream* stream, uint32 nlen);
     bool addMsgToSendList(NET_DATA* pdata);
-    bool sendMsgToServer(int ntype, USHORT mainid, USHORT assistantid, BYTE code, BYTE reserve, CEupuStream* pstream, UINT nlen, bool blocked = true);
-    void setServerSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype);
+    bool sendMsgToServer(int ntype, uint16 mainid, uint16 assistantid, BYTE code, BYTE reserve, CEupuStream* pstream, uint32 nlen, bool blocked = true);
+    void setServerSocket(int fd, time_t conntime, const string& peerip, uint16 peerport, int ntype);
     void sendKeepaliveMsgToAllServer();
 
     void switchSendMap();
 
-    void setMainSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype);
-    void setDistributeSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype);
-    void setUserCenterSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype);
-    void setLogSocket(int fd, time_t conntime, const string& peerip, USHORT peerport, int ntype);
+    void setMainSocket(int fd, time_t conntime, const string& peerip, uint16 peerport, int ntype);
+    void setDistributeSocket(int fd, time_t conntime, const string& peerip, uint16 peerport, int ntype);
+    void setUserCenterSocket(int fd, time_t conntime, const string& peerip, uint16 peerport, int ntype);
+    void setLogSocket(int fd, time_t conntime, const string& peerip, uint16 peerport, int ntype);
 
     SysQueue<NET_EVENT>* getEventQueue();
     SysQueue<NET_DATA>* getRecvQueue();

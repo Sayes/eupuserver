@@ -6,9 +6,9 @@
 
 struct NetMessageHead : public CEupuStream
 {
-    USHORT uMessageSize;
-    USHORT uMainID;
-    USHORT bAssistantID;
+    uint16 uMessageSize;
+    uint16 uMainID;
+    uint16 bAssistantID;
     BYTE bHandleCode;
     BYTE bReserve;
 public:
@@ -31,14 +31,14 @@ public:
         LOG(_DEBUG_, "\tbReserve: %u", bReserve);
     }
 
-    inline bool Out(BYTE* pDest, UINT& nLen)
+    inline bool Out(BYTE* pDest, uint32& nLen)
     {
         if (pDest == NULL)
             return false;
 
-        INT32 nret = 0;
-        INT32 buflen = nLen;
-        INT32 ntmp = 0;
+        int32 nret = 0;
+        uint32 ntmp = 0;
+        uint32 buflen = nLen;
 
         nret = OutputValue(pDest + ntmp, buflen - ntmp, uMessageSize);
         if (nret < 0)
@@ -70,14 +70,14 @@ public:
         return true;
     }
 
-    inline bool In(BYTE* pSrc, UINT& nLen)
+    inline bool In(BYTE* pSrc, uint32& nLen)
     {
         if (pSrc == NULL)
             return false;
 
-        INT32 nret = 0;
-        INT32 buflen = nLen;
-        INT32 ntmp = 0;
+        int32 nret = 0;
+        uint32 ntmp = 0;
+        int32 buflen = nLen;
 
         nret = InputValue(pSrc + ntmp, buflen - ntmp, uMessageSize);
         if (nret < 0)

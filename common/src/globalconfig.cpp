@@ -162,27 +162,27 @@ bool CGlobalConfig::initSysConfig(const std::string& path)
     return true;
 }
 
-UINT CGlobalConfig::getQueueTimer()
+uint32 CGlobalConfig::getQueueTimer()
 {
     return m_cfg.que_savetime;
 }
 
-UINT CGlobalConfig::getPingTimer()
+uint32 CGlobalConfig::getPingTimer()
 {
     return m_cfg.ping_timer;
 }
 
-UINT CGlobalConfig::getUpdateInterval()
+uint32 CGlobalConfig::getUpdateInterval()
 {
     return m_cfg.update_interval;
 }
 
-UINT CGlobalConfig::getKeepaliveTimer()
+uint32 CGlobalConfig::getKeepaliveTimer()
 {
     return m_cfg.keepalive_timer;
 }
 
-UINT CGlobalConfig::getLogLevel()
+uint32 CGlobalConfig::getLogLevel()
 {
     return m_cfg.loglevel;
 }

@@ -80,7 +80,7 @@ public:
                 break;
             }
 
-            if (m_datalst.size() >= (UINT)m_maxSize)
+            if (m_datalst.size() >= (uint32)m_maxSize)
             {
                 break;
             }
@@ -137,7 +137,7 @@ public:
         if (!arg)
             return false;
 
-        if (m_datalst.size() >= (UINT)m_maxSize)
+        if (m_datalst.size() >= (uint32)m_maxSize)
             return false;
 
         if (bhead)

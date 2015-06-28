@@ -22,7 +22,7 @@ public:
 
     bool is_big_endian()
     {
-        int n = 0x01020304;
+        int32 n = 0x01020304;
         if (*(char*)&n == 0x01)
         {
             return true;
@@ -30,10 +30,10 @@ public:
         return false;
     }
 
-    __uint64_t hl64ton(__uint64_t hostvalue)
+    uint64 hl64ton(uint64 hostvalue)
     {
-        __uint64_t ret = 0;
-        unsigned int high, low;
+        uint64 ret = 0;
+        uint32 high, low;
 
         low = hostvalue & 0xFFFFFFFF;
         high = (hostvalue >> 32) & 0xFFFFFFFF;
@@ -45,10 +45,10 @@ public:
         return ret;
     }
 
-    __uint64_t ntohl64(__uint64_t netvalue)
+    uint64 ntohl64(uint64 netvalue)
     {
-        __uint64_t ret = 0;
-        unsigned int high, low;
+        uint64 ret = 0;
+        uint32 high, low;
         low = netvalue & 0xFFFFFFFF;
         high = (netvalue >> 32) & 0xFFFFFFFF;
         low = ntohl(low);
@@ -59,7 +59,7 @@ public:
         return ret;
     }
 
-    string cmnNtoA(unsigned int ip)
+    string cmnNtoA(uint32 ip)
     {
         char buf[100];
         struct in_addr addr;
@@ -73,14 +73,14 @@ public:
         return string(p);
     }
 
-    virtual bool In(BYTE* pSrc, UINT& nLen) = 0;
-    virtual bool Out(BYTE* pDst, UINT& nLen) = 0;
+    virtual bool In(BYTE* pSrc, uint32& nLen) = 0;
+    virtual bool Out(BYTE* pDst, uint32& nLen) = 0;
     virtual void Debug() = 0;
 
-    template<class T> int OutputValue(BYTE* buf, INT32 buflen, T value)
+    template<class T> int OutputValue(BYTE* buf, int32 buflen, T value)
     {
-        UINT nLen = sizeof(value);
-        if (nLen > (UINT)buflen)
+        int32 nLen = sizeof(value);
+        if (nLen > buflen)
             return -1;
 
         if (nLen == sizeof(BYTE))
@@ -88,19 +88,19 @@ public:
             memcpy(buf, &value, nLen);
             return nLen;
         }
-        else if (nLen == sizeof(USHORT))
+        else if (nLen == sizeof(uint16))
         {
-            USHORT tmp = htons(value);
+            uint16 tmp = htons(value);
             memcpy(buf, &tmp, nLen);
             return nLen;
         }
-        else if (nLen == sizeof(UINT))
+        else if (nLen == sizeof(uint32))
         {
-            UINT tmp = htonl(value);
+            uint32 tmp = htonl(value);
             memcpy(buf, &tmp, nLen);
             return nLen;
         }
-        else if (nLen == sizeof(UINT64))
+        else if (nLen == sizeof(uint64))
         {
             if (is_big_endian())
             {
@@ -108,7 +108,7 @@ public:
             }
             else
             {
-                __uint64_t tmp = hl64ton(value);
+                uint64 tmp = hl64ton(value);
                 memcpy(buf, &tmp, nLen);
             }
             return nLen;
@@ -116,25 +116,25 @@ public:
         return -1;
     }
 
-    int OutputString(BYTE* buf, INT32 buflen, char* szSrc)
+    int OutputString(BYTE* buf, int32 buflen, char* szSrc)
     {
-        UINT nLen = 0;
-        size_t nStrLen = strlen(szSrc);
-        if (nStrLen + sizeof(INT32) > (UINT)buflen)
+        int32 nLen = 0;
+        int32 nStrLen = strlen(szSrc);
+        if (nStrLen + sizeof(int32) > buflen)
             return -1;
 
-        UINT tmp = htonl(nStrLen);
-        memcpy(buf, &tmp, sizeof(INT32));
-        nLen += sizeof(INT32);
+        uint32 tmp = htonl(nStrLen);
+        memcpy(buf, &tmp, sizeof(int32));
+        nLen += sizeof(int32);
 
-        memcpy(buf + sizeof(INT32), szSrc, nStrLen);
+        memcpy(buf + sizeof(int32), szSrc, nStrLen);
         nLen += nStrLen;
         return nLen;
     }
 
-    template<class T> int InputValue(BYTE* buf, UINT buflen, T& value)
+    template<class T> int32 InputValue(BYTE* buf, int32 buflen, T& value)
     {
-        UINT nLen = sizeof(value);
+        int32 nLen = sizeof(value);
         if (nLen > buflen)
             return -1;
 
@@ -143,21 +143,21 @@ public:
             memcpy(&value, buf, nLen);
             return nLen;
         }
-        else if (nLen == sizeof(USHORT))
+        else if (nLen == sizeof(uint16))
         {
-            USHORT tmp = 0;
+            uint16 tmp = 0;
             memcpy(&tmp, buf, nLen);
             value = (T)ntohs(tmp);
             return nLen;
         }
-        else if (nLen == sizeof(INT32))
+        else if (nLen == sizeof(int32))
         {
-            UINT tmp = 0;
+            uint32 tmp = 0;
             memcpy(&tmp, buf, nLen);
             value = (T)ntohl(tmp);
             return nLen;
         }
-        else if (nLen == sizeof(INT64))
+        else if (nLen == sizeof(int64))
         {
             if (is_big_endian())
             {
@@ -165,7 +165,7 @@ public:
             }
             else
             {
-                __uint64_t tmp = 0;
+                uint64 tmp = 0;
                 memcpy(&tmp, buf, nLen);
                 value = (T)ntohl64(tmp);
             }
@@ -174,26 +174,26 @@ public:
         return -1;
     }
 
-    int InputString(BYTE* buf, INT32 buflen, char* szDst, INT32& dstbuflen)
+    int InputString(BYTE* buf, int32 buflen, char* szDst, int32& dstbuflen)
     {
-        UINT nLen = 0;
-        UINT nStrLen = 0;
+        int32 nLen = 0;
+        int32 nStrLen = 0;
 
-        if ((UINT)buflen < sizeof(INT32))
+        if (sizeof(int32) > buflen)
             return -1;
 
-        memcpy((BYTE*)&nStrLen, buf, sizeof(INT32));
-        UINT tmp = ntohl(nStrLen);
+        memcpy((BYTE*)&nStrLen, buf, sizeof(int32));
+        uint32 tmp = ntohl(nStrLen);
 
-        if ((UINT)buflen < sizeof(INT32) + tmp)
+        if (int32(sizeof(int32) + tmp) > buflen)
             return -1;
 
-        if ((UINT)dstbuflen < tmp + 1)
+        if (int32(tmp + 1) > dstbuflen)
             return -2;
 
-        nLen += sizeof(INT32);
+        nLen += sizeof(int32);
 
-        memcpy(szDst, buf + sizeof(INT32), tmp);
+        memcpy(szDst, buf + sizeof(int32), tmp);
         nLen += tmp;
 
         szDst[tmp] = '\0';

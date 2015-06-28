@@ -50,7 +50,7 @@ private:
     time_t m_lastkeepalivetime;
 
     string m_serverip;
-    unsigned int m_serverport;
+    uint32 m_serverport;
 
     int m_readbufsize;
     int m_sendbufsize;
@@ -62,7 +62,7 @@ private:
     list<int> m_delsendfdlist;
     std::unordered_map<int, SOCKET_SET*> m_socketmap;
 
-    UINT m_maxepollsize;
+    uint32 m_maxepollsize;
 
     list<NET_DATA*> m_recvtmplst;
     time_t m_index;

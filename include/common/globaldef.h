@@ -29,6 +29,7 @@
 using namespace std;
 
 #ifdef OS_LINUX
+/* 20150625
 typedef __uint32_t UINT;
 typedef __uint32_t ULONG;
 typedef __int32_t LONG;
@@ -41,11 +42,34 @@ typedef __int64_t INT64;
 typedef short SHORT;
 typedef __int8_t INT8;
 typedef __int32_t INT32;
+*/
+
+typedef int64_t int64;
+typedef int32_t int32;
+typedef int16_t int16;
+typedef int8_t int8;
+typedef uint64_t uint64;
+typedef uint32_t uint32;
+typedef uint16_t uint16;
+typedef uint8_t uint8;
+typedef uint8_t BYTE;
+
 #elif OS_WINDOWS
+
 #include <WinDef.h>
 #define snprintf sprintf_s
 #define vsnprintf vsnprintf_s
-typedef UINT64 __uint64_t;
+typedef signed __int64 int64;
+typedef signed __int32 int32;
+typedef signed __int16 int16;
+typedef signed __int8 int8;
+typedef unsigned __int64 uint64;
+typedef unsigned __int32 uint32;
+typedef unsigned __int16 uint16;
+typedef unsigned __int8 uint8;
+typedef unsighed __int8 BYTE;
+
+typedef UINT64 uint64;
 #endif
 
 #define MAX_SEND_SIZE   2048

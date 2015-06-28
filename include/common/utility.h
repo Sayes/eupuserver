@@ -5,23 +5,23 @@
 #include "globaldef.h"
 
 typedef struct tm tm;
-class cUtility {
+class Utility {
 public:
     static string Int2String(int num);
-    static string uInt2String(UINT num);
+    static string uInt2String(uint32 num);
     //static string Char2String(char* str);
-    //static ULONG String2UL(const char *str);
+    //static uint32 String2UL(const char *str);
     //static long String2L(const char* str);
-    static bool Compress(BYTE* pSrc, int nLen, BYTE* pDst, int& nDstLen);
-    static bool Uncompress(BYTE* pSrc, int nLen, BYTE* pDst, int& nDstLen);
-    //static DWORD MakeDWORD(BYTE bValue1, BYTE bValue2, BYTE bValue3, BYTE bValue4);
-    //static void MakeBYTE(DWORD dwValue, BYTE& bValue1, BYTE& bValue2, BYTE& bValue3, BYTE& bValue4);
+    static bool Compress(uint8* pSrc, int nLen, uint8* pDst, int& nDstLen);
+    static bool Uncompress(uint8* pSrc, int nLen, uint8* pDst, int& nDstLen);
+    //static DWORD MakeDWORD(uint8 bValue1, uint8 bValue2, uint8 bValue3, uint8 bValue4);
+    //static void MakeBYTE(DWORD dwValue, uint8& bValue1, uint8& bValue2, uint8& bValue3, uint8& bValue4);
 
-    //static string Ip2String(UINT ip);
-    //static UINT Ip2uInt(char* ip);
-    //static UINT Ip2S_addr(char* ip);
+    //static string Ip2String(uint32 ip);
+    //static uint32 Ip2uInt(char* ip);
+    //static uint32 Ip2S_addr(char* ip);
 
-    static UINT GetMillionTime();
+    static uint32 GetMillionTime();
     static void GetTime4Log(char* szTime);
     static void GetDate4Log(char* szDate);
     static void GetDate(char* szDate);
@@ -30,16 +30,16 @@ public:
 
     //static LONG GetFileLines(char* szFileName);
 
-    static bool CheckDate(INT32 year, INT32 month, INT32 day);
+    static bool CheckDate(int32 year, int32 month, int32 day);
 
     //static LONG GetFileSize(char* strFileName);
 
-    static UINT GetCPUComsuming();
-    static UINT GetMemComsuming();
+    static uint32 GetCPUComsuming();
+    static uint32 GetMemComsuming();
     static int Base64Decode(unsigned char* szSrc, unsigned char* szDst, int SrcSize);
     static int getIntDotNet(unsigned char* bb, int index);
-    static INT64 getLongDotNet(unsigned char* bb, int index);
-    static short getShortDotNet(BYTE* b, int index);
+    static int64 getLongDotNet(unsigned char* bb, int index);
+    static int16 getShortDotNet(uint8* b, int index);
 
     static string& ReplaceAll(string& str, const char* old_value, const char* new_value);
 
@@ -65,15 +65,15 @@ public:
         return res;
     }
 
-    static UINT str2Time(string strTm);
-    static UINT64 GenerateKeyByIPAndPort(UINT uIp, UINT uPort);
+    static uint32 str2Time(string strTm);
+    static uint64 GenerateKeyByIPAndPort(uint32 uIp, uint32 uPort);
     static time_t FormatTime(char* szTime);
-    static ULONG DiffTime(time_t tTime);
+    static uint32 DiffTime(time_t tTime);
     static int abs(int a);
 
 protected:
-    cUtility();
-    virtual ~cUtility();
+    Utility();
+    virtual ~Utility();
 
 private:
     static const unsigned char base64_decode_map[256];
