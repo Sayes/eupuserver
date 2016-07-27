@@ -14,3 +14,4 @@ for compile in windows, there are anotner 2 libs:
     pthreadVC2.lib  -> pthread.lib
     ws2_32.lib
 
+------
