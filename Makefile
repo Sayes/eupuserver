@@ -1,5 +1,3 @@
-
-
 os_type = $(shell uname -s)
 os_arch = $(shell uname -m)
 
@@ -12,8 +10,6 @@ ARCH = 64
 endif
 
 SUBDIRS = common logger protocol network appmsg usercentersvr testproj
-
-INCLUDE_DIR = 
 
 all:
 	-for a in $(SUBDIRS); do cd $$a; $(MAKE) -f Makefile $@; cd ..; done; exit 0

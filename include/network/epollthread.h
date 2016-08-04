@@ -11,38 +11,35 @@
 class CEpollThread : public CEupuThread {
 public:
     CEpollThread();
-
     virtual ~CEpollThread();
-
     virtual bool stop();
     virtual void run();
     virtual void reset();
-
     bool startup();
 
 private:
     bool parsePacketToRecvQueue(SOCKET_SET* psockset, char* buf, int buflen);
     bool addSocketToMap(SOCKET_SET* psockset);
     bool addClientToEpoll(SOCKET_SET* psockset);
-    bool doAccept(int fd);
+    bool doAccept(int32_t fd);
     void doRecvMessage(SOCKET_KEY* pkey);
     int doSendMessage(SOCKET_KEY* pkey);
     bool doListen();
 
     void doEpollEvent();
     void doSystemEvent();
-    void closeClient(int fd, time_t conntime);
+    void closeClient(int32_t fd, time_t conntime);
     void createClientCloseMsg(SOCKET_SET* psockset);
     bool createConnectServerMsg(SOCKET_SET* psockset);
     void doKeepaliveTimeout();
     void doSendKeepaliveToServer();
-    void deleteSendMsgFromSendMap(int fd);
+    void deleteSendMsgFromSendMap(int32_t fd);
 
     time_t getIndex();
 
 private:
-    int m_epollfd;
-    int m_listenfd;
+    int32_t m_epollfd;
+    int32_t m_listenfd;
     SOCKET_KEY* m_listenkey;
     int m_keepalivetimeout;     //connection timeout time
     int m_keepaliveinterval;    //send keepalive message to server time interval
@@ -50,7 +47,7 @@ private:
     time_t m_lastkeepalivetime;
 
     string m_serverip;
-    uint32 m_serverport;
+    uint32_t m_serverport;
 
     int m_readbufsize;
     int m_sendbufsize;
@@ -59,10 +56,10 @@ private:
 
     struct epoll_event* m_events;
 
-    list<int> m_delsendfdlist;
+    list<int32_t> m_delsendfdlist;
     std::unordered_map<int, SOCKET_SET*> m_socketmap;
 
-    uint32 m_maxepollsize;
+    uint32_t m_maxepollsize;
 
     list<NET_DATA*> m_recvtmplst;
     time_t m_index;

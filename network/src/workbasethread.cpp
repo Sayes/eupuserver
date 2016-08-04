@@ -54,7 +54,7 @@ void CWorkBaseThread::run()
         return;
     }
 
-    int nret = 0;
+    int32_t nret = 0;
 
     while (m_bOperate)
     {
@@ -85,9 +85,22 @@ void CWorkBaseThread::run()
                 LOG(_ERROR_, "CWorkBaseThread::run() error, processMessage() failed");
                 LOGHEX(_ERROR_, "message:", pdata->pdata, pdata->data_len);
 
-                if (!CGlobalMgr::getInstance()->createCloseConnectEvent(pdata->fd, pdata->connect_time))
+                if (!CGlobalMgr::getInstance()->createCloseConnectEvent(pdata->fddat,
+#ifdef STRONG_KEY                                                                        
+                                                                        pdata->connect_time
+#else
+                                                                        0
+#endif
+                                                                       ))
                 {
-                    LOG(_ERROR_, "CWorkBaseThread::run() error, createCloseConnectEvent() failed, fd=%d, time=%u", pdata->fd, pdata->connect_time);
+                    LOG(_ERROR_, "CWorkBaseThread::run() error, createCloseConnectEvent() failed, fddat=%d, time=%u",
+                        pdata->fddat,
+#ifdef STRONG_KEY
+                        pdata->connect_time
+#else
+                        0
+#endif
+                        );
                 }
             }
             delete pdata;

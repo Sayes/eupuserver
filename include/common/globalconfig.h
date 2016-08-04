@@ -18,37 +18,37 @@ typedef struct log_cfg
 typedef struct st_global_cfg
 {
     char db_hostname[256];
-    uint32 db_hostport;
+    uint32_t db_hostport;
     char db_username[256];
     char db_userpssw[256];
     char db_database[256];
 
-    uint32 que_savetime;
-    uint32 ping_timer;
-    uint32 update_interval;
-    uint32 db_maxconnects;
-    uint32 keepalive_timer;
-    uint32 loglevel;
-    uint32 update_people_timer;
+    uint32_t que_savetime;
+    uint32_t ping_timer;
+    uint32_t update_interval;
+    uint32_t db_maxconnects;
+    uint32_t keepalive_timer;
+    uint32_t loglevel;
+    uint32_t update_people_timer;
 
-    uint16 listen_port;
+    uint16_t listen_port;
     string listen_ip;
-    uint32 send_queue_size;
-    uint32 recv_queue_size;
-    uint32 work_threads;
-    uint32 epoll_max_size;
+    uint32_t send_queue_size;
+    uint32_t recv_queue_size;
+    uint32_t work_threads;
+    uint32_t epoll_max_size;
 
-    uint32 maxsendbuf;
-    uint32 maxrecvbuf;
+    uint32_t maxsendbuf;
+    uint32_t maxrecvbuf;
 } st_global_cfg;
 
 struct __CONNECT_SERVER__
 {
     string name;
     string host;
-    uint16 port;
-    uint32 send_buffer;
-    uint32 recv_buffer;
+    uint16_t port;
+    uint32_t send_buffer;
+    uint32_t recv_buffer;
     __CONNECT_SERVER__()
     {
         port = 0;
@@ -62,8 +62,8 @@ typedef __CONNECT_SERVER__* PCONNECT_SERVER;
 struct __MEM_SERVER__
 {
     string host;
-    uint16 port;
-    uint32 weight;
+    uint16_t port;
+    uint32_t weight;
 };
 
 typedef struct __MEM_SERVER__* PMEM_SERVER;
@@ -74,18 +74,18 @@ public:
     static void release();
 
     char* getDbHostName();
-    uint32 getDbHostPort();
+    uint32_t getDbHostPort();
     char* getDbUserName();
     char* getDbUserPssw();
     char* getDbDatabase();
-    uint32 getMemPoolCount();
+    uint32_t getMemPoolCount();
 
     const vector<PMEM_SERVER>* getMemcacheServers()
     {
         return &m_memlst;
     }
 
-    uint32 getListenPort()
+    uint32_t getListenPort()
     {
         return m_cfg.listen_port;
     }
@@ -95,43 +95,43 @@ public:
         return m_cfg.listen_ip;
     }
 
-    uint32 getSendQueueSize()
+    uint32_t getSendQueueSize()
     {
         return m_cfg.send_queue_size;
     }
 
-    uint32 getRecvQueueSize()
+    uint32_t getRecvQueueSize()
     {
         return m_cfg.recv_queue_size;
     }
 
-    uint32 getWorkThreads()
+    uint32_t getWorkThreads()
     {
         return m_cfg.work_threads;
     }
 
-    uint32 getMaxEpollSize()
+    uint32_t getMaxEpollSize()
     {
         return m_cfg.epoll_max_size;
     }
 
-    uint32 getSocketSendBuf()
+    uint32_t getSocketSendBuf()
     {
         return m_cfg.maxsendbuf;
     }
 
-    uint32 getSocketRecvBuf()
+    uint32_t getSocketRecvBuf()
     {
         return m_cfg.maxrecvbuf;
     }
 
-    uint32 getQueueTimer();
-    uint32 getPingTimer();
-    uint32 getDbMaxConnects();
-    uint32 getUpdateInterval();
-    uint32 getKeepaliveTimer();
-    uint32 getUpdatePeopleTimer();
-    uint32 getLogLevel();
+    uint32_t getQueueTimer();
+    uint32_t getPingTimer();
+    uint32_t getDbMaxConnects();
+    uint32_t getUpdateInterval();
+    uint32_t getKeepaliveTimer();
+    uint32_t getUpdatePeopleTimer();
+    uint32_t getLogLevel();
 
     bool initSysConfig(const std::string& path);
     bool initDbConfig(const std::string& path);
@@ -151,7 +151,7 @@ private:
     LOG_CFG onlinecount;
     LOG_CFG onlinetotal;
 
-    uint32 mem_pool;
+    uint32_t mem_pool;
     vector<PMEM_SERVER> m_memlst;
 
     list<PCONNECT_SERVER> m_serverlist;

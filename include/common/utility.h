@@ -7,21 +7,21 @@
 typedef struct tm tm;
 class Utility {
 public:
-    static string Int2String(int num);
-    static string uInt2String(uint32 num);
+    static string Int2String(int32_t num);
+    static string uInt2String(uint32_t num);
     //static string Char2String(char* str);
-    //static uint32 String2UL(const char *str);
+    //static uint32_t String2UL(const char *str);
     //static long String2L(const char* str);
-    static bool Compress(uint8* pSrc, int nLen, uint8* pDst, int& nDstLen);
-    static bool Uncompress(uint8* pSrc, int nLen, uint8* pDst, int& nDstLen);
-    //static DWORD MakeDWORD(uint8 bValue1, uint8 bValue2, uint8 bValue3, uint8 bValue4);
-    //static void MakeBYTE(DWORD dwValue, uint8& bValue1, uint8& bValue2, uint8& bValue3, uint8& bValue4);
+    static bool Compress(uint8_t* pSrc, int32_t nLen, uint8_t* pDst, int32_t& nDstLen);
+    static bool Uncompress(uint8_t* pSrc, int32_t nLen, uint8_t* pDst, int32_t& nDstLen);
+    //static DWORD MakeDWORD(uint8_t bValue1, uint8_t bValue2, uint8_t bValue3, uint8_t bValue4);
+    //static void MakeBYTE(DWORD dwValue, uint8_t& bValue1, uint8_t& bValue2, uint8_t& bValue3, uint8_t& bValue4);
 
-    //static string Ip2String(uint32 ip);
-    //static uint32 Ip2uInt(char* ip);
-    //static uint32 Ip2S_addr(char* ip);
+    //static string Ip2String(uint32_t ip);
+    //static uint32_t Ip2uInt(char* ip);
+    //static uint32_t Ip2S_addr(char* ip);
 
-    static uint32 GetMillionTime();
+    static uint32_t GetMillionTime();
     static void GetTime4Log(char* szTime);
     static void GetDate4Log(char* szDate);
     static void GetDate(char* szDate);
@@ -30,20 +30,20 @@ public:
 
     //static LONG GetFileLines(char* szFileName);
 
-    static bool CheckDate(int32 year, int32 month, int32 day);
+    static bool CheckDate(int32_t year, int32_t month, int32_t day);
 
     //static LONG GetFileSize(char* strFileName);
 
-    static uint32 GetCPUComsuming();
-    static uint32 GetMemComsuming();
-    static int Base64Decode(unsigned char* szSrc, unsigned char* szDst, int SrcSize);
-    static int getIntDotNet(unsigned char* bb, int index);
-    static int64 getLongDotNet(unsigned char* bb, int index);
-    static int16 getShortDotNet(uint8* b, int index);
+    static uint32_t GetCPUComsuming();
+    static uint32_t GetMemComsuming();
+    static int32_t Base64Decode(unsigned char* szSrc, unsigned char* szDst, int32_t SrcSize);
+    static int32_t getIntDotNet(unsigned char* bb, int32_t index);
+    static int64_t getLongDotNet(unsigned char* bb, int32_t index);
+    static int16_t getShortDotNet(uint8_t* b, int32_t index);
 
     static string& ReplaceAll(string& str, const char* old_value, const char* new_value);
 
-    static void Int2Bytes(int nRaw, unsigned char* pBuf)
+    static void Int2Bytes(int32_t nRaw, unsigned char* pBuf)
     {
         *(pBuf) = (nRaw & 0xff000000) >> 24;
         *(pBuf + 1) = (nRaw & 0x00ff0000) >> 16;
@@ -51,12 +51,12 @@ public:
         *(pBuf + 3) = (nRaw & 0x000000ff);
 
     }
-    static int Bytes2Int(unsigned char* pBuf)
+    static int32_t Bytes2Int(unsigned char* pBuf)
     {
-        int mask = 0xff;
-        int temp = 0;
-        int res = 0;
-        for (int i = 0; i < 4; i++)
+        int32_t mask = 0xff;
+        int32_t temp = 0;
+        int32_t res = 0;
+        for (int32_t i = 0; i < 4; i++)
         {
             res <<= 8;
             temp = pBuf[i] & mask;
@@ -65,11 +65,11 @@ public:
         return res;
     }
 
-    static uint32 str2Time(string strTm);
-    static uint64 GenerateKeyByIPAndPort(uint32 uIp, uint32 uPort);
+    static uint32_t str2Time(string strTm);
+    static uint64_t GenerateKeyByIPAndPort(uint32_t uIp, uint32_t uPort);
     static time_t FormatTime(char* szTime);
-    static uint32 DiffTime(time_t tTime);
-    static int abs(int a);
+    static uint32_t DiffTime(time_t tTime);
+    static int32_t abs(int32_t a);
 
 protected:
     Utility();

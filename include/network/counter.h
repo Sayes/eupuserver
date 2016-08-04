@@ -79,6 +79,7 @@ public:
         m_lock.UnLock();
         return nret;
     }
+
 private:
     CThreadLock m_lock;
     uint32 m_count;

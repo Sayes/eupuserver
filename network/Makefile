@@ -1,22 +1,18 @@
-
-
 OBJS = src/netcommon.o src/threadlock.o src/euputhread.o src/epollthread.o src/globalmgr.o src/workbasethread.o
 
 include ../common.mak
 
 RELEASE_DIR = ../release
-LIB_DIR = ../lib
 
-CFLAGS += -DOS_LINUX $(LIB_CFLAGS)
+CFLAGS += -DOS_LINUX
 
-#LDFLAGS += -L$(RELEASE_DIR)
 TARGETS = libnetwork.so
 
 all: $(TARGETS)
 
 $(TARGETS): $(OBJS)
 	test -d ../release || mkdir -p ../release
-	$(LINK) $(LDFLAGS) -o $@ $^
+	$(LINK) $(LFLAGS) -o $@ $^
 	cp $@ $(RELEASE_DIR)
 
 clean:

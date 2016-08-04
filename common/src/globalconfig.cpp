@@ -125,8 +125,8 @@ bool CGlobalConfig::initSysConfig(const std::string& path)
     m_cfg.keepalive_timer = v[KEEPALIVE_TIMER].asInt();
     m_cfg.loglevel = v[LOG_LEVEL].asInt();
 
-    int sendbuffer = 8192;
-    int recvbuffer = 8192;
+    uint32_t sendbuffer = 8192;
+    uint32_t recvbuffer = 8192;
 
     sendbuffer = v[DEF_SEND_BUFFER].asInt();
     recvbuffer = v[DEF_RECV_BUFFER].asInt();
@@ -162,27 +162,27 @@ bool CGlobalConfig::initSysConfig(const std::string& path)
     return true;
 }
 
-uint32 CGlobalConfig::getQueueTimer()
+uint32_t CGlobalConfig::getQueueTimer()
 {
     return m_cfg.que_savetime;
 }
 
-uint32 CGlobalConfig::getPingTimer()
+uint32_t CGlobalConfig::getPingTimer()
 {
     return m_cfg.ping_timer;
 }
 
-uint32 CGlobalConfig::getUpdateInterval()
+uint32_t CGlobalConfig::getUpdateInterval()
 {
     return m_cfg.update_interval;
 }
 
-uint32 CGlobalConfig::getKeepaliveTimer()
+uint32_t CGlobalConfig::getKeepaliveTimer()
 {
     return m_cfg.keepalive_timer;
 }
 
-uint32 CGlobalConfig::getLogLevel()
+uint32_t CGlobalConfig::getLogLevel()
 {
     return m_cfg.loglevel;
 }

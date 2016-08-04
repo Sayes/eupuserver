@@ -1,16 +1,12 @@
-
-
 OBJS = src/eupustream.o src/protocol.o 
 
 include ../common.mak
 
-
 RELEASE_DIR = ../release
 
-CFLAGS += -DOS_LINUX $(LIB_CFLAGS)
+CFLAGS += -DOS_LINUX $(INC_CFLAGS)
 
 TARGETS = libprotocol.a
-
 
 all: $(TARGETS)
 

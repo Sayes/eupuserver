@@ -33,11 +33,11 @@ struct MP_Server_Connected : public CEupuStream
         LOG(_DEBUG_, "\tm_nServer: %d", m_nServer);
     }
 
-    bool Out(BYTE* pDest, uint32& nlen)
+    bool Out(BYTE* pDest, uint32_t& nlen)
     {
-        int32 nret = 0;
-        uint32 ntmp = 0;
-        uint32 nbuffer = nlen;
+        int32_t nret = 0;
+        uint32_t ntmp = 0;
+        uint32_t nbuffer = nlen;
 
         if (msgHead.Out(pDest, nbuffer))
         {
@@ -57,11 +57,11 @@ struct MP_Server_Connected : public CEupuStream
         return false;
     }
 
-    bool In(BYTE* pSrc, uint32& nlen)
+    bool In(BYTE* pSrc, uint32_t& nlen)
     {
-        int32 nret = 0;
-        uint32 ntmp = 0;
-        uint32 nbuflen = nlen;
+        int32_t nret = 0;
+        uint32_t ntmp = 0;
+        uint32_t nbuflen = nlen;
 
         if (msgHead.In(pSrc, nbuflen))
         {
@@ -99,11 +99,11 @@ struct MP_Server_DisConnected : public CEupuStream
         LOG(_DEBUG_, "\tm_nServer: %d", m_nServer);
     }
 
-    bool Out(BYTE* pDest, uint32& nlen)
+    bool Out(BYTE* pDest, uint32_t& nlen)
     {
-        int32 nret = 0;
-        uint32 ntmp = 0;
-        uint32 nbuflen = nlen;
+        int32_t nret = 0;
+        uint32_t ntmp = 0;
+        uint32_t nbuflen = nlen;
 
         if (msgHead.Out(pDest, nbuflen))
         {
@@ -123,11 +123,11 @@ struct MP_Server_DisConnected : public CEupuStream
         return false;
     }
 
-    bool In(BYTE* pSrc, uint32& nlen)
+    bool In(BYTE* pSrc, uint32_t& nlen)
     {
-        int32 nret = 0;
-        uint32 ntmp = 0;
-        uint32 nbuflen = nlen;
+        int32_t nret = 0;
+        uint32_t ntmp = 0;
+        uint32_t nbuflen = nlen;
 
         if (msgHead.In(pSrc, nbuflen))
         {

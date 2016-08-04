@@ -1,12 +1,8 @@
-
-
 OBJS = src/vrbase.o src/IOStreamOutputter.o
 
 include ../common.mak
 
 RELEASE_DIR = ../release
-
-CFLAGS += $(LIB_CFLAGS)
 
 TARGETS = libvrbase.a
 
@@ -21,5 +17,4 @@ clean:
 	rm -f $(OBJS) $(TARGETS)
 	rm -f *.o src/*.d
 	rm -f $(RELEASE_DIR)/libvrbase.a
-
 

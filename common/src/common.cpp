@@ -111,7 +111,7 @@ void daemonize()
 }
 
 #ifdef OS_WINDOWS
-int gettimeofday(struct timeval* tp, void* tzp)
+unsigned int gettimeofday(struct timeval* tp, void* tzp)
 {
     time_t clock;
     struct tm tm;

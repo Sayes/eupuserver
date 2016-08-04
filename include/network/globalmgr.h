@@ -34,25 +34,25 @@ public:
     bool init();
     void clean();
 
-    void createServerConnect(int ntype);
-    bool createCloseConnectEvent(int fd, time_t conntime);
-    bool createMsgToSendList(int fd, time_t conntime, const string& ip, uint16 port, int ntype,  uint16 mainid, uint16 assistantid, BYTE code, BYTE reserve, CEupuStream* stream, uint32 nlen);
+    void createServerConnect(int32_t ntype);
+    bool createCloseConnectEvent(int32_t fd, time_t conntime);
+    bool createMsgToSendList(int32_t fd, time_t conntime, const string& ip, uint16_t port, int32_t ntype,  uint16_t mainid, uint16_t assistantid, BYTE code, BYTE reserve, CEupuStream* stream, uint32_t nlen);
     bool addMsgToSendList(NET_DATA* pdata);
-    bool sendMsgToServer(int ntype, uint16 mainid, uint16 assistantid, BYTE code, BYTE reserve, CEupuStream* pstream, uint32 nlen, bool blocked = true);
-    void setServerSocket(int fd, time_t conntime, const string& peerip, uint16 peerport, int ntype);
+    bool sendMsgToServer(int32_t ntype, uint16_t mainid, uint16_t assistantid, BYTE code, BYTE reserve, CEupuStream* pstream, uint32_t nlen, bool blocked = true);
+    void setServerSocket(int32_t fd, time_t conntime, const string& peerip, uint16_t peerport, int32_t ntype);
     void sendKeepaliveMsgToAllServer();
 
     void switchSendMap();
 
-    void setMainSocket(int fd, time_t conntime, const string& peerip, uint16 peerport, int ntype);
-    void setDistributeSocket(int fd, time_t conntime, const string& peerip, uint16 peerport, int ntype);
-    void setUserCenterSocket(int fd, time_t conntime, const string& peerip, uint16 peerport, int ntype);
-    void setLogSocket(int fd, time_t conntime, const string& peerip, uint16 peerport, int ntype);
+    void setMainSocket(int32_t fd, time_t conntime, const string& peerip, uint16_t peerport, int32_t ntype);
+    void setDistributeSocket(int32_t fd, time_t conntime, const string& peerip, uint16_t peerport, int32_t ntype);
+    void setUserCenterSocket(int32_t fd, time_t conntime, const string& peerip, uint16_t peerport, int32_t ntype);
+    void setLogSocket(int32_t fd, time_t conntime, const string& peerip, uint16_t peerport, int32_t ntype);
 
     SysQueue<NET_EVENT>* getEventQueue();
     SysQueue<NET_DATA>* getRecvQueue();
 
-    map<int, list<NET_DATA*>* >* getBakSendMap()
+    map<int32_t, list<NET_DATA*>* >* getBakSendMap()
     {
         return m_pbaksendmap;
     }
@@ -64,16 +64,16 @@ private:
     NET_DATA m_distributekey;
     CThreadLock m_serverlock;
 
-    map<int, list<NET_DATA*> *> m_sendmap[2];
-    map<int, list<NET_DATA*> *>* m_pcursendmap;
-    map<int, list<NET_DATA*> *>* m_pbaksendmap;
+    map<int32_t, list<NET_DATA*> *> m_sendmap[2];
+    map<int32_t, list<NET_DATA*> *>* m_pcursendmap;
+    map<int32_t, list<NET_DATA*> *>* m_pbaksendmap;
     CThreadLock m_sendmaplock;
 
     SysQueue<NET_DATA> m_recvlist;
     SysQueue<NET_EVENT> m_eventlist;
 
     static CGlobalMgr* m_pInstance;
-    int m_nMaxSendList;
+    int32_t m_nMaxSendList;
 };
 
 

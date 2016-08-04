@@ -23,7 +23,7 @@ int CWorkThread::processMessage(NET_DATA* pdata)
 		return 0;
 	}
 
-	uint32 uTmp = pdata->data_len;
+	uint32_t uTmp = pdata->data_len;
 	NetMessageHead header;
 
 	if(!header.In((BYTE *)pdata->pdata, uTmp))
@@ -97,6 +97,12 @@ int CWorkThread::ProcessKeepalive(NET_DATA* pdata)
     if (pdata == NULL)
         return 0;
 
-    bool bret = CGlobalMgr::getInstance()->createMsgToSendList(pdata->fd, pdata->connect_time, pdata->peer_ip, pdata->peer_port, pdata->type, KEEP_ALIVE_PING, 0, 0, 0, NULL, 0);
+    bool bret = CGlobalMgr::getInstance()->createMsgToSendList(pdata->fddat,
+#ifdef STRONG_KEY 
+                                                               pdata->connect_time,
+#else
+                                                               0,
+#endif
+                                                               pdata->peer_ip, pdata->peer_port, pdata->type, KEEP_ALIVE_PING, 0, 0, 0, NULL, 0);
     return (bret ? 1 : 0);
 }

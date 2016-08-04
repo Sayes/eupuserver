@@ -135,8 +135,7 @@ unsigned char* dst;
 *   Paul Vixie, 1996.
 */
 #ifdef AF_INET6
-int
-inet_pton6(src, dst)
+int inet_pton6(src, dst)
 const char* src;
 unsigned char* dst;
 {

@@ -5,7 +5,7 @@ include ../common.mak
 
 RELEASE_DIR = ../release
 
-CFLAGS += -DOS_LINUX $(LIB_CFLAGS)
+CFLAGS += -DOS_LINUX
 
 TARGETS = libcommon.a
 

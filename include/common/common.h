@@ -19,7 +19,7 @@ string fgNtoA(unsigned int ip);
 unsigned int fgAtoN(const char* ip);
 
 #ifdef OS_WINDOWS
-int gettimeofday(struct timeval* tp, void* tzp);
+unsigned int gettimeofday(struct timeval* tp, void* tzp);
 #endif
 
 #endif//__COMMON_H__

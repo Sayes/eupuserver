@@ -24,11 +24,11 @@ using namespace std;
 
 typedef struct socket_key
 {
-    int fd;
+    int32_t fdkey;
     time_t connect_time;
     socket_key()
     {
-        fd = -1;
+        fdkey = -1;
         connect_time = 0;
     }
 } SOCKET_KEY;
@@ -38,15 +38,15 @@ typedef struct socket_set
 {
     SOCKET_KEY* key;
     char part_buf[MAX_SEND_SIZE];
-    int part_len;
+    int32_t part_len;
 
     string peer_ip;
-    uint16 peer_port;
+    uint16_t peer_port;
 
     time_t refresh_time;
-    int type;   //0: listen, 1: client, 2: mainsvr, 3: dissvr, 4: usercentersvr, 5: centersvr, 6: logsvr
+    int32_t type;   //0: listen, 1: client, 2: mainsvr, 3: dissvr, 4: usercentersvr, 5: centersvr, 6: logsvr
 
-    bool init(SOCKET_KEY* pkey, const string& ip, uint16 port, int ntype)
+    bool init(SOCKET_KEY* pkey, const string& ip, uint16_t port, int32_t ntype)
     {
         if (!pkey)
             return false;
@@ -81,17 +81,17 @@ typedef struct socket_set
 
 typedef struct net_data
 {
-    int fd;
+    int32_t fddat;
     time_t connect_time;
     string peer_ip;
-    uint16 peer_port;
-    int32 type;
+    uint16_t peer_port;
+    int32_t type;
     char* pdata;
-    uint32 data_len;
+    uint32_t data_len;
 
     net_data()
     {
-        fd = -1;
+        fddat = -1;
         connect_time = 0;
         peer_port = 0;
         type = 0;
@@ -108,9 +108,9 @@ typedef struct net_data
         }
     }
 
-    bool init(int _fd, time_t conntime, const string& ip, uint16 port, int ntype, uint32 nlen)
+    bool init(int32_t _fd, time_t conntime, const string& ip, uint16_t port, int32_t ntype, uint32_t nlen)
     {
-        fd = _fd;
+        fddat = _fd;
         connect_time = conntime;
         peer_ip = ip;
         peer_port = port;
@@ -133,7 +133,7 @@ typedef struct net_data
 
 typedef struct net_event
 {
-    int eventid;
+    int32_t eventid;
     char* data;
     net_event()
     {
@@ -143,12 +143,12 @@ typedef struct net_event
 } NET_EVENT;
 
 
-SOCKET_SET* initSocketset(int fd, time_t conntime, const string& peerip, uint16 peerport, int ntype);
-bool setNonBlock(int fd);
+SOCKET_SET* initSocketset(int32_t fd, time_t conntime, const string& peerip, uint16_t peerport, int32_t ntype);
+bool setNonBlock(int32_t fd);
 
-int recv_msg(int fd, char* buf, int& nlen);
-int send_msg(int fd, char* buf, int& nlen);
+int32_t recv_msg(int32_t fd, char* buf, int32_t& nlen);
+int32_t send_msg(int32_t fd, char* buf, int32_t& nlen);
 
-int doNonblockConnect(PCONNECT_SERVER pServer, int timeout = 3, const string& localip = "");
+int32_t doNonblockConnect(PCONNECT_SERVER pServer, int32_t timeout = 3, const string& localip = "");
 
 #endif//__NETCOMMON_H__

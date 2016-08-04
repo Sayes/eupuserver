@@ -47,7 +47,7 @@ void CEupuThread::setMaskSIGUSR1()
 
 bool CEupuThread::start()
 {
-    int nret = pthread_create(&m_pid, NULL, ThreadFunc, this);
+    int32_t nret = pthread_create(&m_pid, NULL, ThreadFunc, this);
 
     if (0 == nret)
     {
@@ -56,14 +56,13 @@ bool CEupuThread::start()
         {
             m_bOperate = true;
             m_bIsExit = false;
-            return true;
         }
+        return true;
     }
     else
     {
         return false;
     }
-    return true;
 }
 
 bool CEupuThread::stop()
@@ -75,7 +74,7 @@ bool CEupuThread::stop()
 void CEupuThread::pause()
 {
 #ifdef OS_LINUX
-    int sig;
+    int32_t sig;
     sigwait(&m_waitSig, &sig);
 #elif OS_WINDOWS
     //TODO, suspend, check here

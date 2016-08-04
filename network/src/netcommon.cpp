@@ -3,7 +3,7 @@
 #include "netcommon.h"
 #include "common.h"
 
-SOCKET_SET* initSocketset(int fd, time_t conntime, const string& peerip, unsigned short peerport, int ntype)
+SOCKET_SET* initSocketset(int32_t fd, time_t conntime, const string& peerip, uint16_t peerport, int32_t ntype)
 {
     SOCKET_KEY* key = new SOCKET_KEY;
     if (!key)
@@ -21,8 +21,10 @@ SOCKET_SET* initSocketset(int fd, time_t conntime, const string& peerip, unsigne
         ::exit(-1);
     }
 
-    key->fd = fd;
+    key->fdkey = fd;
+#ifdef STRONG_KEY
     key->connect_time = conntime;
+#endif
     if (!socketset->init(key, peerip, peerport, ntype))
     {
         LOG(_ERROR_, "initSocketset() error, socketset->init() failed fd=%d, time = %u, ip=%s, prot=%d, type=%d", fd, conntime, peerip.c_str(), peerport, ntype);
@@ -37,10 +39,10 @@ SOCKET_SET* initSocketset(int fd, time_t conntime, const string& peerip, unsigne
     return socketset;
 }
 
-bool setNonBlock(int sockfd)
+bool setNonBlock(int32_t sockfd)
 {
 #ifdef OS_LINUX
-    int opts = fcntl(sockfd, F_GETFL);
+    int32_t opts = fcntl(sockfd, F_GETFL);
     if (-1 == opts)
     {
         LOG(_ERROR_, "setNonBlock() error, fd=%d", sockfd);
@@ -65,12 +67,12 @@ bool setNonBlock(int sockfd)
     return true;
 }
 
-int recv_msg(int fd, char* buf, int& nlen)
+int32_t recv_msg(int32_t fd, char* buf, int32_t& nlen)
 {
-    int n = nlen;
+    int32_t n = nlen;
     char* p = buf;
-    int nRet = 2;
-    int nread = 0;
+    int32_t nRet = 2;
+    int32_t nread = 0;
 
     while (n > 0)
     {
@@ -108,11 +110,11 @@ int recv_msg(int fd, char* buf, int& nlen)
     return nRet;
 }
 
-int send_msg(int fd, char* buf, int& nlen)
+int32_t send_msg(int32_t fd, char* buf, int32_t& nlen)
 {
-    int n = nlen;
-    int nRet = 1;
-    int nsend = 0;
+    int32_t n = nlen;
+    int32_t nRet = 1;
+    int32_t nsend = 0;
     char* p = buf;
 
     while (n > 0)
@@ -144,7 +146,7 @@ int send_msg(int fd, char* buf, int& nlen)
     return nRet;
 }
 
-int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& localip)
+int32_t doNonblockConnect(PCONNECT_SERVER pserver, int32_t timeout, const string& localip)
 {
     if (!pserver)
     {
@@ -158,7 +160,7 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
         return -1;
     }
 
-    int fd = socket(AF_INET, SOCK_STREAM, 0);
+    int32_t fd = socket(AF_INET, SOCK_STREAM, 0);
     if (fd < 0)
     {
         LOG(_ERROR_, "doNonblockConnect() error, socket() failed");
@@ -195,8 +197,8 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
         return -1;
     }
 
-    unsigned int nsend = pserver->send_buffer;
-    unsigned int nrecv = pserver->recv_buffer;
+    uint32_t nsend = pserver->send_buffer;
+    uint32_t nrecv = pserver->recv_buffer;
 
     if (setsockopt(fd, SOL_SOCKET, SO_SNDBUF, (const char*)&nsend, sizeof(nsend)) < 0)
     {
@@ -220,7 +222,7 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
         return -1;
     }
 
-    int opt = 1;
+    int32_t opt = 1;
     if (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (const char*)&opt, sizeof(opt)) < 0)
     {
         LOG(_ERROR_, "doNonblockConnect() error, setsockopt(TCP_NODELAY) failed");
@@ -232,7 +234,7 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
         return -1;
     }
 
-    int nret = connect(fd, (struct sockaddr*)&addr, sizeof(addr));
+    int32_t nret = connect(fd, (struct sockaddr*)&addr, sizeof(addr));
     if (nret == 0)
     {
         LOG(_INFO_, "doNonblockConnect() done, connect() successed");
@@ -252,7 +254,7 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
 #elif OS_WINDOWS
     if (nret == SOCKET_ERROR)
     {
-        int err = WSAGetLastError();
+        int32_t err = WSAGetLastError();
         if (!(err == WSAEINPROGRESS || err == WSAEWOULDBLOCK))
         {
             LOG(_INFO_, "doNonblockConnect() error, connect() failed, error=%d", err);
@@ -293,8 +295,8 @@ int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& locali
         return -1;
     }
 
-    int sock_err = 0;
-    int sock_err_len = sizeof(sock_err);
+    int32_t sock_err = 0;
+    int32_t sock_err_len = sizeof(sock_err);
     nret = getsockopt(fd, SOL_SOCKET, SO_ERROR, (char*)&sock_err, (socklen_t*)&sock_err_len);
 
     if (nret < 0 || sock_err != 0)
