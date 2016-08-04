@@ -343,9 +343,7 @@ void CGlobalMgr::switchSendMap()
 void CGlobalMgr::setUserCenterSocket(int32_t fd, time_t conntime, const string& peerip, uint16_t peerport, int32_t ntype)
 {
     m_usercenterkey.fddat = fd;
-#ifdef STRONG_KEY
     m_usercenterkey.connect_time = conntime;
-#endif
     m_usercenterkey.peer_ip = peerip;
     m_usercenterkey.peer_port = peerport;
     m_usercenterkey.type = ntype;
@@ -354,19 +352,16 @@ void CGlobalMgr::setUserCenterSocket(int32_t fd, time_t conntime, const string& 
 void CGlobalMgr::setMainSocket(int32_t fd, time_t conntime, const string& peerip, uint16_t peerport, int32_t ntype)
 {
     m_mainkey.fddat = fd;
-#ifdef STRONG_KEY
     m_mainkey.connect_time = conntime;
-#endif
     m_mainkey.peer_ip = peerip;
     m_mainkey.peer_port = peerport;
     m_mainkey.type = ntype;
 }
+
 void CGlobalMgr::setLogSocket(int32_t fd, time_t conntime, const string& peerip, uint16_t peerport, int32_t ntype)
 {
     m_logkey.fddat = fd;
-#ifdef STRONG_KEY
     m_logkey.connect_time = conntime;
-#endif
     m_logkey.peer_ip = peerip;
     m_logkey.peer_port = peerport;
     m_logkey.type = ntype;
@@ -376,9 +371,7 @@ void CGlobalMgr::setLogSocket(int32_t fd, time_t conntime, const string& peerip,
 void CGlobalMgr::setDistributeSocket(int32_t fd, time_t conntime, const string& peerip, uint16_t peerport, int32_t ntype)
 {
     m_distributekey.fddat = fd;
-#ifdef STRONG_KEY
     m_distributekey.connect_time = conntime;
-#endif
     m_distributekey.peer_ip = peerip;
     m_distributekey.peer_port = peerport;
     m_distributekey.type = ntype;
@@ -425,13 +418,7 @@ bool CGlobalMgr::sendMsgToServer(int32_t ntype, uint16_t mainid, uint16_t assist
 
     if (pdata->fddat >= 0)
     {
-        bret = createMsgToSendList(pdata->fddat,
-#ifdef STRONG_KEY
-                                   pdata->connect_time,
-#else
-                                   0,
-#endif
-                                   pdata->peer_ip, pdata->peer_port, ntype, mainid, assistantid, code, reserve, stream, nlen);
+        bret = createMsgToSendList(pdata->fddat, pdata->connect_time, pdata->peer_ip, pdata->peer_port, ntype, mainid, assistantid, code, reserve, stream, nlen);
     }
 
     if (blocked)
@@ -560,13 +547,7 @@ void CGlobalMgr::createServerConnect(int32_t ntype)
     }
 
     LOG(_INFO_, "CGlobalMgr::createServerConnect() end, fddat=%d, time=%u, ip=%s, port=%d, type=%d, data_len=%d",
-        pdata->fddat,
-#ifdef STRONG_KEY
-        pdata->connect_time,
-#else
-        0,
-#endif
-        pdata->peer_ip.c_str(), pdata->peer_port, pdata->type, pdata->data_len);
+		pdata->connect_time, pdata->peer_ip.c_str(), pdata->peer_port, pdata->type, pdata->data_len);
 }
 
 bool CGlobalMgr::createCloseConnectEvent(int32_t fd, time_t conntime)
@@ -585,9 +566,7 @@ bool CGlobalMgr::createCloseConnectEvent(int32_t fd, time_t conntime)
     }
 
     pkey->fdkey = fd;
-#ifdef STRONG_KEY
     pkey->connect_time = conntime;
-#endif
 
     pevent->eventid = CLOSE_CLIENT;
     pevent->data = (char*)pkey;

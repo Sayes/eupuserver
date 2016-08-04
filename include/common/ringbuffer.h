@@ -37,7 +37,7 @@ public:
         memset(buf, 0, bufsize);
     }
 
-    void init(uint32 bfsz)
+    void init(uint32_t bfsz)
     {
         release();
         buf = new unsigned char[bfsz+1];
@@ -58,17 +58,17 @@ public:
         return (r == h);
     }
 
-    uint32 getfree()
+	uint32_t getfree()
     {
         return bufsize - getsize() - 1;
     }
 
-    uint32 getsize()
+	uint32_t getsize()
     {
         return ((r + bufsize - h) % bufsize);
     }
 
-    bool put(const unsigned char* p, const uint32 len)
+	bool put(const unsigned char* p, const uint32_t len)
     {
         if (getfree() >= len)
         {
@@ -91,14 +91,14 @@ public:
         }
     }
 
-    bool get(const uint32 len, unsigned char* dst)
+	bool get(const uint32_t len, unsigned char* dst)
     {
         if (len == 0)
             return false;
 
         if (len <= getsize())
         {
-            uint32 org = h;
+			uint32_t org = h;
             if (bufsize - h >= len)
             {
                 h = (h + len) % bufsize;
@@ -119,16 +119,16 @@ public:
         }
     }
 
-    uint32 total()
+	uint32_t total()
     {
         return bufsize;
     }
 
 private:
     unsigned char* buf;
-    uint32 bufsize;
-    uint32 h;
-    uint32 r;
+	uint32_t bufsize;
+	uint32_t h;
+	uint32_t r;
 };
 
 #endif//_RINGBUFFER_H_

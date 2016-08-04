@@ -85,22 +85,10 @@ void CWorkBaseThread::run()
                 LOG(_ERROR_, "CWorkBaseThread::run() error, processMessage() failed");
                 LOGHEX(_ERROR_, "message:", pdata->pdata, pdata->data_len);
 
-                if (!CGlobalMgr::getInstance()->createCloseConnectEvent(pdata->fddat,
-#ifdef STRONG_KEY                                                                        
-                                                                        pdata->connect_time
-#else
-                                                                        0
-#endif
-                                                                       ))
+                if (!CGlobalMgr::getInstance()->createCloseConnectEvent(pdata->fddat, pdata->connect_time))
                 {
                     LOG(_ERROR_, "CWorkBaseThread::run() error, createCloseConnectEvent() failed, fddat=%d, time=%u",
-                        pdata->fddat,
-#ifdef STRONG_KEY
-                        pdata->connect_time
-#else
-                        0
-#endif
-                        );
+                        pdata->fddat, pdata->connect_time);
                 }
             }
             delete pdata;
