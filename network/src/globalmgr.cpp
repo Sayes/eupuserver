@@ -547,7 +547,7 @@ void CGlobalMgr::createServerConnect(int32_t ntype)
     }
 
     LOG(_INFO_, "CGlobalMgr::createServerConnect() end, fddat=%d, time=%u, ip=%s, port=%d, type=%d, data_len=%d",
-		pdata->connect_time, pdata->peer_ip.c_str(), pdata->peer_port, pdata->type, pdata->data_len);
+        pdata->connect_time, pdata->peer_ip.c_str(), pdata->peer_port, pdata->type, pdata->data_len);
 }
 
 bool CGlobalMgr::createCloseConnectEvent(int32_t fd, time_t conntime)

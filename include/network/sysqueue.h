@@ -73,8 +73,7 @@ public:
         bool bret = false;
 
         m_lock.Lock();
-        do
-        {
+        do {
             if (!arg)
             {
                 break;
@@ -94,8 +93,7 @@ public:
                 m_datalst.push_back(arg);
             }
             bret = true;
-        }
-        while (false);
+        } while (false);
         m_lock.UnLock();
         return bret;
 
@@ -106,8 +104,7 @@ public:
         bool bret = false;
         m_lock.Lock();
 
-        do
-        {
+        do {
             if (m_datalst.size() <= 0)
             {
                 break;
@@ -124,11 +121,8 @@ public:
                 m_datalst.pop_back();
             }
             bret = true;
-        }
-        while (false);
-
+        } while (false);
         m_lock.UnLock();
-
         return bret;
     }
 
@@ -180,7 +174,7 @@ public:
 
 protected:
     CThreadLock m_lock;
-    list<T*> m_datalst;
+    std::list<T*> m_datalst;
     int m_maxSize;
 };
 

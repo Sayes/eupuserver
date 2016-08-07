@@ -36,7 +36,8 @@ public:
 
     void createServerConnect(int32_t ntype);
     bool createCloseConnectEvent(int32_t fd, time_t conntime);
-    bool createMsgToSendList(int32_t fd, time_t conntime, const string& ip, uint16_t port, int32_t ntype,  uint16_t mainid, uint16_t assistantid, BYTE code, BYTE reserve, CEupuStream* stream, uint32_t nlen);
+    bool createMsgToSendList(int32_t fd, time_t conntime, const string& ip, uint16_t port,
+                             int32_t ntype, uint16_t mainid, uint16_t assistantid, BYTE code, BYTE reserve, CEupuStream* stream, uint32_t nlen);
     bool addMsgToSendList(NET_DATA* pdata);
     bool sendMsgToServer(int32_t ntype, uint16_t mainid, uint16_t assistantid, BYTE code, BYTE reserve, CEupuStream* pstream, uint32_t nlen, bool blocked = true);
     void setServerSocket(int32_t fd, time_t conntime, const string& peerip, uint16_t peerport, int32_t ntype);

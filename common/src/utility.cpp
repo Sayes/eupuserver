@@ -92,13 +92,13 @@ bool Utility::Uncompress(uint8_t* pSrc, int32_t nLen, uint8_t* pDst, int32_t& nD
 /*
 DWORD Utility::MakeDWORD(uint8_t bValue1, uint8_t bValue2, uint8_t bValue3, uint8_t bValue4)
 {
-	DWORD dwValue = 0;
-	dwValue |= (bValue1 << 24);
-	dwValue |= (bValue2 << 16);
-	dwValue |= (bValue3 << 8);
-	dwValue |= (bValue4);
+    DWORD dwValue = 0;
+    dwValue |= (bValue1 << 24);
+    dwValue |= (bValue2 << 16);
+    dwValue |= (bValue3 << 8);
+    dwValue |= (bValue4);
 
-	return dwValue;
+    return dwValue;
 }
 */
 
@@ -115,56 +115,56 @@ uint32_t Utility::GetMemComsuming()
 /*
 void Utility::MakeBYTE(DWORD dwValue, uint8_t& bValue1, uint8_t& bValue2, uint8_t& bValue3, uint8_t& bValue4)
 {
-	bValue1 = ((dwValue & 0xff000000)>>24);
-	bValue2 = ((dwValue & 0x00ff0000)>>16);
-	bValue3 = ((dwValue & 0x0000ff00)>>8);
-	bValue4 = (dwValue & 0x000000ff);
+    bValue1 = ((dwValue & 0xff000000)>>24);
+    bValue2 = ((dwValue & 0x00ff0000)>>16);
+    bValue3 = ((dwValue & 0x0000ff00)>>8);
+    bValue4 = (dwValue & 0x000000ff);
 }
 */
 
 /*
 string Utility::Ip2String(uint32_t ip)
 {
-	uint8_t value1, value2, value3, value4;
-	MakeBYTE(ip, value1, value2, value3, value4);
+    uint8_t value1, value2, value3, value4;
+    MakeBYTE(ip, value1, value2, value3, value4);
 
-	string strIp = (Int2String(value1, 10)+"."+Int2String(value2, 10)+"." +Int2String(value3, 10)+"."+Int2String(value4, 10));
+    string strIp = (Int2String(value1, 10)+"."+Int2String(value2, 10)+"." +Int2String(value3, 10)+"."+Int2String(value4, 10));
 
-	return strIp;
+    return strIp;
 }
 */
 
 /*
 uint32_t Utility::Ip2uInt(char* ip)
 {
-	char* p = strtok(ip, ".");
-	uint8_t value[4];
-	int32_t i=0;
-	while (p != NULL)
-	{
-		value[i] = (uint8_t)atoi(p);
-		p = strtok(NULL,".");
-		i++;
-	}
+    char* p = strtok(ip, ".");
+    uint8_t value[4];
+    int32_t i=0;
+    while (p != NULL)
+    {
+        value[i] = (uint8_t)atoi(p);
+        p = strtok(NULL,".");
+        i++;
+    }
 
-	return MakeDWORD(value[0], value[1], value[2], value[3]);
+    return MakeDWORD(value[0], value[1], value[2], value[3]);
 }
 */
 
 /*
 uint32_t Utility::Ip2S_addr(char* ip)
 {
-	char* p = strtok(ip, ".");
-	uint8_t value[4];
-	int32_t i=0;
-	while (p != NULL)
-	{
-		value[i] = (uint8_t)atoi(p);
-		p = strtok(NULL,".");
-		i++;
-	}
+    char* p = strtok(ip, ".");
+    uint8_t value[4];
+    int32_t i=0;
+    while (p != NULL)
+    {
+        value[i] = (uint8_t)atoi(p);
+        p = strtok(NULL,".");
+        i++;
+    }
 
-	return MakeDWORD(value[3], value[2], value[1], value[0]);
+    return MakeDWORD(value[3], value[2], value[1], value[0]);
 }
 */
 
@@ -445,17 +445,17 @@ bool Utility::CheckDate(int32_t year, int32_t month, int32_t day)
 /*
 LONG Utility::GetFileSize(char* strFileName)
 {
-	if (strFileName == NULL)
-	{
-		return -1;
-	}
-	struct stat f_stat;
-	if (stat(strFileName, &f_stat) == -1)
-	{
-		return -1;
-	}
+    if (strFileName == NULL)
+    {
+        return -1;
+    }
+    struct stat f_stat;
+    if (stat(strFileName, &f_stat) == -1)
+    {
+        return -1;
+    }
 
-	return (long)f_stat.st_size;
+    return (long)f_stat.st_size;
 }
 */
 
