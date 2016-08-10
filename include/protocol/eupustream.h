@@ -120,7 +120,7 @@ public:
     {
         int32_t nLen = 0;
         int32_t nStrLen = strlen(szSrc);
-        if (nStrLen + sizeof(int32_t) > buflen)
+        if (static_cast<int32_t>(nStrLen + sizeof(int32_t)) > buflen)
             return -1;
 
         uint32_t tmp = htonl(nStrLen);
@@ -179,7 +179,7 @@ public:
         int32_t nLen = 0;
         int32_t nStrLen = 0;
 
-        if (sizeof(int32_t) > buflen)
+        if (static_cast<int32_t>(sizeof(int32_t)) > buflen)
             return -1;
 
         memcpy((BYTE*)&nStrLen, buf, sizeof(int32_t));
