@@ -31,20 +31,10 @@ using namespace std;
 #ifdef OS_LINUX
 typedef __uint8_t BYTE;
 #elif OS_WINDOWS
-
 #include <WinDef.h>
+#include <stdint.h>
 #define snprintf sprintf_s
 #define vsnprintf vsnprintf_s
-typedef signed __int64 int64_t;
-typedef signed __int32 int32_t;
-typedef signed __int16 int16_t;
-typedef signed __int8 int8_t;
-typedef unsigned __int64 uint64_t;
-typedef unsigned __int32 uint32_t;
-typedef unsigned __int16 uint16_t;
-typedef unsigned __int8 uint8_t;
-
-typedef UINT64 uint64_t;
 #endif
 
 #define MAX_SEND_SIZE   2048

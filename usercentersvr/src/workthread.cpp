@@ -98,11 +98,7 @@ int CWorkThread::ProcessKeepalive(NET_DATA* pdata)
         return 0;
 
     bool bret = CGlobalMgr::getInstance()->createMsgToSendList(pdata->fddat,
-#ifdef STRONG_KEY 
                                                                pdata->connect_time,
-#else
-                                                               0,
-#endif
                                                                pdata->peer_ip, pdata->peer_port, pdata->type, KEEP_ALIVE_PING, 0, 0, 0, NULL, 0);
     return (bret ? 1 : 0);
 }
