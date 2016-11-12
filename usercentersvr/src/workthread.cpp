@@ -12,6 +12,7 @@ CWorkThread::CWorkThread()
 
 CWorkThread::~CWorkThread()
 {
+    m_iUserCount = 0;
 }
 
 int CWorkThread::processMessage(NET_DATA* pdata)

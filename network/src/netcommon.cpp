@@ -169,7 +169,7 @@ int32_t doNonblockConnect(PCONNECT_SERVER pserver, int32_t timeout, const string
     struct sockaddr_in localaddr = {0};
     localaddr.sin_family = AF_INET;
     localaddr.sin_addr.s_addr = fgAtoN(localip.c_str());
-    if (!bind(fd, (struct sockaddr*)&localaddr, sizeof(localaddr)) < 0)
+    if (!(bind(fd, (struct sockaddr*)&localaddr, sizeof(localaddr)) < 0))
     {
         LOG(_ERROR_, "doNonblockConnect() error, bind() failed");
 #ifdef OS_LINUX
