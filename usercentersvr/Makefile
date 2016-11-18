@@ -4,9 +4,9 @@ include ../common.mak
 
 RELEASE_DIR = ../release
 
-CFLAGS += -DOS_LINUX -I./src
+CFLAGS += -DOS_LINUX $(INC_CFLAGS) -I./src
 
-LFLAGS += -L$(RELEASE_DIR)
+LFLAGS = $(LIB_LFLAGS) -L$(RELEASE_DIR)
 
 TARGETS = usercentersvr 
 

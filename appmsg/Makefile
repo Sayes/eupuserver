@@ -5,7 +5,7 @@ include ../common.mak
 
 RELEASE_DIR = ../release
 
-CFLAGS += -DOS_LINUX
+CFLAGS += -DOS_LINUX $(INC_CFLAGS)
 
 TARGETS = libeupu.base.pb.a
 

@@ -28,8 +28,6 @@ LFLAGS = -shared $(OSARCH)
 INC_CFLAGS = -I$(APR_PATH)/include -I$(APRUTIL_PATH) -I$(LOG4CXX_PATH)/include -I$(PROTOBUF_PATH)/include -I$(JSON_PATH)/include -I$(XERCES_PATH)/include -I$(XML_SECURITY_PATH)/include -I$(OPENSSL_PATH)/include -I$(TS_INCLUDE)/common -I$(TS_INCLUDE)/network -I$(TS_INCLUDE)/logger -I$(TS_INCLUDE)/protocol -I$(TS_INCLUDE)/appmsg -I$(TS_INCLUDE)/vrbase
 LIB_LFLAGS = -L$(APR_PATH)/lib -L$(APRUTIL_PATH)/lib -L$(LOG4CXX_PATH)/lib -L$(PROTOBUF_PATH)/lib -L$(JSON_PATH)/lib -L$(XERCES_PATH)/lib -L$(XML_SECURITY_PATH)/lib -L$(OPENSSL_PATH)/lib64
 
-CFLAGS += $(INC_CFLAGS)
-LFLAGS += $(LIB_LFLAGS)
 
 MAKE = make
 endif
