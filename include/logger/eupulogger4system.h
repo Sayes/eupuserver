@@ -32,9 +32,9 @@ public:
     void Error4Sys(char* strError);
     void Debug4Sys(char* strDebug);
     void WriteMonitorLog(uint32_t type, uint32_t mainid, uint32_t assiantid, uint32_t action, const char* username, const char* domain);
-    void WriteLog(const char* filename, uint32_t line, LOGLEVEL level, const char* fmt, ...);
+    void WriteLog(const char* filename, int32_t line, LOGLEVEL level, const char* fmt, ...);
     void SetDebugMode(bool bdebug);
-    void WriteHex(const char* filename, uint32_t line, LOGLEVEL level, const char* title, const char* buf, int32_t buflen);
+    void WriteHex(const char* filename, int32_t line, LOGLEVEL level, const char* title, const char* buf, int32_t buflen);
     void SetLogLevel(LOGLEVEL level);
     const char* GetLogLevelStr(LOGLEVEL);
 protected:

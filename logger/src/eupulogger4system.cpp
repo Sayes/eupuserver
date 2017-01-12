@@ -24,9 +24,9 @@ void CEupuLogger4System::Fatal4Sys(char* strFatal){}
 void CEupuLogger4System::Error4Sys(char* strError){}
 void CEupuLogger4System::Debug4Sys(char* strDebug){}
 void CEupuLogger4System::WriteMonitorLog(uint32_t type, uint32_t mainid, uint32_t assiantid, uint32_t action, const char* username, const char* domain){}
-void CEupuLogger4System::WriteLog(const char* filename, uint32_t line, LOGLEVEL level, const char* fmt, ...){}
+void CEupuLogger4System::WriteLog(const char* filename, int32_t line, LOGLEVEL level, const char* fmt, ...){}
 void CEupuLogger4System::SetDebugMode(bool bdebug){}
-void CEupuLogger4System::WriteHex(const char* filename, uint32_t line, LOGLEVEL level, const char* title, const char* buf, int32_t buflen){}
+void CEupuLogger4System::WriteHex(const char* filename, int32_t line, LOGLEVEL level, const char* title, const char* buf, int32_t buflen){}
 void CEupuLogger4System::SetLogLevel(LOGLEVEL level){}
 const char* CEupuLogger4System::GetLogLevelStr(LOGLEVEL){ return NULL; }
 CEupuLogger4System::CEupuLogger4System(){}
@@ -163,7 +163,7 @@ void CEupuLogger4System::Debug4Sys(char* strDebug)
     Debug(m_BugPtr, strDebug);
 }
 
-void CEupuLogger4System::WriteLog(const char* filename, uint32_t line, LOGLEVEL level, const char* fmt, ...)
+void CEupuLogger4System::WriteLog(const char* filename, int32_t line, LOGLEVEL level, const char* fmt, ...)
 {
     char msgbuf[MAX_MSGSIZE];
     char buf[MAX_MSGSIZE];
@@ -298,7 +298,7 @@ void CEupuLogger4System::SetLogLevel(LOGLEVEL level)
     m_Level = level;
 }
 
-void CEupuLogger4System::WriteHex(const char* filename, uint32_t line, LOGLEVEL level, const char* title, const char* buf, int32_t buflen)
+void CEupuLogger4System::WriteHex(const char* filename, int32_t line, LOGLEVEL level, const char* title, const char* buf, int32_t buflen)
 {
     char msgbuf[MAX_MSGSIZE];
     struct timeval tmv;
