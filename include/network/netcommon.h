@@ -24,7 +24,7 @@ using namespace std;
 
 typedef struct socket_key
 {
-    int32_t fdkey;
+    int fdkey;
     time_t connect_time;
     socket_key()
     {
@@ -38,15 +38,15 @@ typedef struct socket_set
 {
     SOCKET_KEY* key;
     char part_buf[MAX_SEND_SIZE];
-    int32_t part_len;
+    int part_len;
 
     string peer_ip;
     uint16_t peer_port;
 
     time_t refresh_time;
-    int32_t type;   //0: listen, 1: client, 2: mainsvr, 3: dissvr, 4: usercentersvr, 5: centersvr, 6: logsvr
+    int type;   //0: listen, 1: client, 2: mainsvr, 3: dissvr, 4: usercentersvr, 5: centersvr, 6: logsvr
 
-    bool init(SOCKET_KEY* pkey, const string& ip, uint16_t port, int32_t ntype)
+    bool init(SOCKET_KEY* pkey, const string& ip, uint16_t port, int ntype)
     {
         if (!pkey)
             return false;
@@ -81,7 +81,7 @@ typedef struct socket_set
 
 typedef struct net_data
 {
-    int32_t fddat;
+    int fddat;
     time_t connect_time;
     string peer_ip;
     uint16_t peer_port;
@@ -108,7 +108,7 @@ typedef struct net_data
         }
     }
 
-    bool init(int32_t _fd, time_t conntime, const string& ip, uint16_t port, int32_t ntype, uint32_t nlen)
+    bool init(int _fd, time_t conntime, const string& ip, uint16_t port, int ntype, uint32_t nlen)
     {
         fddat = _fd;
         connect_time = conntime;
@@ -133,7 +133,7 @@ typedef struct net_data
 
 typedef struct net_event
 {
-    int32_t eventid;
+    int eventid;
     char* data;
     net_event()
     {
@@ -143,12 +143,12 @@ typedef struct net_event
 } NET_EVENT;
 
 
-SOCKET_SET* initSocketset(int32_t fd, time_t conntime, const string& peerip, uint16_t peerport, int32_t ntype);
-bool setNonBlock(int32_t fd);
+SOCKET_SET* initSocketset(int fd, time_t conntime, const string& peerip, uint16_t peerport, int ntype);
+bool setNonBlock(int fd);
 
-int32_t recv_msg(int32_t fd, char* buf, int32_t& nlen);
-int32_t send_msg(int32_t fd, char* buf, int32_t& nlen);
+int recv_msg(int fd, char* buf, int& nlen);
+int send_msg(int fd, char* buf, int& nlen);
 
-int32_t doNonblockConnect(PCONNECT_SERVER pServer, int32_t timeout = 3, const string& localip = "");
+int doNonblockConnect(PCONNECT_SERVER pServer, int timeout = 3, const string& localip = "");
 
 #endif//__NETCOMMON_H__

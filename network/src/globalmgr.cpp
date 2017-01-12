@@ -19,7 +19,7 @@ void CGlobalMgr::release()
     m_pInstance = NULL;
 }
 
-bool CGlobalMgr::createMsgToSendList(int32_t fd, time_t conntime, const std::string& ip, uint16_t port, int32_t ntype, uint16_t mainid, uint16_t assistantid, BYTE code, BYTE reserve, CEupuStream* pstream, uint32_t nlen)
+bool CGlobalMgr::createMsgToSendList(int fd, time_t conntime, const std::string& ip, uint16_t port, int ntype, uint16_t mainid, uint16_t assistantid, BYTE code, BYTE reserve, CEupuStream* pstream, uint32_t nlen)
 {
     if (fd < 0)
     {
@@ -103,9 +103,9 @@ bool CGlobalMgr::addMsgToSendList(NET_DATA* pmsg)
     }
 
     m_sendmaplock.Lock();
-    int32_t fd = pmsg->fddat;
+    int fd = pmsg->fddat;
 
-    map<int32_t, list<NET_DATA*>*>::iterator iter = m_pcursendmap->find(fd);
+    map<int, list<NET_DATA*>*>::iterator iter = m_pcursendmap->find(fd);
     if (iter == m_pcursendmap->end())
     {
         list<NET_DATA*>* plst = new list<NET_DATA*>;
@@ -116,7 +116,7 @@ bool CGlobalMgr::addMsgToSendList(NET_DATA* pmsg)
             ::exit(-1);
         }
         plst->push_back(pmsg);
-        m_pcursendmap->insert(map<int32_t, list<NET_DATA*>*>::value_type(fd, plst));
+        m_pcursendmap->insert(map<int, list<NET_DATA*>*>::value_type(fd, plst));
     }
     else
     {
@@ -159,7 +159,7 @@ bool CGlobalMgr::init()
 void CGlobalMgr::clean()
 {
     m_sendmaplock.Lock();
-    map<int32_t, list<NET_DATA* > * >::iterator iter = m_pcursendmap->begin();
+    map<int, list<NET_DATA* > * >::iterator iter = m_pcursendmap->begin();
     for (; iter != m_pcursendmap->end(); ++iter)
     {
         list<NET_DATA*>* plst = iter->second;
@@ -218,7 +218,7 @@ SysQueue<NET_EVENT>* CGlobalMgr::getEventQueue()
 }
 
 
-void CGlobalMgr::setServerSocket(int32_t fd, time_t conntime, const string& ip, uint16_t port, int32_t ntype)
+void CGlobalMgr::setServerSocket(int fd, time_t conntime, const string& ip, uint16_t port, int ntype)
 {
     m_serverlock.Lock();
 
@@ -274,13 +274,13 @@ void CGlobalMgr::switchSendMap()
     if (m_pcursendmap->size() > 0 || m_pbaksendmap->size() > 0)
         LOG(_INFO_, "CGlobalMgr::switchSendMap(), m_pcursendmap->size()=%d m_pbaksendmap->size() = %d", m_pcursendmap->size(), m_pbaksendmap->size());
 
-    map<int32_t, list<NET_DATA*>*>::iterator iterbak = m_pbaksendmap->begin();
+    map<int, list<NET_DATA*>*>::iterator iterbak = m_pbaksendmap->begin();
     for (; iterbak != m_pbaksendmap->end(); ++iterbak)
     {
         if (iterbak->second == NULL)
             continue;
 
-        map<int32_t, list<NET_DATA*>*>::iterator itercur = m_pcursendmap->find(iterbak->first);
+        map<int, list<NET_DATA*>*>::iterator itercur = m_pcursendmap->find(iterbak->first);
         if (itercur != m_pcursendmap->end())
         {
             if (itercur->second == NULL)
@@ -291,8 +291,8 @@ void CGlobalMgr::switchSendMap()
 
             if (itercur->second->size() + iterbak->second->size() > (uint32_t)m_nMaxSendList)
             {
-                int32_t needmove = m_nMaxSendList - itercur->second->size();
-                int32_t idx = 0;
+                int needmove = m_nMaxSendList - itercur->second->size();
+                int idx = 0;
 
                 for (list<NET_DATA*>::iterator itersend = iterbak->second->begin(); itersend != iterbak->second->end(); ++itersend)
                 {
@@ -325,13 +325,13 @@ void CGlobalMgr::switchSendMap()
         }
         else
         {
-            m_pcursendmap->insert(map<int32_t, list<NET_DATA*>*>::value_type(iterbak->first, iterbak->second));
+            m_pcursendmap->insert(map<int, list<NET_DATA*>*>::value_type(iterbak->first, iterbak->second));
         }
     }//end for
 
     m_pbaksendmap->clear();
 
-    map<int32_t, list<NET_DATA*>*>* p = m_pcursendmap;
+    map<int, list<NET_DATA*>*>* p = m_pcursendmap;
     m_pcursendmap = m_pbaksendmap;
     m_pbaksendmap = p;
 
@@ -340,7 +340,7 @@ void CGlobalMgr::switchSendMap()
     return;
 }
 
-void CGlobalMgr::setUserCenterSocket(int32_t fd, time_t conntime, const string& peerip, uint16_t peerport, int32_t ntype)
+void CGlobalMgr::setUserCenterSocket(int fd, time_t conntime, const string& peerip, uint16_t peerport, int ntype)
 {
     m_usercenterkey.fddat = fd;
     m_usercenterkey.connect_time = conntime;
@@ -349,7 +349,7 @@ void CGlobalMgr::setUserCenterSocket(int32_t fd, time_t conntime, const string& 
     m_usercenterkey.type = ntype;
 }
 
-void CGlobalMgr::setMainSocket(int32_t fd, time_t conntime, const string& peerip, uint16_t peerport, int32_t ntype)
+void CGlobalMgr::setMainSocket(int fd, time_t conntime, const string& peerip, uint16_t peerport, int ntype)
 {
     m_mainkey.fddat = fd;
     m_mainkey.connect_time = conntime;
@@ -357,8 +357,7 @@ void CGlobalMgr::setMainSocket(int32_t fd, time_t conntime, const string& peerip
     m_mainkey.peer_port = peerport;
     m_mainkey.type = ntype;
 }
-
-void CGlobalMgr::setLogSocket(int32_t fd, time_t conntime, const string& peerip, uint16_t peerport, int32_t ntype)
+void CGlobalMgr::setLogSocket(int fd, time_t conntime, const string& peerip, uint16_t peerport, int ntype)
 {
     m_logkey.fddat = fd;
     m_logkey.connect_time = conntime;
@@ -368,7 +367,7 @@ void CGlobalMgr::setLogSocket(int32_t fd, time_t conntime, const string& peerip,
 }
 
 
-void CGlobalMgr::setDistributeSocket(int32_t fd, time_t conntime, const string& peerip, uint16_t peerport, int32_t ntype)
+void CGlobalMgr::setDistributeSocket(int fd, time_t conntime, const string& peerip, uint16_t peerport, int ntype)
 {
     m_distributekey.fddat = fd;
     m_distributekey.connect_time = conntime;
@@ -377,7 +376,7 @@ void CGlobalMgr::setDistributeSocket(int32_t fd, time_t conntime, const string& 
     m_distributekey.type = ntype;
 }
 
-bool CGlobalMgr::sendMsgToServer(int32_t ntype, uint16_t mainid, uint16_t assistantid, BYTE code, BYTE reserve, CEupuStream* stream, uint32_t nlen, bool blocked)
+bool CGlobalMgr::sendMsgToServer(int ntype, uint16_t mainid, uint16_t assistantid, BYTE code, BYTE reserve, CEupuStream* stream, uint32_t nlen, bool blocked)
 {
     if (blocked)
         m_serverlock.Lock();
@@ -439,7 +438,7 @@ void CGlobalMgr::sendKeepaliveMsgToAllServer()
     m_serverlock.UnLock();
 }
 
-void CGlobalMgr::createServerConnect(int32_t ntype)
+void CGlobalMgr::createServerConnect(int ntype)
 {
     m_serverlock.Lock();
 
@@ -494,7 +493,7 @@ void CGlobalMgr::createServerConnect(int32_t ntype)
 
     m_serverlock.UnLock();
 
-    int32_t fd = doNonblockConnect(pserver, 3, CGlobalConfig::getInstance()->getListenIp());
+    int fd = doNonblockConnect(pserver, 3, CGlobalConfig::getInstance()->getListenIp());
 
     if (fd < 0)
     {
@@ -546,11 +545,10 @@ void CGlobalMgr::createServerConnect(int32_t ntype)
 #endif
     }
 
-    LOG(_INFO_, "CGlobalMgr::createServerConnect() end, fddat=%d, time=%u, ip=%s, port=%d, type=%d, data_len=%d",
-        pdata->connect_time, pdata->peer_ip.c_str(), pdata->peer_port, pdata->type, pdata->data_len);
+    LOG(_INFO_, "CGlobalMgr::createServerConnect() end, fd=%d, time=%u, ip=%s, port=%d, type=%d, data_len=%d", pdata->fddat, pdata->connect_time, pdata->peer_ip.c_str(), pdata->peer_port, pdata->type, pdata->data_len);
 }
 
-bool CGlobalMgr::createCloseConnectEvent(int32_t fd, time_t conntime)
+bool CGlobalMgr::createCloseConnectEvent(int fd, time_t conntime)
 {
     SOCKET_KEY* pkey = new SOCKET_KEY;
     NET_EVENT* pevent = new NET_EVENT;

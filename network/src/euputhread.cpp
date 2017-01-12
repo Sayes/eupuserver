@@ -47,7 +47,7 @@ void CEupuThread::setMaskSIGUSR1()
 
 bool CEupuThread::start()
 {
-    int32_t nret = pthread_create(&m_pid, NULL, ThreadFunc, this);
+    int nret = pthread_create(&m_pid, NULL, ThreadFunc, this);
 
     if (0 == nret)
     {
@@ -74,7 +74,7 @@ bool CEupuThread::stop()
 void CEupuThread::pause()
 {
 #ifdef OS_LINUX
-    int32_t sig;
+    int sig;
     sigwait(&m_waitSig, &sig);
 #elif OS_WINDOWS
     //TODO, suspend, check here

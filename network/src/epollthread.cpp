@@ -202,7 +202,7 @@ void CEpollThread::doEpollEvent()
             {
                 if (doSendMessage(pkey) < 0)
                 {
-                    closeClient(pkey->fdkey, pkey->connect_time); 
+                    closeClient(pkey->fdkey, pkey->connect_time);
                 }
                 else
                 {
@@ -218,8 +218,7 @@ void CEpollThread::doEpollEvent()
             }
             else
             {
-                LOG(_ERROR_, "CEpollThread::doEpollEvent() error, epoll recv unknown error, fd=%d, conn_time=%u",
-                    pkey->fdkey, pkey->connect_time);
+                LOG(_ERROR_, "CEpollThread::doEpollEvent() error, epoll recv unknown error, fd=%d, conn_time=%u", pkey->fdkey, pkey->connect_time);
                 closeClient(pkey->fdkey, pkey->connect_time);
             }
         }//end for
@@ -346,7 +345,6 @@ void CEpollThread::doKeepaliveTimeout()
                     bclosed = true;
                     LOG(_ERROR_, "CEpollThread::doKeepaliveTimeout() error, close socket_set for timeout, fd=%d, time=%u, peerip=%s, port=%d",
                         itersockmap->first, itersockmap->second->key->connect_time, GETNULLSTR(itersockmap->second->peer_ip), itersockmap->second->peer_port);
-
                     closeClient(itersockmap->first, itersockmap->second->key->connect_time);
                 }
             }
@@ -383,7 +381,7 @@ bool CEpollThread::doListen()
     bool bret = false;
 
     sockaddr_in serv_addr;
-    m_listenfd = ::socket(AF_INET, SOCK_STREAM, 0);
+    m_listenfd = socket(AF_INET, SOCK_STREAM, 0);
 
     do
     {
@@ -437,7 +435,6 @@ bool CEpollThread::doListen()
         }
 
         m_listenkey->fdkey = m_listenfd;
-
         m_listenkey->connect_time = getIndex();
 
         struct epoll_event ev;
@@ -607,9 +604,7 @@ void CEpollThread::doRecvMessage(SOCKET_KEY* pkey)
 
         if (nret < 0)
         {
-            LOG(_ERROR_, "CEpollThread::doRecvMessage() recv_msg() error, fd=%d, time=%u, peerip=%s, port=%d",
-                pkey->fdkey, pkey->connect_time, GETNULLSTR(iter->second->peer_ip), iter->second->peer_port);
-
+            LOG(_ERROR_, "CEpollThread::doRecvMessage() recv_msg() error, fd=%d, time=%u, peerip=%s, port=%d", pkey->fdkey, pkey->connect_time, GETNULLSTR(iter->second->peer_ip), iter->second->peer_port);
             closeClient(pkey->fdkey, pkey->connect_time);
             return;
         }
@@ -878,8 +873,7 @@ void CEpollThread::createClientCloseMsg(SOCKET_SET* psockset)
     msg.m_nServer = psockset->type;
     if (!msg.Out((BYTE*)buf, buflen))
     {
-        LOG(_ERROR_, "CEpollThread::createClientCloseMsg() error, msg.Out(buf, buflen) failed, fd=%d, time=%u, type=%d",
-            psockset->key->fdkey, psockset->key->connect_time, psockset->type);
+        LOG(_ERROR_, "CEpollThread::createClientCloseMsg() error, msg.Out(buf, buflen) failed, fd=%d, time=%u, type=%d", psockset->key->fdkey, psockset->key->connect_time, psockset->type);
         msg.Debug();
         return;
     }
@@ -887,15 +881,13 @@ void CEpollThread::createClientCloseMsg(SOCKET_SET* psockset)
     NET_DATA* pdata = new NET_DATA;
     if (!pdata)
     {
-        LOG(_ERROR_, "CEpollThread::createClientCloseMsg() error, create NET_DATA failed, fd=%d, time=%u, type=%d",
-            psockset->key->fdkey, psockset->key->connect_time, psockset->type);
+        LOG(_ERROR_, "CEpollThread::createClientCloseMsg() error, create NET_DATA failed, fd=%d, time=%u, type=%d", psockset->key->fdkey, psockset->key->connect_time, psockset->type);
         ::exit(-1);
     }
 
     if (!pdata->init(psockset->key->fdkey, psockset->key->connect_time, psockset->peer_ip, psockset->peer_port, psockset->type, buflen))
     {
-        LOG(_ERROR_, "CEpollThread::createClientCloseMsg() error, pdata->init(fd...) failed, fd=%d, time=%u, type=%d",
-            psockset->key->fdkey, psockset->key->connect_time, psockset->type);
+        LOG(_ERROR_, "CEpollThread::createClientCloseMsg() error, pdata->init(fd...) failed, fd=%d, time=%u, type=%d", psockset->key->fdkey, psockset->key->connect_time, psockset->type);
         delete pdata;
         return;
     }
@@ -1001,8 +993,7 @@ void CEpollThread::doSystemEvent()
                     if (pdata->data != NULL)
                     {
                         SOCKET_KEY* pkey = (SOCKET_KEY*)pdata->data;
-                        LOG(_INFO_, "CEpollThread::doSystemEvent(), closeClient(), fd=%d, conn_time=%u",
-                            pkey->fdkey, pkey->connect_time);
+                        LOG(_INFO_, "CEpollThread::doSystemEvent(), closeClient(), fd=%d, conn_time=%u", pkey->fdkey, pkey->connect_time);
                         closeClient(pkey->fdkey, pkey->connect_time);
                         delete pkey;
                     }
@@ -1024,7 +1015,6 @@ void CEpollThread::doSystemEvent()
                     }
 
                     psockset->key->connect_time = getIndex();
-
                     CGlobalMgr::getInstance()->setServerSocket(psockset->key->fdkey, psockset->key->connect_time, psockset->peer_ip, psockset->peer_port, psockset->type);
 
                     if (!createConnectServerMsg(psockset))

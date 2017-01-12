@@ -54,7 +54,7 @@ void CWorkBaseThread::run()
         return;
     }
 
-    int32_t nret = 0;
+    int nret = 0;
 
     while (m_bOperate)
     {
@@ -87,8 +87,7 @@ void CWorkBaseThread::run()
 
                 if (!CGlobalMgr::getInstance()->createCloseConnectEvent(pdata->fddat, pdata->connect_time))
                 {
-                    LOG(_ERROR_, "CWorkBaseThread::run() error, createCloseConnectEvent() failed, fddat=%d, time=%u",
-                        pdata->fddat, pdata->connect_time);
+                    LOG(_ERROR_, "CWorkBaseThread::run() error, createCloseConnectEvent() failed, fd=%d, time=%u", pdata->fddat, pdata->connect_time);
                 }
             }
             delete pdata;

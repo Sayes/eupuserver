@@ -36,9 +36,6 @@ CEupuLogger4System::~CEupuLogger4System(){}
 
 #define MAX_MSGSIZE 2048
 
-using std::cout;
-using std::string;
-using std::endl;
 
 CEupuLogger4System* CEupuLogger4System::m_pLogger = NULL;
 
