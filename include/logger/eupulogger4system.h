@@ -42,9 +42,9 @@ protected:
     CEupuLogger4System(const char* spath);
     virtual ~CEupuLogger4System();
 protected:
-    LoggerPtr m_ErrPtr;
-    LoggerPtr m_FtlPtr;
-    LoggerPtr m_BugPtr;
+    log4cxx::LoggerPtr m_ErrPtr;
+    log4cxx::LoggerPtr m_FtlPtr;
+    log4cxx::LoggerPtr m_BugPtr;
     std::string m_strTmp;
     bool m_IsDebug;
     LOGLEVEL m_Level;

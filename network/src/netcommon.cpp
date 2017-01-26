@@ -3,7 +3,7 @@
 #include "netcommon.h"
 #include "common.h"
 
-SOCKET_SET* initSocketset(int fd, time_t conntime, const string& peerip, unsigned short peerport, int ntype)
+SOCKET_SET* initSocketset(int fd, time_t conntime, const std::string& peerip, unsigned short peerport, int ntype)
 {
     SOCKET_KEY* key = new SOCKET_KEY;
     if (!key)
@@ -144,7 +144,7 @@ int send_msg(int fd, char* buf, int& nlen)
     return nRet;
 }
 
-int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const string& localip)
+int doNonblockConnect(PCONNECT_SERVER pserver, int timeout, const std::string& localip)
 {
     if (!pserver)
     {

@@ -56,7 +56,7 @@ CEpollThread::~CEpollThread()
     }
     m_socketmap.clear();
 
-    list<NET_DATA*>::iterator iterrecv = m_recvtmplst.begin();
+    std::list<NET_DATA*>::iterator iterrecv = m_recvtmplst.begin();
     for (; iterrecv != m_recvtmplst.end(); ++iterrecv)
     {
         if ((*iterrecv) != NULL)
@@ -230,7 +230,7 @@ void CEpollThread::doEpollEvent()
         {
             SysQueue<NET_DATA>* precvlist = CGlobalMgr::getInstance()->getRecvQueue();
             precvlist->Lock();
-            list<NET_DATA*>::iterator iterrecv = m_recvtmplst.begin();
+            std::list<NET_DATA*>::iterator iterrecv = m_recvtmplst.begin();
             for (; iterrecv != m_recvtmplst.end(); ++iterrecv)
             {
                 if ((*iterrecv) == NULL)
@@ -253,9 +253,9 @@ void CEpollThread::doEpollEvent()
         //////////////////begin set write epoll event by sendset///////////////////////////////
         struct epoll_event ev;
         CGlobalMgr::getInstance()->switchSendMap();
-        map<int, list<NET_DATA*>*>* psendmap = CGlobalMgr::getInstance()->getBakSendMap();
+        std::map<int, std::list<NET_DATA*>*>* psendmap = CGlobalMgr::getInstance()->getBakSendMap();
 
-        for (map<int, list<NET_DATA*>*>::iterator itersendmap = psendmap->begin(); itersendmap != psendmap->end(); ++itersendmap)
+        for (std::map<int, std::list<NET_DATA*>*>::iterator itersendmap = psendmap->begin(); itersendmap != psendmap->end(); ++itersendmap)
         {
             std::unordered_map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.find(itersendmap->first);
             if (itersockmap == m_socketmap.end() || itersockmap->second == NULL || itersockmap->second->key == NULL)
@@ -277,7 +277,7 @@ void CEpollThread::doEpollEvent()
             }
         }
 
-        for (list<int>::iterator iterdelsendfdlist = m_delsendfdlist.begin(); iterdelsendfdlist != m_delsendfdlist.end(); ++iterdelsendfdlist)
+        for (std::list<int>::iterator iterdelsendfdlist = m_delsendfdlist.begin(); iterdelsendfdlist != m_delsendfdlist.end(); ++iterdelsendfdlist)
         {
             deleteSendMsgFromSendMap(*iterdelsendfdlist);
         }
@@ -314,7 +314,7 @@ void CEpollThread::doKeepaliveTimeout()
         return;
     }
 
-    list<int> timelist;
+    std::list<int> timelist;
     std::unordered_map<int, SOCKET_SET*>::iterator itersockmap = m_socketmap.begin();
     for (; itersockmap != m_socketmap.end(); ++itersockmap)
     {
@@ -332,7 +332,7 @@ void CEpollThread::doKeepaliveTimeout()
     }//end for
 
     bool bclosed = false;
-    for (list<int>::iterator itertimeout = timelist.begin(); itertimeout != timelist.end(); ++itertimeout)
+    for (std::list<int>::iterator itertimeout = timelist.begin(); itertimeout != timelist.end(); ++itertimeout)
     {
         bclosed = false;
         itersockmap = m_socketmap.find(*itertimeout);
@@ -477,7 +477,7 @@ bool CEpollThread::doAccept(int fd)
             return true;
         }
 
-        string peerip = fgNtoA(ntohl(addr.sin_addr.s_addr));
+        std::string peerip = fgNtoA(ntohl(addr.sin_addr.s_addr));
         unsigned short port = ntohs(addr.sin_port);
         LOG(_INFO_, "CEpollThread::doAccept(), peerip=%s, port=%d", GETNULLSTR(peerip), port);
 
@@ -659,8 +659,8 @@ int CEpollThread::doSendMessage(SOCKET_KEY* pkey)
 
     int num = 0;
     int buflen = 0;
-    map<int, list<NET_DATA*> *>* psendmap = CGlobalMgr::getInstance()->getBakSendMap();
-    map<int, list<NET_DATA*> *>::iterator itersend = psendmap->find(pkey->fdkey);
+    std::map<int, std::list<NET_DATA*> *>* psendmap = CGlobalMgr::getInstance()->getBakSendMap();
+    std::map<int, std::list<NET_DATA*> *>::iterator itersend = psendmap->find(pkey->fdkey);
     if (itersend == psendmap->end())
     {
         LOG(_WARN_, "CEpollThread::doSendMessage() not found the socket %d at send msg map", pkey->fdkey);
@@ -944,14 +944,14 @@ void CEpollThread::deleteSendMsgFromSendMap(int fd)
         return;
     }
 
-    map<int, list<NET_DATA*>*>* psendmap = CGlobalMgr::getInstance()->getBakSendMap();
-    map<int, list<NET_DATA*>*>::iterator itersend = psendmap->find(fd);
+    std::map<int, std::list<NET_DATA*>*>* psendmap = CGlobalMgr::getInstance()->getBakSendMap();
+    std::map<int, std::list<NET_DATA*>*>::iterator itersend = psendmap->find(fd);
 
     if (itersend != psendmap->end())
     {
         if (itersend->second != NULL)
         {
-            list<NET_DATA*>::iterator iterdata = itersend->second->begin();
+            std::list<NET_DATA*>::iterator iterdata = itersend->second->begin();
             for (; iterdata != itersend->second->end(); ++iterdata)
             {
                 delete *iterdata;

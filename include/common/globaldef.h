@@ -26,7 +26,6 @@
 #include <list>
 #include <limits>
 
-using namespace std;
 
 #ifdef OS_LINUX
 typedef __uint8_t BYTE;

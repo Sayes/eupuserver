@@ -13,7 +13,6 @@
 #include "globaldef.h"
 #include "eupulogger4system.h"
 
-using namespace std;
 
 class CEupuStream {
 public:
@@ -59,7 +58,7 @@ public:
         return ret;
     }
 
-    string cmnNtoA(uint32_t ip)
+    std::string cmnNtoA(uint32_t ip)
     {
         char buf[100];
         struct in_addr addr;
@@ -70,7 +69,7 @@ public:
 #elif OS_WINDOWS
         const char* p = eupu_inet_ntop(AF_INET, (void*)&addr, buf, (socklen_t)sizeof(buf));
 #endif
-        return string(p);
+        return std::string(p);
     }
 
     virtual bool In(BYTE* pSrc, uint32_t& nLen) = 0;

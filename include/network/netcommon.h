@@ -3,7 +3,7 @@
 
 #include <string>
 #include <time.h>
-#include <string.h>
+//#include <string.h>
 
 #include "globaldef.h"
 #include "globalconfig.h"
@@ -19,8 +19,6 @@
 #define CENTER_TYPE     5
 #define LOGSVR_TYPE     6
 
-
-using namespace std;
 
 typedef struct socket_key
 {
@@ -40,13 +38,13 @@ typedef struct socket_set
     char part_buf[MAX_SEND_SIZE];
     int part_len;
 
-    string peer_ip;
+    std::string peer_ip;
     uint16_t peer_port;
 
     time_t refresh_time;
     int type;   //0: listen, 1: client, 2: mainsvr, 3: dissvr, 4: usercentersvr, 5: centersvr, 6: logsvr
 
-    bool init(SOCKET_KEY* pkey, const string& ip, uint16_t port, int ntype)
+    bool init(SOCKET_KEY* pkey, const std::string& ip, uint16_t port, int ntype)
     {
         if (!pkey)
             return false;
@@ -83,7 +81,7 @@ typedef struct net_data
 {
     int fddat;
     time_t connect_time;
-    string peer_ip;
+    std::string peer_ip;
     uint16_t peer_port;
     int32_t type;
     char* pdata;
@@ -108,7 +106,7 @@ typedef struct net_data
         }
     }
 
-    bool init(int _fd, time_t conntime, const string& ip, uint16_t port, int ntype, uint32_t nlen)
+    bool init(int _fd, time_t conntime, const std::string& ip, uint16_t port, int ntype, uint32_t nlen)
     {
         fddat = _fd;
         connect_time = conntime;
@@ -143,12 +141,12 @@ typedef struct net_event
 } NET_EVENT;
 
 
-SOCKET_SET* initSocketset(int fd, time_t conntime, const string& peerip, uint16_t peerport, int ntype);
+SOCKET_SET* initSocketset(int fd, time_t conntime, const std::string& peerip, uint16_t peerport, int ntype);
 bool setNonBlock(int fd);
 
 int recv_msg(int fd, char* buf, int& nlen);
 int send_msg(int fd, char* buf, int& nlen);
 
-int doNonblockConnect(PCONNECT_SERVER pServer, int timeout = 3, const string& localip = "");
+int doNonblockConnect(PCONNECT_SERVER pServer, int timeout = 3, const std::string& localip = "");
 
 #endif//__NETCOMMON_H__

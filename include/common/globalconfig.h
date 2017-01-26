@@ -4,15 +4,13 @@
 #include <string>
 
 
-using namespace std;
-
 typedef struct log_cfg
 {
-    string filename;
-    string filenum;
-    string filepath;
-    string filedataext;
-    string filechkext;
+    std::string filename;
+    std::string filenum;
+    std::string filepath;
+    std::string filedataext;
+    std::string filechkext;
 } LOG_CFG;
 
 typedef struct st_global_cfg
@@ -32,7 +30,7 @@ typedef struct st_global_cfg
     uint32_t update_people_timer;
 
     uint16_t listen_port;
-    string listen_ip;
+    std::string listen_ip;
     uint32_t send_queue_size;
     uint32_t recv_queue_size;
     uint32_t work_threads;
@@ -44,8 +42,8 @@ typedef struct st_global_cfg
 
 struct __CONNECT_SERVER__
 {
-    string name;
-    string host;
+    std::string name;
+    std::string host;
     uint16_t port;
     uint32_t send_buffer;
     uint32_t recv_buffer;
@@ -61,7 +59,7 @@ typedef __CONNECT_SERVER__* PCONNECT_SERVER;
 
 struct __MEM_SERVER__
 {
-    string host;
+    std::string host;
     uint16_t port;
     uint32_t weight;
 };
@@ -80,7 +78,7 @@ public:
     char* getDbDatabase();
     uint32_t getMemPoolCount();
 
-    const vector<PMEM_SERVER>* getMemcacheServers()
+    const std::vector<PMEM_SERVER>* getMemcacheServers()
     {
         return &m_memlst;
     }
@@ -152,9 +150,9 @@ private:
     LOG_CFG onlinetotal;
 
     uint32_t mem_pool;
-    vector<PMEM_SERVER> m_memlst;
+    std::vector<PMEM_SERVER> m_memlst;
 
-    list<PCONNECT_SERVER> m_serverlist;
+    std::list<PCONNECT_SERVER> m_serverlist;
     st_global_cfg m_cfg;
     static CGlobalConfig* m_pInstance;
 };

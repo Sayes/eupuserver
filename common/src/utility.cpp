@@ -41,20 +41,20 @@ Utility::~Utility()
     //dtor
 }
 
-string Utility::Int2String(int32_t num)
+std::string Utility::Int2String(int32_t num)
 {
     char tmp[100];
     memset(tmp, 0, sizeof(tmp));
     snprintf(tmp, sizeof(tmp), "%d", num);
-    return string(tmp);
+    return std::string(tmp);
 }
 
-string Utility::uInt2String(uint32_t num)
+std::string Utility::uInt2String(uint32_t num)
 {
     char tmp[100];
     memset(tmp, 0, sizeof(tmp));
     snprintf(tmp, sizeof(tmp), "%u", num);
-    return string(tmp);
+    return std::string(tmp);
 }
 
 
@@ -123,12 +123,12 @@ void Utility::MakeBYTE(DWORD dwValue, uint8_t& bValue1, uint8_t& bValue2, uint8_
 */
 
 /*
-string Utility::Ip2String(uint32_t ip)
+std::string Utility::Ip2String(uint32_t ip)
 {
     uint8_t value1, value2, value3, value4;
     MakeBYTE(ip, value1, value2, value3, value4);
 
-    string strIp = (Int2String(value1, 10)+"."+Int2String(value2, 10)+"." +Int2String(value3, 10)+"."+Int2String(value4, 10));
+    std::string strIp = (Int2String(value1, 10)+"."+Int2String(value2, 10)+"." +Int2String(value3, 10)+"."+Int2String(value4, 10));
 
     return strIp;
 }
@@ -514,11 +514,11 @@ short Utility::getShortDotNet(uint8_t* b, int32_t index)
     return (short)(((b[index + 1] << 8) | (b[index] & 0xff)));
 }
 
-string& Utility::ReplaceAll(string& str, const char* old_value, const char* new_value)
+std::string& Utility::ReplaceAll(std::string& str, const char* old_value, const char* new_value)
 {
-    string::size_type pos = str.find(old_value);
+    std::string::size_type pos = str.find(old_value);
 
-    if (pos == string::npos)
+    if (pos == std::string::npos)
     {
         return str;
     }
@@ -528,39 +528,39 @@ string& Utility::ReplaceAll(string& str, const char* old_value, const char* new_
         str.replace(pos, strlen(old_value), new_value);
         pos = str.find(old_value, pos + strlen(new_value));
     }
-    while (pos != string::npos);
+    while (pos != std::string::npos);
 
     return str;
 }
 
-uint32_t Utility::str2Time(string strTm)
+uint32_t Utility::str2Time(std::string strTm)
 {
     time_t uTime = 0;
     int32_t index = strTm.find(" ");
-    string strTmp1 = strTm.substr(0, index);
-    string strTmp2 = strTm.substr(index + 1, strTm.length() - index - 1);
+    std::string strTmp1 = strTm.substr(0, index);
+    std::string strTmp2 = strTm.substr(index + 1, strTm.length() - index - 1);
 
     index = strTmp1.find("-");
-    string strYear = strTmp1.substr(0, index);
+    std::string strYear = strTmp1.substr(0, index);
     strTmp1 = strTmp1.substr(index + 1, strTmp1.length() - index - 1);
 
     index = strTmp1.find("-");
-    string strMonth = strTmp1.substr(0, index);
+    std::string strMonth = strTmp1.substr(0, index);
     strTmp1 = strTmp1.substr(index + 1, strTmp1.length() - index - 1);
 
     index = strTmp1.find("-");
-    string strDate = strTmp1.substr(0, index);
+    std::string strDate = strTmp1.substr(0, index);
 
     index = strTmp2.find(":");
-    string Hour = strTmp2.substr(0, index);
+    std::string Hour = strTmp2.substr(0, index);
     strTmp2 = strTmp2.substr(index + 1, strTmp2.length() - index - 1);
 
     index = strTmp2.find(":");
-    string Minute = strTmp2.substr(0, index);
+    std::string Minute = strTmp2.substr(0, index);
     strTmp2 = strTmp2.substr(index + 1, strTmp2.length() - index - 1);
 
     index = strTmp2.find(":");
-    string Second = strTmp2.substr(0, index);
+    std::string Second = strTmp2.substr(0, index);
 
     struct tm tm1;
     //uint64_t uNowTime = Utility::GetMillionTime();

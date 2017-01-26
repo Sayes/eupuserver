@@ -75,7 +75,7 @@ CGlobalConfig::CGlobalConfig()
 
 CGlobalConfig::~CGlobalConfig()
 {
-    list<PCONNECT_SERVER>::iterator iterserver = m_serverlist.begin();
+    std::list<PCONNECT_SERVER>::iterator iterserver = m_serverlist.begin();
     for (; iterserver != m_serverlist.end(); ++iterserver)
     {
         if ((*iterserver))
@@ -83,7 +83,7 @@ CGlobalConfig::~CGlobalConfig()
     }
     m_serverlist.clear();
 
-    vector<PMEM_SERVER>::iterator iter = m_memlst.begin();
+    std::vector<PMEM_SERVER>::iterator iter = m_memlst.begin();
     for (; iter < m_memlst.end(); ++iter)
     {
         if (*iter)
@@ -134,7 +134,7 @@ bool CGlobalConfig::initSysConfig(const std::string& path)
     m_cfg.maxsendbuf = sendbuffer == 0 ? 8192 : sendbuffer;
     m_cfg.maxrecvbuf = recvbuffer == 0 ? 8192 : recvbuffer;
 
-    list<PCONNECT_SERVER>::iterator iterserver = m_serverlist.begin();
+    std::list<PCONNECT_SERVER>::iterator iterserver = m_serverlist.begin();
     for (; iterserver != m_serverlist.end(); ++iterserver)
     {
         if ((*iterserver))
@@ -189,7 +189,7 @@ uint32_t CGlobalConfig::getLogLevel()
 
 PCONNECT_SERVER CGlobalConfig::getMainServer()
 {
-    list<PCONNECT_SERVER>::iterator iter = m_serverlist.begin();
+    std::list<PCONNECT_SERVER>::iterator iter = m_serverlist.begin();
     for (; iter != m_serverlist.end(); ++iter)
     {
         if ((*iter)->name == "main")
@@ -202,7 +202,7 @@ PCONNECT_SERVER CGlobalConfig::getMainServer()
 
 PCONNECT_SERVER CGlobalConfig::getDistributeServer()
 {
-    list<PCONNECT_SERVER>::iterator iter = m_serverlist.begin();
+    std::list<PCONNECT_SERVER>::iterator iter = m_serverlist.begin();
     for (; iter != m_serverlist.end(); ++iter)
     {
         if ((*iter)->name == "distribute")
@@ -215,7 +215,7 @@ PCONNECT_SERVER CGlobalConfig::getDistributeServer()
 
 PCONNECT_SERVER CGlobalConfig::getUserCenterServer()
 {
-    list<PCONNECT_SERVER>::iterator iter = m_serverlist.begin();
+    std::list<PCONNECT_SERVER>::iterator iter = m_serverlist.begin();
     for (; iter != m_serverlist.end(); ++iter)
     {
         if ((*iter)->name == "usercenter")
@@ -228,7 +228,7 @@ PCONNECT_SERVER CGlobalConfig::getUserCenterServer()
 
 PCONNECT_SERVER CGlobalConfig::getLogServer()
 {
-    list<PCONNECT_SERVER>::iterator iter = m_serverlist.begin();
+    std::list<PCONNECT_SERVER>::iterator iter = m_serverlist.begin();
     for (; iter != m_serverlist.end(); ++iter)
     {
         if ((*iter)->name == "log")

@@ -49,7 +49,7 @@ private:
     time_t m_checkkeepalivetime;
     time_t m_lastkeepalivetime;
 
-    string m_serverip;
+    std::string m_serverip;
     uint32_t m_serverport;
 
     int m_readbufsize;

@@ -11,7 +11,6 @@
 #include "workthread.h"
 #include "eupu.base.pb.h"
 
-using namespace std;
 
 CEpollThread* g_epollthread = NULL;
 CWorkThread* g_workthread = NULL;

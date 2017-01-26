@@ -39,7 +39,7 @@ CEupuLogger4System::~CEupuLogger4System(){}
 
 CEupuLogger4System* CEupuLogger4System::m_pLogger = NULL;
 
-string ConvertStr2Hex(const char* buf, int32_t buflen)
+std::string ConvertStr2Hex(const char* buf, int32_t buflen)
 {
     char sbuf[MAX_MSGSIZE * 3];
     int32_t binlen = sizeof(sbuf);
@@ -57,7 +57,7 @@ string ConvertStr2Hex(const char* buf, int32_t buflen)
         sprintf(sbuf + 3 * i, "%2.2x ", ch);
     }
 
-    return string(sbuf);
+    return std::string(sbuf);
 }
 
 CEupuLogger4System* CEupuLogger4System::CreateInstance(const char* spath)
@@ -94,9 +94,9 @@ CEupuLogger4System::CEupuLogger4System() :
     m_strTmp = "";
     m_Level = LL_DEBUG;
     m_IsDebug = false;
-    m_ErrPtr = Logger::getLogger("err4sys");
-    m_FtlPtr = Logger::getLogger("fatal4sys");
-    m_BugPtr = Logger::getLogger("debug4sys");
+    m_ErrPtr = log4cxx::Logger::getLogger("err4sys");
+    m_FtlPtr = log4cxx::Logger::getLogger("fatal4sys");
+    m_BugPtr = log4cxx::Logger::getLogger("debug4sys");
 }
 
 CEupuLogger4System::CEupuLogger4System(const char* spath) : CEupuLogger(spath),
@@ -105,9 +105,9 @@ CEupuLogger4System::CEupuLogger4System(const char* spath) : CEupuLogger(spath),
     m_strTmp = "";
     m_Level = LL_INFO;
     m_IsDebug = false;
-    m_ErrPtr = Logger::getLogger("err4sys");
-    m_FtlPtr = Logger::getLogger("fatal4sys");
-    m_BugPtr = Logger::getLogger("debug4sys");
+    m_ErrPtr = log4cxx::Logger::getLogger("err4sys");
+    m_FtlPtr = log4cxx::Logger::getLogger("fatal4sys");
+    m_BugPtr = log4cxx::Logger::getLogger("debug4sys");
 }
 
 CEupuLogger4System::~CEupuLogger4System()
@@ -115,7 +115,7 @@ CEupuLogger4System::~CEupuLogger4System()
     //dtor
 }
 
-void CEupuLogger4System::Fatal4Sys(const string& strFatal)
+void CEupuLogger4System::Fatal4Sys(const std::string& strFatal)
 {
     Fatal4Sys((char*)strFatal.c_str());
 }
@@ -130,7 +130,7 @@ void CEupuLogger4System::Fatal4Sys(char* strFatal)
     Fatal(m_FtlPtr, strFatal);
 }
 
-void CEupuLogger4System::Error4Sys(const string& strError)
+void CEupuLogger4System::Error4Sys(const std::string& strError)
 {
     Error4Sys((char*)strError.c_str());
 }
@@ -145,7 +145,7 @@ void CEupuLogger4System::Error4Sys(char* strError)
     Error(m_ErrPtr, strError);
 }
 
-void CEupuLogger4System::Debug4Sys(const string& strDebug)
+void CEupuLogger4System::Debug4Sys(const std::string& strDebug)
 {
     Debug4Sys((char*)strDebug.c_str());
 }
@@ -238,17 +238,17 @@ void CEupuLogger4System::WriteMonitorLog(uint32_t type, uint32_t mainid, uint32_
 
     char tmpbuf[100];
     memset(tmpbuf, 0, sizeof(tmpbuf));
-    string strkey;
+    std::string strkey;
     if (type == 1)
     {
         strkey = fgNtoA(mainid);
         snprintf(tmpbuf, sizeof(tmpbuf), "%s_%u", strkey.c_str(), assiantid);
-        strkey = string(tmpbuf);
+        strkey = std::string(tmpbuf);
     }
     else
     {
         snprintf(tmpbuf, sizeof(tmpbuf), "%u_%u", mainid, assiantid);
-        strkey = string(tmpbuf);
+        strkey = std::string(tmpbuf);
     }
 
     //get the log string
@@ -262,17 +262,17 @@ void CEupuLogger4System::WriteMonitorLog(uint32_t type, uint32_t mainid, uint32_
 
     char tmpbuf[100];
     memset(tmpbuf, 0, sizeof(tmpbuf));
-    string strkey;
+    std::string strkey;
     if (type == 1)
     {
         strkey = fgNtoA(mainid);
         snprintf(tmpbuf, sizeof(tmpbuf), "%s_%u", strkey.c_str(), assiantid);
-        strkey = string(tmpbuf);
+        strkey = std::string(tmpbuf);
     }
     else
     {
         snprintf(tmpbuf, sizeof(tmpbuf), "%u_%u", mainid, assiantid);
-        strkey = string(tmpbuf);
+        strkey = std::string(tmpbuf);
     }
 
     //get the log string
@@ -324,7 +324,7 @@ void CEupuLogger4System::WriteHex(const char* filename, int32_t line, LOGLEVEL l
 #ifdef OS_LINUX
     localtime_r(&tmv.tv_sec, &tme);
 
-    string hexdata = ConvertStr2Hex(buf, buflen);
+    std::string hexdata = ConvertStr2Hex(buf, buflen);
     int32_t pid = (int32_t)getpid();
     snprintf(msgbuf, sizeof(msgbuf), "%04d/%02d/%02d %02d:%02d:%02d:%06u [0x%08x, 0x%08x] <%-5s> (%s, %06d) %s: \n%s",
              tme.tm_year + 1900, tme.tm_mon + 1, tme.tm_mday, tme.tm_hour, tme.tm_min, tme.tm_sec, (uint32_t)tmv.tv_usec,
@@ -334,7 +334,7 @@ void CEupuLogger4System::WriteHex(const char* filename, int32_t line, LOGLEVEL l
     time_t tm_sec = tmv.tv_sec;
     struct tm* p = localtime(&tm_sec);
 
-    string hexdata = ConvertStr2Hex(buf, buflen);
+    std::string hexdata = ConvertStr2Hex(buf, buflen);
     int32_t pid = 0;
     int32_t threadid = 0;
     snprintf(msgbuf, sizeof(msgbuf), "%04d/%02d/%02d %02d:%02d:%02d:%06u [0x%08x, 0x%08x] <%-5s> (%s, %06d) %s: \n%s",

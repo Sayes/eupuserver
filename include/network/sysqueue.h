@@ -4,7 +4,6 @@
 #include <list>
 #include "threadlock.h"
 
-using std::list;
 
 template <class T>
 class SysQueue {
@@ -12,7 +11,7 @@ public:
     void clearQueue()
     {
         Lock();
-        typename list<T*>::iterator iter;
+        typename std::list<T*>::iterator iter;
         for (iter = m_datalst.begin(); iter != m_datalst.end(); ++iter)
         {
             if (*iter)
@@ -180,7 +179,7 @@ public:
 
 protected:
     CThreadLock m_lock;
-    list<T*> m_datalst;
+    std::list<T*> m_datalst;
     int m_maxSize;
 };
 

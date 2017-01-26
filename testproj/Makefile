@@ -13,7 +13,7 @@ TARGETS = testproj
 all: $(TARGETS) 
 $(TARGETS) : $(OBJS)
 	test -d ../release || mkdir -p ../release
-	$(LINK) $(LFLAGS) -o $@ $^ -lnetwork -lprotocol -leupulogger -llog4cxx -lcommon -leupu.base.pb -lprotobuf -lprotobuf-lite -lprotoc -ljsoncpp -lapr-1 -laprutil-1  
+	$(LINK) $(LFLAGS) -o $@ $^ -lnetwork -lprotocol -leupulogger -llog4cxx -lcommon -leupu.base.pb -lprotobuf -lprotobuf-lite -lprotoc -ljsoncpp -lapr-1 -laprutil-1 -lpthread
 	cp $@ ${RELEASE_DIR}
 
 clean:

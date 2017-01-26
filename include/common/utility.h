@@ -7,9 +7,9 @@
 typedef struct tm tm;
 class Utility {
 public:
-    static string Int2String(int32_t num);
-    static string uInt2String(uint32_t num);
-    //static string Char2String(char* str);
+    static std::string Int2String(int32_t num);
+    static std::string uInt2String(uint32_t num);
+    //static std::string Char2String(char* str);
     //static uint32_t String2UL(const char *str);
     //static long String2L(const char* str);
     static bool Compress(uint8_t* pSrc, int32_t nLen, uint8_t* pDst, int32_t& nDstLen);
@@ -17,7 +17,7 @@ public:
     //static DWORD MakeDWORD(uint8_t bValue1, uint8_t bValue2, uint8_t bValue3, uint8_t bValue4);
     //static void MakeBYTE(DWORD dwValue, uint8_t& bValue1, uint8_t& bValue2, uint8_t& bValue3, uint8_t& bValue4);
 
-    //static string Ip2String(uint32_t ip);
+    //static std::string Ip2String(uint32_t ip);
     //static uint32_t Ip2uInt(char* ip);
     //static uint32_t Ip2S_addr(char* ip);
 
@@ -41,7 +41,7 @@ public:
     static int64_t getLongDotNet(unsigned char* bb, int32_t index);
     static int16_t getShortDotNet(uint8_t* b, int32_t index);
 
-    static string& ReplaceAll(string& str, const char* old_value, const char* new_value);
+    static std::string& ReplaceAll(std::string& str, const char* old_value, const char* new_value);
 
     static void Int2Bytes(int32_t nRaw, unsigned char* pBuf)
     {
@@ -65,7 +65,7 @@ public:
         return res;
     }
 
-    static uint32_t str2Time(string strTm);
+    static uint32_t str2Time(std::string strTm);
     static uint64_t GenerateKeyByIPAndPort(uint32_t uIp, uint32_t uPort);
     static time_t FormatTime(char* szTime);
     static uint32_t DiffTime(time_t tTime);
