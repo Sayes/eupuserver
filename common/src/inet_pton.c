@@ -15,8 +15,8 @@
 * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#include "ws2tcpip.h"
-#include "eupu_inet.h"
+#include <ws2tcpip.h>
+#include "common/eupu_inet.h"
 
 #define NS_INT16SZ   2
 #define NS_INADDRSZ  4

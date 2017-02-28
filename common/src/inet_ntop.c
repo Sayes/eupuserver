@@ -16,8 +16,8 @@
 */
 
 
-#include "ws2tcpip.h"
-#include "eupu_inet.h"
+#include <ws2tcpip.h>
+#include "common/eupu_inet.h"
 
 #ifdef __cplusplus
 extern "C" {

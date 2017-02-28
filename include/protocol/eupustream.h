@@ -10,8 +10,9 @@
 #include <ws2tcpip.h>
 #endif
 #include "common/common.h"
-#include "logger/eupulogger4system.h"
+#include "common/eupu_inet.h"
 #include "common/globaldef.h"
+#include "logger/eupulogger4system.h"
 
 class CEupuStream {
 public:

@@ -3,9 +3,9 @@
 
 #ifdef OS_WINDOWS
 
-#include "euputhread.h"
-#include "globaldef.h"
-#include "netcommon.h"
+#include "common/globaldef.h"
+#include "network/euputhread.h"
+#include "network/netcommon.h"
 #include <unordered_map>
 
 class CWSAThread : public CEupuThread {
@@ -47,7 +47,7 @@ private:
   time_t m_checkkeepalivetime;
   time_t m_lastkeepalivetime;
 
-  string m_serverip;
+  std::string m_serverip;
   unsigned int m_serverport;
 
   int m_readbufsize;
@@ -55,12 +55,12 @@ private:
   char *m_recvbuffer;
   int m_recvbuflen;
 
-  list<int> m_delsendfdlist;
+  std::list<int> m_delsendfdlist;
   std::unordered_map<int, SOCKET_SET *> m_socketmap;
 
   // unsigned int m_maxwsaeventsize;
 
-  list<NET_DATA *> m_recvtmplst;
+  std::list<NET_DATA *> m_recvtmplst;
   time_t m_index;
 
   // data for windows

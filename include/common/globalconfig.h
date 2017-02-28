@@ -3,6 +3,9 @@
 #ifndef GLOBALCONFIG_H_
 #define GLOBALCONFIG_H_
 
+#ifdef OS_WINDOWS
+#include <stdint.h>
+#endif
 #include <string>
 #include <vector>
 #include <list>

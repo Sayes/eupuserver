@@ -46,7 +46,7 @@
     <ClInclude Include="..\..\include\common\ringbuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\common\myunistd.h">
+    <ClInclude Include="..\..\include\common\unistd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
