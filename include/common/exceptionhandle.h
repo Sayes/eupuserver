@@ -1,148 +1,102 @@
 #ifndef _EXCEPTIONHANDLE_H_INCLUDED
 #define _EXCEPTIONHANDLE_H_INCLUDED
 
-#include <stdlib.h>
-#include <execinfo.h>
-#include <signal.h>
 #include <exception>
-#include <iostream>
-#include <string>
-#include <ostream>
+#include <execinfo.h>
 #include <iomanip>
+#include <iostream>
+#include <ostream>
+#include <signal.h>
+#include <stdlib.h>
+#include <string>
 
-#define ERROR_MSG_LENGTH                256
+#define ERROR_MSG_LENGTH 256
 
 //#define __try  try {
 
 //#define __catch  } catch (std::exception& e) {
-    //char szErrorMsg[ERROR_MSG_LENGTH];
-    //std::cout << __FILE__ << __FUNCTION__ << __LINE__ << e.what()<< std::endl;
+// char szErrorMsg[ERROR_MSG_LENGTH];
+// std::cout << __FILE__ << __FUNCTION__ << __LINE__ << e.what()<< std::endl;
 
 //#define __endcatch }
 
-class ExceptionTracer
-{
+class ExceptionTracer {
 public:
-    ExceptionTracer()
-    {
-        void* array[25];
-        int nSize = backtrace(array, 25);
-        char** symbols = backtrace_symbols(array, nSize);
+  ExceptionTracer() {
+    void *array[25];
+    int nSize = backtrace(array, 25);
+    char **symbols = backtrace_symbols(array, nSize);
 
-        for (int i = 0; i < nSize; i++)
-        {
-            std::cout << symbols[i] << std::endl;
-        }
-        free(symbols);
+    for (int i = 0; i < nSize; i++) {
+      std::cout << symbols[i] << std::endl;
     }
+    free(symbols);
+  }
 };
 
-template<class SignalException> class SignalTranslator
-{
+template <class SignalException> class SignalTranslator {
 private:
-    class SingleTonTranslator
-    {
-public:
-        SingleTonTranslator()
-        {
-            signal(SignalException::GetSignalNumber(), SignalHandler);
-        }
-        static void SignalHandler(int)
-        {
-            throw SignalException();
-        }
-    };
+  class SingleTonTranslator {
+  public:
+    SingleTonTranslator() {
+      signal(SignalException::GetSignalNumber(), SignalHandler);
+    }
+    static void SignalHandler(int) { throw SignalException(); }
+  };
 
 public:
-    SignalTranslator()
-    {
-        static SingleTonTranslator s_objTranslator;
-    }
+  SignalTranslator() { static SingleTonTranslator s_objTranslator; }
 };
 
-class SegmentationFault : public std::exception//,public ExceptionTracer
+class SegmentationFault : public std::exception //,public ExceptionTracer
 {
 
 public:
-    SegmentationFault()
-    {
-        _sExceptionInfo = "SegmentationFault";
-    }
+  SegmentationFault() { _sExceptionInfo = "SegmentationFault"; }
 
-    virtual ~SegmentationFault() throw()
-    {
-    }
+  virtual ~SegmentationFault() throw() {}
 
-    static int GetSignalNumber()
-    {
-        return SIGSEGV;
-    }
+  static int GetSignalNumber() { return SIGSEGV; }
 
-    virtual const char* what() const throw()
-    {
-        return _sExceptionInfo.c_str();
-    }
+  virtual const char *what() const throw() { return _sExceptionInfo.c_str(); }
 
 private:
-    std::string _sExceptionInfo;
-
+  std::string _sExceptionInfo;
 };
 
 ///////////////////////////////////////////////////////////
 class FloatingPointException : public std::exception //, public ExceptionTracer
 {
 public:
-    FloatingPointException()
-    {
-        _sExceptionInfo = "FloatingPointException";
-    }
+  FloatingPointException() { _sExceptionInfo = "FloatingPointException"; }
 
-    virtual ~FloatingPointException() throw()
-    {
+  virtual ~FloatingPointException() throw() {}
+  static int GetSignalNumber() { return SIGFPE; }
 
-    }
-    static int GetSignalNumber()
-    {
-        return SIGFPE;
-    }
-
-    virtual const char* what() const throw()
-    {
-        return _sExceptionInfo.c_str();
-    }
+  virtual const char *what() const throw() { return _sExceptionInfo.c_str(); }
 
 private:
-    std::string _sExceptionInfo;
+  std::string _sExceptionInfo;
 };
 
 ///////////////////////////////////////////////////////////
-class BusException : public ExceptionTracer, public std::exception //,public ExceptionTracer
+class BusException : public ExceptionTracer,
+                     public std::exception //,public ExceptionTracer
 {
 public:
-    BusException()
-    {
-        _sExceptionInfo = "BusException";
-    }
-    virtual ~BusException() throw()
-    {
+  BusException() { _sExceptionInfo = "BusException"; }
+  virtual ~BusException() throw() {}
+  static int GetSignalNumber() { return SIGBUS; }
 
-    }
-    static int GetSignalNumber()
-    {
-        return SIGBUS;
-    }
-
-    virtual const char* what() const throw()
-    {
-        return _sExceptionInfo.c_str();
-    }
+  virtual const char *what() const throw() { return _sExceptionInfo.c_str(); }
 
 private:
-    std::string _sExceptionInfo;
+  std::string _sExceptionInfo;
 };
-//SignalTranslator<BusException> g_objBusExceptionTranslator;
+// SignalTranslator<BusException> g_objBusExceptionTranslator;
 
-extern SignalTranslator<FloatingPointException> g_objFloatingPointExceptionTranslator;
+extern SignalTranslator<FloatingPointException>
+    g_objFloatingPointExceptionTranslator;
 extern SignalTranslator<SegmentationFault> g_objSegmentationFaultTranslator;
 
 ///////////////////////////////////////////////////////////

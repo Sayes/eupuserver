@@ -6,18 +6,17 @@
 
 class CWorkBaseThread : public CEupuThread {
 public:
-    void reset();
-    bool start();
-    virtual bool stop();
+  void reset();
+  bool start();
+  virtual bool stop();
 
-    CWorkBaseThread();
-    virtual ~CWorkBaseThread();
+  CWorkBaseThread();
+  virtual ~CWorkBaseThread();
 
 protected:
-    virtual int processMessage(NET_DATA* pdata) = 0;
-    virtual void loop();
-    void run();
+  virtual int processMessage(NET_DATA *pdata) = 0;
+  virtual void loop();
+  void run();
 };
 
-
-#endif//_WORKBASETHREAD_H_
+#endif //_WORKBASETHREAD_H_

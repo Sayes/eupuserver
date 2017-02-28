@@ -1,88 +1,66 @@
 #ifndef __COUNTER_H__
 #define __COUNTER_H__
 
-
 class CCounter {
 public:
+  CCounter() { m_count = 0; }
 
-    CCounter()
-    {
-        m_count = 0;
-    }
+  ~CCounter() {}
 
-    ~CCounter()
-    {
+  void Lock() { m_lock.Lock(); }
 
-    }
+  void UnLock() { m_lock.UnLock(); }
 
-    void Lock()
-    {
-        m_lock.Lock();
-    }
+  void setvalue(int nvalue) {
+    m_lock.Lock();
+    m_count = nvalue;
+    if (m_count < 0)
+      m_count = 0;
+    m_lock.UnLock();
+  }
 
-    void UnLock()
-    {
-        m_lock.UnLock();
-    }
+  int resetWithoutLock() {
+    int nret = 0;
+    nret = m_count;
+    m_count = 0;
+    return nret;
+  }
 
-    void setvalue(int nvalue)
-    {
-        m_lock.Lock();
-        m_count = nvalue;
-        if (m_count < 0)
-            m_count = 0;
-        m_lock.UnLock();
-    }
+  int value() {
+    int nret = 0;
+    m_lock.Lock();
+    nret = m_count;
+    m_lock.UnLock();
+    return nret;
+  }
 
-    int resetWithoutLock()
-    {
-        int nret = 0;
-        nret = m_count;
-        m_count = 0;
-        return nret;
-    }
+  int valueWithoutLock() { return m_count; }
 
-    int value()
-    {
-        int nret = 0;
-        m_lock.Lock();
-        nret = m_count;
-        m_lock.UnLock();
-        return nret;
-    }
+  int increase(int n) {
+    int nret = 0;
+    m_lock.Lock();
+    m_count += n;
+    if (m_count < 0)
+      m_count = 0;
+    nret = m_count;
+    m_lock.UnLock();
+    return nret;
+  }
 
-    int valueWithoutLock()
-    {
-        return m_count;
-    }
-
-    int increase(int n)
-    {
-        int nret = 0;
-        m_lock.Lock();
-        m_count += n;
-        if (m_count < 0)
-            m_count = 0;
-        nret = m_count;
-        m_lock.UnLock();
-        return nret;
-    }
-
-    int decrease(int n)
-    {
-        int nret = 0;
-        m_lock.Lock();
-        m_count -= n;
-        if (m_count < 0)
-            m_count = 0;
-        nret = m_count;
-        m_lock.UnLock();
-        return nret;
-    }
+  int decrease(int n) {
+    int nret = 0;
+    m_lock.Lock();
+    m_count -= n;
+    if (m_count < 0)
+      m_count = 0;
+    nret = m_count;
+    m_lock.UnLock();
+    return nret;
+  }
 
 private:
-    CThreadLock m_lock;
-    uint32 m_count;
+  CThreadLock m_lock;
+  uint32 m_count;
 };
 
-#endif//__COUNTER_H__
+#endif //__COUNTER_H__

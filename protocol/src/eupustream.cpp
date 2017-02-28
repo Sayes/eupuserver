@@ -1,10 +1,5 @@
-#include <eupustream.h>
+#include "protocol/eupustream.h"
 
-CEupuStream::CEupuStream()
-{
-}
+CEupuStream::CEupuStream() {}
 
-CEupuStream::~CEupuStream()
-{
-}
-
+CEupuStream::~CEupuStream() {}

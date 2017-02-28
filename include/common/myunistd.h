@@ -2,6 +2,6 @@
 *  unistd.h maps     (roughly) to io.h
 */
 #ifdef OS_WINDOWS
-#include <io.h>  
-#include <process.h>  
+#include <io.h>
+#include <process.h>
 #endif

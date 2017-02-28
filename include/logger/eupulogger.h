@@ -3,42 +3,39 @@
 
 #ifdef WITHOUTLOG
 namespace log4cxx {
-class LoggerPtr{
-
-};
+class LoggerPtr {};
 }
 #else
-#include <log4cxx/logger.h>
-#include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/basicconfigurator.h>
-#include <log4cxx/helpers/exception.h>
 #include <log4cxx/consoleappender.h>
-#include <log4cxx/patternlayout.h>
+#include <log4cxx/helpers/exception.h>
+#include <log4cxx/logger.h>
 #include <log4cxx/logstring.h>
+#include <log4cxx/patternlayout.h>
+#include <log4cxx/propertyconfigurator.h>
 
 #endif
 
 class CEupuLogger {
 public:
-    CEupuLogger();
+  CEupuLogger();
 
-    CEupuLogger(const char* path);
+  CEupuLogger(const char *path);
 
-    virtual ~CEupuLogger();
+  virtual ~CEupuLogger();
 
 protected:
-    void InitLogger(const char* lpstrConfig);
+  void InitLogger(const char *lpstrConfig);
 
-    void Trace(log4cxx::LoggerPtr lpLogger, char* lpstrTrace);
-    void Info(log4cxx::LoggerPtr lpLogger, char* lpstrInfo);
-    void Debug(log4cxx::LoggerPtr lpLogger, char* lpstrDebug);
-    void Fatal(log4cxx::LoggerPtr lpLogger, char* lpstrFatal);
-    void Warn(log4cxx::LoggerPtr lpLogger, char* lpstrWarn);
-    void Error(log4cxx::LoggerPtr lpLogger, char* lpstrError);
+  void Trace(log4cxx::LoggerPtr lpLogger, char *lpstrTrace);
+  void Info(log4cxx::LoggerPtr lpLogger, char *lpstrInfo);
+  void Debug(log4cxx::LoggerPtr lpLogger, char *lpstrDebug);
+  void Fatal(log4cxx::LoggerPtr lpLogger, char *lpstrFatal);
+  void Warn(log4cxx::LoggerPtr lpLogger, char *lpstrWarn);
+  void Error(log4cxx::LoggerPtr lpLogger, char *lpstrError);
 
-    char szDataTime[30];
-    char szMsg[256];
-
+  char szDataTime[30];
+  char szMsg[256];
 };
 
-#endif//_EUPULOGGER_H_
+#endif //_EUPULOGGER_H_

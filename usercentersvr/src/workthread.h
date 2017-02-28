@@ -1,7 +1,7 @@
 #ifndef _WORKTHREAD_H_
 #define _WORKTHREAD_H_
 
-#include "workbasethread.h"
+#include "network/workbasethread.h"
 
 class CWorkThread : public CWorkBaseThread {
 public:
