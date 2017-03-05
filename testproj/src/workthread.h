@@ -4,7 +4,7 @@
 #include "network/workbasethread.h"
 
 class CWorkThread : public CWorkBaseThread {
-public:
+   public:
     CWorkThread();
     virtual ~CWorkThread();
 
@@ -13,8 +13,9 @@ public:
     bool ProcessServerConnected(NET_DATA* pdata);
     bool ProcessDistributeConnect(NET_DATA* pdata);
     bool ProcessMainConnected(NET_DATA* pdata);
-private:
+
+   private:
     int m_iUserCount;
 };
 
-#endif//_WORKTHREAD_H_
+#endif  //_WORKTHREAD_H_

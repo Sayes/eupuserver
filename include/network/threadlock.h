@@ -1,17 +1,19 @@
-#ifndef __THREADLOCK_H__
-#define __THREADLOCK_H__
+// Copyright shenyizhong@gmail.com, 2014
+
+#ifndef NETWORK_THREADLOCK_H_
+#define NETWORK_THREADLOCK_H_
 
 #include <pthread.h>
 
 class CThreadLock {
-public:
-  CThreadLock();
-  virtual ~CThreadLock();
-  void Lock();
-  void UnLock();
+   public:
+    CThreadLock();
+    virtual ~CThreadLock();
+    void Lock();
+    void UnLock();
 
-private:
-  pthread_mutex_t m_Mutex;
+   private:
+    pthread_mutex_t m_Mutex;
 };
 
-#endif //__THREADLOCK_H__
+#endif  //NETWORK_THREADLOCK_H_

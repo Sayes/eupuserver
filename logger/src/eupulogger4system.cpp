@@ -1,3 +1,5 @@
+// Copyright shenyizhong@gmail.com, 2014
+
 #include <iostream>
 #include <sys/stat.h>
 #include <sys/types.h>

@@ -1,7 +1,7 @@
 // Copyright shenyizhong@gmail.com, 2014
 
-#ifndef EUPU_INET_H_
-#define EUPU_INET_H_
+#ifndef COMMON_EUPU_INET_H_
+#define COMMON_EUPU_INET_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -24,4 +24,4 @@ int eupu_inet_pton(int af, const char *src, void *dst);
 }
 #endif
 
-#endif //  EUPU_INET_H_
+#endif  //  COMMON_EUPU_INET_H_

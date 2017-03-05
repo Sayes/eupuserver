@@ -1,3 +1,5 @@
+// Copyright shenyizhong@gmail.com, 2014
+
 #include "network/threadlock.h"
 
 CThreadLock::CThreadLock() { pthread_mutex_init(&m_Mutex, NULL); }

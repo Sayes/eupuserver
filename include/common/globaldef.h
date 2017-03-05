@@ -1,7 +1,7 @@
 // Copyright shenyizhong@gmail.com, 2014
 
-#ifndef GLOBAL_DEF_
-#define GLOBAL_DEF_
+#ifndef COMMON_GLOBAL_DEF_
+#define COMMON_GLOBAL_DEF_
 
 #include <errno.h>
 #include <fcntl.h>
@@ -40,4 +40,4 @@ typedef __uint8_t BYTE;
 #define MAX_SEND_SIZE 2048
 #define NET_HEAD_SIZE 8
 
-#endif // GLOBAL_DEF_
+#endif  // COMMON_GLOBAL_DEF_

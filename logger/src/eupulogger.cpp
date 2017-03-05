@@ -1,3 +1,5 @@
+//Copyright shenyizhong@gmail.com, 2014
+
 #include "logger/eupulogger.h"
 
 #ifdef WITHOUTLOG

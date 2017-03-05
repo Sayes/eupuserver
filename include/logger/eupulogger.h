@@ -1,5 +1,7 @@
-#ifndef _EUPULOGGER_H_
-#define _EUPULOGGER_H_
+//Copyright shenyizhong@gmail.com, 2014
+
+#ifndef COMMON_EUPULOGGER_H_
+#define COMMON_EUPULOGGER_H_
 
 #ifdef WITHOUTLOG
 namespace log4cxx {
@@ -17,25 +19,25 @@ class LoggerPtr {};
 #endif
 
 class CEupuLogger {
-public:
-  CEupuLogger();
+   public:
+    CEupuLogger();
 
-  CEupuLogger(const char *path);
+    CEupuLogger(const char *path);
 
-  virtual ~CEupuLogger();
+    virtual ~CEupuLogger();
 
-protected:
-  void InitLogger(const char *lpstrConfig);
+   protected:
+    void InitLogger(const char *lpstrConfig);
 
-  void Trace(log4cxx::LoggerPtr lpLogger, char *lpstrTrace);
-  void Info(log4cxx::LoggerPtr lpLogger, char *lpstrInfo);
-  void Debug(log4cxx::LoggerPtr lpLogger, char *lpstrDebug);
-  void Fatal(log4cxx::LoggerPtr lpLogger, char *lpstrFatal);
-  void Warn(log4cxx::LoggerPtr lpLogger, char *lpstrWarn);
-  void Error(log4cxx::LoggerPtr lpLogger, char *lpstrError);
+    void Trace(log4cxx::LoggerPtr lpLogger, char *lpstrTrace);
+    void Info(log4cxx::LoggerPtr lpLogger, char *lpstrInfo);
+    void Debug(log4cxx::LoggerPtr lpLogger, char *lpstrDebug);
+    void Fatal(log4cxx::LoggerPtr lpLogger, char *lpstrFatal);
+    void Warn(log4cxx::LoggerPtr lpLogger, char *lpstrWarn);
+    void Error(log4cxx::LoggerPtr lpLogger, char *lpstrError);
 
-  char szDataTime[30];
-  char szMsg[256];
+    char szDataTime[30];
+    char szMsg[256];
 };
 
-#endif //_EUPULOGGER_H_
+#endif  // COMMON_EUPULOGGER_H_
