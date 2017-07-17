@@ -62,4 +62,4 @@ class CCounter {
     uint32 m_count;
 };
 
-#endif  //NETWORK_COUNTER_H_
+#endif  // NETWORK_COUNTER_H_

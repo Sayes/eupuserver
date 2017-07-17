@@ -16,4 +16,4 @@ class CThreadLock {
     pthread_mutex_t m_Mutex;
 };
 
-#endif  //NETWORK_THREADLOCK_H_
+#endif  // NETWORK_THREADLOCK_H_

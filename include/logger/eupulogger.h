@@ -1,4 +1,4 @@
-//Copyright shenyizhong@gmail.com, 2014
+// Copyright shenyizhong@gmail.com, 2014
 
 #ifndef COMMON_EUPULOGGER_H_
 #define COMMON_EUPULOGGER_H_

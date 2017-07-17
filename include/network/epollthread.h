@@ -72,4 +72,4 @@ class CEpollThread : public CEupuThread {
 
 #endif  // OS_LINUX
 
-#endif  //NETWORK_EUPUEPOLLTHREAD_H_
+#endif  // NETWORK_EUPUEPOLLTHREAD_H_

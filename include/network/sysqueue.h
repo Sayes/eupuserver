@@ -131,4 +131,4 @@ class SysQueue {
     int m_maxSize;
 };
 
-#endif  //NETWORK_SYSQUEUE_H__
+#endif  // NETWORK_SYSQUEUE_H__

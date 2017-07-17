@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 
+/*
 typedef struct log_cfg {
     std::string filename;
     std::string filenum;
@@ -17,6 +18,7 @@ typedef struct log_cfg {
     std::string filedataext;
     std::string filechkext;
 } LOG_CFG;
+*/
 
 typedef struct st_global_cfg {
     char db_hostname[256];
@@ -119,9 +121,11 @@ class CGlobalConfig {
     virtual ~CGlobalConfig();
 
    private:
-    LOG_CFG onlinetime;
-    LOG_CFG onlinecount;
-    LOG_CFG onlinetotal;
+    /*
+LOG_CFG onlinetime;
+LOG_CFG onlinecount;
+LOG_CFG onlinetotal;
+    */
 
     uint32_t mem_pool;
     std::vector<PMEM_SERVER> m_memlst;

@@ -5,4 +5,4 @@
 
 bool verifireceipt(const std::string&, const std::string&);
 
-#endif  //VRBASE_VRBASE_H_
+#endif  // VRBASE_VRBASE_H_

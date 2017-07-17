@@ -19,24 +19,21 @@
 CWSAThread* g_wsathread = NULL;
 CWorkThread* g_workthread = NULL;
 
-bool initSystem()
-{
+bool initSystem() {
     CGlobalConfig* pconfig = CGlobalConfig::getInstance();
-    if (pconfig == NULL)
-    {
+    if (pconfig == NULL) {
         LOG(_ERROR_, "initSystem() error, CGlobalConfig::getInstance() failed");
         return false;
     }
 
-    if (!pconfig->initSysConfig("sysconf.json"))
-    {
-        LOG(_ERROR_, "initSystem() error, CGlobalConfig::initSysConfig() failed");
+    if (!pconfig->initSysConfig("sysconf.json")) {
+        LOG(_ERROR_,
+            "initSystem() error, CGlobalConfig::initSysConfig() failed");
         return false;
     }
 
     CGlobalMgr* pmgr = CGlobalMgr::getInstance();
-    if (pmgr == NULL)
-    {
+    if (pmgr == NULL) {
         LOG(_ERROR_, "initSystem() error, CGlobalMgr::getInstance() failed");
         return false;
     }
@@ -44,14 +41,12 @@ bool initSystem()
     pmgr->init();
 
     g_wsathread = new CWSAThread;
-    if (g_wsathread == NULL)
-    {
+    if (g_wsathread == NULL) {
         LOG(_ERROR_, "initSystem() error, _new CWSAThread failed");
         return false;
     }
 
-    if (!g_wsathread->startup())
-    {
+    if (!g_wsathread->startup()) {
         LOG(_ERROR_, "initSystem() error, g_wsathread->startup() failed");
         delete g_wsathread;
         g_wsathread = NULL;
@@ -59,16 +54,14 @@ bool initSystem()
     }
 
     g_workthread = new CWorkThread;
-    if (g_workthread == NULL)
-    {
+    if (g_workthread == NULL) {
         LOG(_ERROR_, "initSystem() error, _new CWorkThread failed");
         delete g_wsathread;
         g_wsathread = NULL;
         return false;
     }
 
-    if (!g_workthread->start())
-    {
+    if (!g_workthread->start()) {
         LOG(_ERROR_, "initSystem() error, g_workthread->start() failed");
         delete g_wsathread;
         g_wsathread = NULL;
@@ -82,18 +75,15 @@ bool initSystem()
     return true;
 }
 
-void exitSystem()
-{
-    if (g_workthread && g_workthread->stop())
-    {
+void exitSystem() {
+    if (g_workthread && g_workthread->stop()) {
         LOG(_ERROR_, "exitSystem() error, g_workthread->stop() failed");
         Sleep(1000);
         delete g_workthread;
         g_workthread = NULL;
     }
 
-    if (g_wsathread)
-    {
+    if (g_wsathread) {
         LOG(_ERROR_, "exitSystem() error, g_epollthread == NULL");
         g_wsathread->stop();
         Sleep(1000);
@@ -102,14 +92,12 @@ void exitSystem()
     }
 
     CGlobalConfig* pconfig = CGlobalConfig::getInstance();
-    if (pconfig)
-    {
+    if (pconfig) {
         pconfig->release();
     }
 
     CGlobalMgr* pmgr = CGlobalMgr::getInstance();
-    if (pmgr)
-    {
+    if (pmgr) {
         pmgr->release();
     }
 
@@ -120,33 +108,28 @@ void exitSystem()
     CEupuLogger4System::Release();
 }
 
-int _tmain(int argc, _TCHAR* argv[])
-{
-
-    do
-    {
-
-        if (!initSystem())
-        {
+int _tmain(int argc, _TCHAR* argv[]) {
+    do {
+        if (!initSystem()) {
             break;
         }
 
         int interval = 0;
 
-        while (true)
-        {
+        while (true) {
             CGlobalMgr::getInstance()->createServerConnect(USERCENTERSVR_TYPE);
             interval++;
-            if (interval >= 12)
-            {
+            if (interval >= 12) {
                 interval = 0;
-                LOG(_INFO_, "main(), the recv queue has %d total messages", CGlobalMgr::getInstance()->getRecvQueue()->sizeWithoutLock());
+                LOG(_INFO_, "main(), the recv queue has %d total messages",
+                    CGlobalMgr::getInstance()
+                        ->getRecvQueue()
+                        ->sizeWithoutLock());
             }
             Sleep(5000);
         }
 
-    }
-    while (false);
+    } while (false);
 
     exitSystem();
 

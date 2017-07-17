@@ -312,7 +312,7 @@ void CWSAThread::doWSAEvent() {
                 */
 
         /////////////////begin copy all recv message to recv
-        ///list/////////////////
+        /// list/////////////////
         if (m_recvtmplst.size() > 0) {
             SysQueue<NET_DATA> *precvlist =
                 CGlobalMgr::getInstance()->getRecvQueue();
@@ -335,7 +335,7 @@ void CWSAThread::doWSAEvent() {
         //////////////////begin handle system events////////////////////////////
         doSystemEvent();
         //////////////////end handle system
-        ///events//////////////////////////////////
+        /// events//////////////////////////////////
 
         //////////////////begin set write wsa event by sendset////////////////
         CGlobalMgr::getInstance()->switchSendMap();

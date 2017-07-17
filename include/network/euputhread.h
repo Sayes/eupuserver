@@ -40,4 +40,4 @@ class CEupuThread {
     bool m_bIsExit;
 };
 
-#endif  //NETWORK_EUPUTHREAD_H_
+#endif  // NETWORK_EUPUTHREAD_H_

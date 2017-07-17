@@ -21,65 +21,60 @@ XALAN_USING_XALAN(XalanTransformer)
 
 #include "vrbase.h"
 
-bool verifireceipt(const std::string& receipt, const std::string& cert)
-{
-	bool result = false;
+bool verifireceipt(const std::string& receipt, const std::string& cert) {
+    bool result = false;
 
-	try {
-		XMLPlatformUtils::Initialize();
-		XSECPlatformUtils::Initialise();
-	}
-	catch (const XMLException &e) {
-	}
+    try {
+        XMLPlatformUtils::Initialize();
+        XSECPlatformUtils::Initialise();
+    } catch (const XMLException& e) {
+    }
 
-	// Use xerces to parse the document
-	XercesDOMParser* parser = new XercesDOMParser;
-	parser->setDoNamespaces(true);
-	parser->setCreateEntityReferenceNodes(true);
-	parser->setDoSchema(true);
+    // Use xerces to parse the document
+    XercesDOMParser* parser = new XercesDOMParser;
+    parser->setDoNamespaces(true);
+    parser->setCreateEntityReferenceNodes(true);
+    parser->setDoSchema(true);
 
-	// Create an input source
-	MemBufInputSource* memIS = new MemBufInputSource((const XMLByte*)receipt.c_str(), (unsigned int)receipt.length(), "XSECMem");
+    // Create an input source
+    MemBufInputSource* memIS =
+        new MemBufInputSource((const XMLByte*)receipt.c_str(),
+                              (unsigned int)receipt.length(), "XSECMem");
 
-	do {
+    do {
+        xsecsize_t errorCount = 0;
+        parser->parse(*memIS);
+        errorCount = parser->getErrorCount();
+        if (errorCount > 0) break;
 
-	xsecsize_t errorCount = 0;
-	parser->parse(*memIS);
-	errorCount = parser->getErrorCount();
-	if (errorCount > 0)
-		break;
+        DOMDocument* doc = parser->getDocument();
+        docSetup(doc);
 
-	DOMDocument* doc = parser->getDocument();
-	docSetup(doc);
+        // Now create a signature object to validate the document
+        XSECProvider prov;
+        DSIGSignature* sig = prov.newSignatureFromDOM(doc);
 
-	// Now create a signature object to validate the document
-	XSECProvider prov;
-	DSIGSignature* sig = prov.newSignatureFromDOM(doc);
+        try {
+            // Use the OpenSSL interface objects to get a signing key
+            OpenSSLCryptoX509* x509 = new OpenSSLCryptoX509();
+            x509->loadX509Base64Bin(cert.c_str(), (unsigned int)cert.length());
+            sig->load();
+            sig->setSigningKey(x509->clonePublicKey());
 
-	try {
-		// Use the OpenSSL interface objects to get a signing key
-		OpenSSLCryptoX509* x509 = new OpenSSLCryptoX509();
-		x509->loadX509Base64Bin(cert.c_str(), (unsigned int)cert.length());
-		sig->load();
-		sig->setSigningKey(x509->clonePublicKey());
+            if (sig->verify()) {
+                result = true;
+            }
+            delete x509;
+        } catch (XSECException& e) {
+            break;
+        } catch (XSECCryptoException& e) {
+            break;
+        }  // END try
 
-		if (sig->verify()) {
-			result = true;
-		}
-		delete x509;
-	}
-	catch (XSECException &e) {
-		break;
-	}
-	catch (XSECCryptoException &e) {
-		break;
-	}//END try
-	
-	} while(0);
+    } while (0);
 
-	delete memIS;
-	delete parser;
+    delete memIS;
+    delete parser;
 
-	return result;
+    return result;
 }
-

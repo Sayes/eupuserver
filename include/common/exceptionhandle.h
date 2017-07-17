@@ -52,7 +52,7 @@ class SignalTranslator {
 };
 
 class SegmentationFault : public std::exception  //,public ExceptionTracer
-{
+                          {
    public:
     SegmentationFault() { _sExceptionInfo = "SegmentationFault"; }
 
@@ -68,7 +68,7 @@ class SegmentationFault : public std::exception  //,public ExceptionTracer
 
 ///////////////////////////////////////////////////////////
 class FloatingPointException : public std::exception  //, public ExceptionTracer
-{
+                               {
    public:
     FloatingPointException() { _sExceptionInfo = "FloatingPointException"; }
 
@@ -84,7 +84,7 @@ class FloatingPointException : public std::exception  //, public ExceptionTracer
 ///////////////////////////////////////////////////////////
 class BusException : public ExceptionTracer,
                      public std::exception  //,public ExceptionTracer
-{
+                     {
    public:
     BusException() { _sExceptionInfo = "BusException"; }
     virtual ~BusException() throw() {}

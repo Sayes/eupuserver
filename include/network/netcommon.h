@@ -135,4 +135,4 @@ int send_msg(int fd, char *buf, int &nlen);
 int doNonblockConnect(PCONNECT_SERVER pServer, int timeout = 3,
                       const std::string &localip = "");
 
-#endif  //NETWORK_NETCOMMON_H_
+#endif  // NETWORK_NETCOMMON_H_

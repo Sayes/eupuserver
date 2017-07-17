@@ -85,4 +85,4 @@ class CGlobalMgr {
     int m_nMaxSendList;
 };
 
-#endif  //NETWORK_GLOBALMGR_H_
+#endif  // NETWORK_GLOBALMGR_H_

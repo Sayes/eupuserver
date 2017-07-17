@@ -1,13 +1,7 @@
-# Compiled Object files
-*.slo
-*.lo
-*.o
-
-# Compiled Dynamic libraries
+*.[oad]
 *.so
-*.dylib
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
+*.pb.h
+*.pb.cc
+release
+testproj
+usercentersvr
