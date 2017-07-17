@@ -3,5 +3,8 @@
 *.pb.h
 *.pb.cc
 release
-testproj
-usercentersvr
+testproj/syslog
+testproj/testproj
+usercentersvr/syslog
+usercentersvr/usercentersvr
+
