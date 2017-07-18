@@ -49,24 +49,6 @@
 #define DEF_SEND_BUFFER "svr_def_send_buffer"
 #define DEF_RECV_BUFFER "svr_def_recv_buffer"
 
-CGlobalConfig *CGlobalConfig::m_pInstance = NULL;
-
-CGlobalConfig *CGlobalConfig::getInstance() {
-    if (m_pInstance == NULL) {
-        m_pInstance = new CGlobalConfig;
-        LOG(_DEBUG_, "new CGlobalConfig");
-    }
-    return m_pInstance;
-}
-
-void CGlobalConfig::release() {
-    if (m_pInstance != NULL) {
-        delete m_pInstance;
-        m_pInstance = NULL;
-        LOG(_DEBUG_, "delete CGlobalConfig");
-    }
-}
-
 CGlobalConfig::CGlobalConfig() {}
 
 CGlobalConfig::~CGlobalConfig() {

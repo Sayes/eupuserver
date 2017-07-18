@@ -84,13 +84,13 @@ void CEpollThread::run() {
 void CEpollThread::reset() {}
 
 bool CEpollThread::startup() {
-    m_maxepollsize = CGlobalConfig::getInstance()->getMaxEpollSize();
-    m_keepalivetimeout = CGlobalConfig::getInstance()->getKeepaliveTimer();
+    m_maxepollsize = CGlobalConfig::get_instance()->getMaxEpollSize();
+    m_keepalivetimeout = CGlobalConfig::get_instance()->getKeepaliveTimer();
     m_keepaliveinterval = m_keepalivetimeout / 2;
-    m_serverip = CGlobalConfig::getInstance()->getListenIp();
-    m_serverport = CGlobalConfig::getInstance()->getListenPort();
-    m_sendbufsize = CGlobalConfig::getInstance()->getSocketSendBuf();
-    m_readbufsize = CGlobalConfig::getInstance()->getSocketRecvBuf();
+    m_serverip = CGlobalConfig::get_instance()->getListenIp();
+    m_serverport = CGlobalConfig::get_instance()->getListenPort();
+    m_sendbufsize = CGlobalConfig::get_instance()->getSocketSendBuf();
+    m_readbufsize = CGlobalConfig::get_instance()->getSocketRecvBuf();
 
     m_recvbuflen = m_sendbufsize;
     if (m_sendbufsize < m_readbufsize) {
@@ -212,7 +212,7 @@ void CEpollThread::doEpollEvent() {
         // begin copy all recv message to recv list
         if (m_recvtmplst.size() > 0) {
             SysQueue<NET_DATA> *precvlist =
-                CGlobalMgr::getInstance()->getRecvQueue();
+                CGlobalMgr::get_instance()->getRecvQueue();
             precvlist->Lock();
             std::list<NET_DATA *>::iterator iterrecv = m_recvtmplst.begin();
             for (; iterrecv != m_recvtmplst.end(); ++iterrecv) {
@@ -237,9 +237,9 @@ void CEpollThread::doEpollEvent() {
         // begin set write epoll event by
         // sendset
         struct epoll_event ev;
-        CGlobalMgr::getInstance()->switchSendMap();
+        CGlobalMgr::get_instance()->switchSendMap();
         std::map<int, std::list<NET_DATA *> *> *psendmap =
-            CGlobalMgr::getInstance()->getBakSendMap();
+            CGlobalMgr::get_instance()->getBakSendMap();
 
         for (std::map<int, std::list<NET_DATA *> *>::iterator itersendmap =
                  psendmap->begin();
@@ -371,7 +371,7 @@ void CEpollThread::doSendKeepaliveToServer() {
         return;
     }
 
-    CGlobalMgr::getInstance()->sendKeepaliveMsgToAllServer();
+    CGlobalMgr::get_instance()->sendKeepaliveMsgToAllServer();
 
     m_lastkeepalivetime = time(NULL);
 }
@@ -690,7 +690,7 @@ int CEpollThread::doSendMessage(SOCKET_KEY *pkey) {
     int num = 0;
     int buflen = 0;
     std::map<int, std::list<NET_DATA *> *> *psendmap =
-        CGlobalMgr::getInstance()->getBakSendMap();
+        CGlobalMgr::get_instance()->getBakSendMap();
     std::map<int, std::list<NET_DATA *> *>::iterator itersend =
         psendmap->find(pkey->fdkey);
     if (itersend == psendmap->end()) {
@@ -891,8 +891,8 @@ void CEpollThread::closeClient(int fd, time_t conntime) {
     } else {
         if (iter->second != NULL) {
             if (iter->second->type > CLIENT_TYPE) {
-                CGlobalMgr::getInstance()->setServerSocket(-1, 0, "", 0,
-                                                           iter->second->type);
+                CGlobalMgr::get_instance()->setServerSocket(-1, 0, "", 0,
+                                                            iter->second->type);
             }
             createClientCloseMsg(iter->second);
             delete iter->second;
@@ -1005,7 +1005,7 @@ void CEpollThread::deleteSendMsgFromSendMap(int fd) {
     }
 
     std::map<int, std::list<NET_DATA *> *> *psendmap =
-        CGlobalMgr::getInstance()->getBakSendMap();
+        CGlobalMgr::get_instance()->getBakSendMap();
     std::map<int, std::list<NET_DATA *> *>::iterator itersend =
         psendmap->find(fd);
 
@@ -1027,7 +1027,7 @@ void CEpollThread::deleteSendMsgFromSendMap(int fd) {
 }
 
 void CEpollThread::doSystemEvent() {
-    SysQueue<NET_EVENT> *pevent = CGlobalMgr::getInstance()->getEventQueue();
+    SysQueue<NET_EVENT> *pevent = CGlobalMgr::get_instance()->getEventQueue();
     if (pevent == NULL) {
         return;
     }
@@ -1072,7 +1072,7 @@ void CEpollThread::doSystemEvent() {
                 }
 
                 psockset->key->connect_time = getIndex();
-                CGlobalMgr::getInstance()->setServerSocket(
+                CGlobalMgr::get_instance()->setServerSocket(
                     psockset->key->fdkey, psockset->key->connect_time,
                     psockset->peer_ip, psockset->peer_port, psockset->type);
 

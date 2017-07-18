@@ -3,6 +3,7 @@
 #ifndef COMMON_GLOBALCONFIG_H_
 #define COMMON_GLOBALCONFIG_H_
 
+#include "aocsingleton.h"
 #ifdef OS_WINDOWS
 #include <stdint.h>
 #endif
@@ -69,11 +70,8 @@ struct __MEM_SERVER__ {
 
 typedef struct __MEM_SERVER__ *PMEM_SERVER;
 
-class CGlobalConfig {
+class CGlobalConfig : public IAocSingleton<CGlobalConfig> {
    public:
-    static CGlobalConfig *getInstance();
-    static void release();
-
     char *getDbHostName();
     uint32_t getDbHostPort();
     char *getDbUserName();
@@ -116,9 +114,12 @@ class CGlobalConfig {
     PCONNECT_SERVER getUserCenterServer();
     PCONNECT_SERVER getLogServer();
 
-   protected:
+   private:
     CGlobalConfig();
     virtual ~CGlobalConfig();
+    CGlobalConfig(const CGlobalConfig &);
+    CGlobalConfig &operator=(const CGlobalConfig &);
+    friend IAocSingleton<CGlobalConfig>;
 
    private:
     /*
@@ -132,7 +133,6 @@ LOG_CFG onlinetotal;
 
     std::list<PCONNECT_SERVER> m_serverlist;
     st_global_cfg m_cfg;
-    static CGlobalConfig *m_pInstance;
 };
 
 #endif  //  COMMON_GLOBALCONFIG_H_

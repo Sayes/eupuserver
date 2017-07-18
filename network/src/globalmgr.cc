@@ -6,18 +6,6 @@
 #include "logger/eupulogger4system.h"
 #include "protocol/sprotocol.h"
 
-CGlobalMgr *CGlobalMgr::m_pInstance = NULL;
-
-CGlobalMgr *CGlobalMgr::getInstance() {
-    if (m_pInstance == NULL) m_pInstance = new CGlobalMgr;
-    return m_pInstance;
-}
-
-void CGlobalMgr::release() {
-    if (m_pInstance != NULL) delete m_pInstance;
-    m_pInstance = NULL;
-}
-
 bool CGlobalMgr::createMsgToSendList(int fd, time_t conntime,
                                      const std::string &ip, uint16_t port,
                                      int ntype, uint16_t mainid,
@@ -156,10 +144,10 @@ bool CGlobalMgr::addMsgToSendList(NET_DATA *pmsg) {
 
 bool CGlobalMgr::init() {
     LOG(_INFO_, "CGlobalMgr::init() start");
-    m_nMaxSendList = CGlobalConfig::getInstance()->getSendQueueSize();
-    m_recvlist.setQueueSize(CGlobalConfig::getInstance()->getRecvQueueSize());
+    m_nMaxSendList = CGlobalConfig::get_instance()->getSendQueueSize();
+    m_recvlist.setQueueSize(CGlobalConfig::get_instance()->getRecvQueueSize());
     LOG(_INFO_, "CGlobalMgr::init(), m_recvlist queue size %d",
-        CGlobalConfig::getInstance()->getRecvQueueSize());
+        CGlobalConfig::get_instance()->getRecvQueueSize());
     return true;
 }
 
@@ -433,22 +421,22 @@ void CGlobalMgr::createServerConnect(int ntype) {
 
     switch (ntype) {
         case MAINSVR_TYPE: {
-            pserver = CGlobalConfig::getInstance()->getMainServer();
+            pserver = CGlobalConfig::get_instance()->getMainServer();
             pdata = &m_mainkey;
             break;
         }
         case DISSVR_TYPE: {
-            pserver = CGlobalConfig::getInstance()->getDistributeServer();
+            pserver = CGlobalConfig::get_instance()->getDistributeServer();
             pdata = &m_distributekey;
             break;
         }
         case USERCENTERSVR_TYPE: {
-            pserver = CGlobalConfig::getInstance()->getUserCenterServer();
+            pserver = CGlobalConfig::get_instance()->getUserCenterServer();
             pdata = &m_usercenterkey;
             break;
         }
         case LOGSVR_TYPE: {
-            pserver = CGlobalConfig::getInstance()->getLogServer();
+            pserver = CGlobalConfig::get_instance()->getLogServer();
             pdata = &m_logkey;
             break;
         }
@@ -478,7 +466,7 @@ void CGlobalMgr::createServerConnect(int ntype) {
     m_serverlock.UnLock();
 
     int fd = doNonblockConnect(pserver, 3,
-                               CGlobalConfig::getInstance()->getListenIp());
+                               CGlobalConfig::get_instance()->getListenIp());
 
     if (fd < 0) {
         return;

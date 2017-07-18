@@ -15,9 +15,10 @@ CEpollThread *g_epollthread = NULL;
 CWorkThread *g_workthread = NULL;
 
 bool initSystem(bool isdaemon) {
-    CGlobalConfig *pConfig = CGlobalConfig::getInstance();
+    CGlobalConfig *pConfig = CGlobalConfig::get_instance();
     if (!pConfig) {
-        LOG(_ERROR_, "initSystem() error, CGlobalConfig::getInstance() failed");
+        LOG(_ERROR_,
+            "initSystem() error, CGlobalConfig::get_instance() failed");
         return false;
     }
 
@@ -31,9 +32,9 @@ bool initSystem(bool isdaemon) {
         LOGSETDEBUG(true);
     }
 
-    CGlobalMgr *pglobalmgr = CGlobalMgr::getInstance();
+    CGlobalMgr *pglobalmgr = CGlobalMgr::get_instance();
     if (!pglobalmgr) {
-        LOG(_ERROR_, "initSystem() error, CGlobalMgr::getInstance() failed");
+        LOG(_ERROR_, "initSystem() error, CGlobalMgr::get_instance() failed");
         return false;
     }
 
@@ -91,12 +92,12 @@ void exitSystem() {
         g_epollthread = NULL;
     }
 
-    CGlobalConfig *pconfig = CGlobalConfig::getInstance();
+    CGlobalConfig *pconfig = CGlobalConfig::get_instance();
     if (pconfig) {
         pconfig->release();
     }
 
-    CGlobalMgr *pglobalmgr = CGlobalMgr::getInstance();
+    CGlobalMgr *pglobalmgr = CGlobalMgr::get_instance();
     if (pglobalmgr) {
         pglobalmgr->release();
     }
@@ -151,7 +152,7 @@ int main(int argc, char *argv[]) {
             if (interval >= 12) {
                 interval = 0;
                 LOG(_INFO_, "main(), the recv queue has %d total messages",
-                    CGlobalMgr::getInstance()
+                    CGlobalMgr::get_instance()
                         ->getRecvQueue()
                         ->sizeWithoutLock());
             }

@@ -21,7 +21,7 @@ OSARCH = -m64
 endif
 
 ifeq ($(os_type), Linux)
-CFLAGS = -O0 -g3 -Wall -fPIC -c -fmessage-length=0 -std=c++0x $(OSARCH)
+CFLAGS = -O0 -g3 -Wall -fPIC -c -fmessage-length=0 -std=c++11 $(OSARCH)
 LFLAGS = -shared $(OSARCH)
 
 INC_CFLAGS = -I$(APR_PATH)/include -I$(APRUTIL_PATH) -I$(LOG4CXX_PATH)/include -I$(PROTOBUF_PATH)/include -I$(JSON_PATH)/include -I$(XERCES_PATH)/include -I$(XML_SECURITY_PATH)/include -I$(TS_INCLUDE)

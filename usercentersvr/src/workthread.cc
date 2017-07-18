@@ -79,7 +79,7 @@ bool CWorkThread::ProcessMainConnected(NET_DATA *pdata) { return true; }
 int CWorkThread::ProcessKeepalive(NET_DATA *pdata) {
     if (pdata == NULL) return 0;
 
-    bool bret = CGlobalMgr::getInstance()->createMsgToSendList(
+    bool bret = CGlobalMgr::get_instance()->createMsgToSendList(
         pdata->fddat, pdata->connect_time, pdata->peer_ip, pdata->peer_port,
         pdata->type, KEEP_ALIVE_PING, 0, 0, 0, NULL, 0);
     return (bret ? 1 : 0);

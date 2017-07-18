@@ -37,9 +37,9 @@ void CWorkBaseThread::run() {
 
     m_bIsExit = false;
 
-    SysQueue<NET_DATA> *precvlist = CGlobalMgr::getInstance()->getRecvQueue();
+    SysQueue<NET_DATA> *precvlist = CGlobalMgr::get_instance()->getRecvQueue();
     SysQueue<NET_EVENT> *peventlist =
-        CGlobalMgr::getInstance()->getEventQueue();
+        CGlobalMgr::get_instance()->getEventQueue();
     if (precvlist == NULL || peventlist == NULL) {
         LOG(_ERROR_,
             "CWorkBaseThread::run() error, recvlist == NULL || eventlist == "
@@ -78,7 +78,7 @@ void CWorkBaseThread::run() {
                     "CWorkBaseThread::run() error, processMessage() failed");
                 LOGHEX(_ERROR_, "message:", pdata->pdata, pdata->data_len);
 
-                if (!CGlobalMgr::getInstance()->createCloseConnectEvent(
+                if (!CGlobalMgr::get_instance()->createCloseConnectEvent(
                         pdata->fddat, pdata->connect_time)) {
                     LOG(_ERROR_,
                         "CWorkBaseThread::run() error, "

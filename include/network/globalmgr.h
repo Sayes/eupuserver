@@ -3,6 +3,7 @@
 #ifndef NETWORK_GLOBALMGR_H_
 #define NETWORK_GLOBALMGR_H_
 
+#include "common/aocsingleton.h"
 #include <list>
 #include <map>
 #include <set>
@@ -15,7 +16,7 @@
 // using std::map;
 // using std::list;
 
-class CGlobalMgr {
+class CGlobalMgr : public IAocSingleton<CGlobalMgr> {
    private:
     CGlobalMgr() {
         m_nMaxSendList = 1000;
@@ -25,10 +26,6 @@ class CGlobalMgr {
     }
 
     ~CGlobalMgr() { clean(); }
-
-   public:
-    static void release();
-    static CGlobalMgr *getInstance();
 
    public:
     bool init();
@@ -65,6 +62,11 @@ class CGlobalMgr {
     std::map<int, std::list<NET_DATA *> *> *getBakSendMap() {
         return m_pbaksendmap;
     }
+
+   private:
+    CGlobalMgr(const CGlobalMgr &);
+    CGlobalMgr &operator=(const CGlobalMgr &);
+    friend IAocSingleton<CGlobalMgr>;
 
    private:
     NET_DATA m_logkey;
