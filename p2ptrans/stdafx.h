@@ -10,8 +10,8 @@
 #include <stdio.h>
 #include <tchar.h>
 
-#include <ws2tcpip.h>
 #include <process.h>
+#include <ws2tcpip.h>
 #include <fstream>
 
 using namespace std;

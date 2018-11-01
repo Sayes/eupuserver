@@ -6,7 +6,7 @@
 #ifdef WITHOUTLOG
 namespace log4cxx {
 class LoggerPtr {};
-}
+}  // namespace log4cxx
 #else
 #include <log4cxx/basicconfigurator.h>
 #include <log4cxx/consoleappender.h>
@@ -19,25 +19,25 @@ class LoggerPtr {};
 #endif
 
 class CEupuLogger {
-   public:
-    CEupuLogger();
+ public:
+  CEupuLogger();
 
-    CEupuLogger(const char *path);
+  CEupuLogger(const char *path);
 
-    virtual ~CEupuLogger();
+  virtual ~CEupuLogger();
 
-   protected:
-    void InitLogger(const char *lpstrConfig);
+ protected:
+  void InitLogger(const char *lpstrConfig);
 
-    void Trace(log4cxx::LoggerPtr lpLogger, char *lpstrTrace);
-    void Info(log4cxx::LoggerPtr lpLogger, char *lpstrInfo);
-    void Debug(log4cxx::LoggerPtr lpLogger, char *lpstrDebug);
-    void Fatal(log4cxx::LoggerPtr lpLogger, char *lpstrFatal);
-    void Warn(log4cxx::LoggerPtr lpLogger, char *lpstrWarn);
-    void Error(log4cxx::LoggerPtr lpLogger, char *lpstrError);
+  void Trace(log4cxx::LoggerPtr lpLogger, char *lpstrTrace);
+  void Info(log4cxx::LoggerPtr lpLogger, char *lpstrInfo);
+  void Debug(log4cxx::LoggerPtr lpLogger, char *lpstrDebug);
+  void Fatal(log4cxx::LoggerPtr lpLogger, char *lpstrFatal);
+  void Warn(log4cxx::LoggerPtr lpLogger, char *lpstrWarn);
+  void Error(log4cxx::LoggerPtr lpLogger, char *lpstrError);
 
-    char szDataTime[30];
-    char szMsg[256];
+  char szDataTime[30];
+  char szMsg[256];
 };
 
 #endif  // COMMON_EUPULOGGER_H_

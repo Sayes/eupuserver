@@ -6,14 +6,14 @@
 #include <pthread.h>
 
 class CThreadLock {
-   public:
-    CThreadLock();
-    virtual ~CThreadLock();
-    void Lock();
-    void UnLock();
+ public:
+  CThreadLock();
+  virtual ~CThreadLock();
+  void Lock();
+  void UnLock();
 
-   private:
-    pthread_mutex_t m_Mutex;
+ private:
+  pthread_mutex_t m_Mutex;
 };
 
 #endif  // NETWORK_THREADLOCK_H_

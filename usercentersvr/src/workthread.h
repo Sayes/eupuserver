@@ -4,18 +4,18 @@
 #include "network/workbasethread.h"
 
 class CWorkThread : public CWorkBaseThread {
-   public:
-    CWorkThread();
-    virtual ~CWorkThread();
+ public:
+  CWorkThread();
+  virtual ~CWorkThread();
 
-    int processMessage(NET_DATA* pdata);
-    int ProcessKeepalive(NET_DATA* pdata);
-    bool ProcessServerConnected(NET_DATA* pdata);
-    bool ProcessDistributeConnect(NET_DATA* pdata);
-    bool ProcessMainConnected(NET_DATA* pdata);
+  int processMessage(NET_DATA* pdata);
+  int ProcessKeepalive(NET_DATA* pdata);
+  bool ProcessServerConnected(NET_DATA* pdata);
+  bool ProcessDistributeConnect(NET_DATA* pdata);
+  bool ProcessMainConnected(NET_DATA* pdata);
 
-   private:
-    int m_iUserCount;
+ private:
+  int m_iUserCount;
 };
 
 #endif  //_WORKTHREAD_H_

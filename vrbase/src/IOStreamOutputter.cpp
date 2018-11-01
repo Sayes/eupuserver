@@ -43,9 +43,9 @@
  */
 
 #include "IOStreamOutputter.hpp"
+#include <memory.h>
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
-#include <memory.h>
 
 // Uplift everything to the Xerces name space
 XERCES_CPP_NAMESPACE_USE
@@ -62,76 +62,65 @@ static const XMLCh gEndElement[] = {chOpenAngle, chForwardSlash, chNull};
 static const XMLCh gEndPI[] = {chQuestion, chCloseAngle, chNull};
 static const XMLCh gStartPI[] = {chOpenAngle, chQuestion, chNull};
 static const XMLCh gXMLDecl1[] = {
-    chOpenAngle, chQuestion, chLatin_x,     chLatin_m, chLatin_l, chSpace,
-    chLatin_v,   chLatin_e,  chLatin_r,     chLatin_s, chLatin_i, chLatin_o,
-    chLatin_n,   chEqual,    chDoubleQuote, chNull};
-static const XMLCh gXMLDecl2[] = {
-    chDoubleQuote, chSpace,       chLatin_e, chLatin_n, chLatin_c,
-    chLatin_o,     chLatin_d,     chLatin_i, chLatin_n, chLatin_g,
-    chEqual,       chDoubleQuote, chNull};
-static const XMLCh gXMLDecl3[] = {
-    chDoubleQuote, chSpace,   chLatin_s, chLatin_t,     chLatin_a,
-    chLatin_n,     chLatin_d, chLatin_a, chLatin_l,     chLatin_o,
-    chLatin_n,     chLatin_e, chEqual,   chDoubleQuote, chNull};
-static const XMLCh gXMLDecl4[] = {chDoubleQuote, chQuestion, chCloseAngle, chLF,
-                                  chNull};
+    chOpenAngle, chQuestion, chLatin_x, chLatin_m, chLatin_l, chSpace, chLatin_v,     chLatin_e,
+    chLatin_r,   chLatin_s,  chLatin_i, chLatin_o, chLatin_n, chEqual, chDoubleQuote, chNull};
+static const XMLCh gXMLDecl2[] = {chDoubleQuote, chSpace,       chLatin_e, chLatin_n, chLatin_c,
+                                  chLatin_o,     chLatin_d,     chLatin_i, chLatin_n, chLatin_g,
+                                  chEqual,       chDoubleQuote, chNull};
+static const XMLCh gXMLDecl3[] = {chDoubleQuote, chSpace,   chLatin_s, chLatin_t,     chLatin_a,
+                                  chLatin_n,     chLatin_d, chLatin_a, chLatin_l,     chLatin_o,
+                                  chLatin_n,     chLatin_e, chEqual,   chDoubleQuote, chNull};
+static const XMLCh gXMLDecl4[] = {chDoubleQuote, chQuestion, chCloseAngle, chLF, chNull};
 
-static const XMLCh gStartCDATA[] = {
-    chOpenAngle, chBang,    chOpenSquare, chLatin_C,    chLatin_D,
-    chLatin_A,   chLatin_T, chLatin_A,    chOpenSquare, chNull};
+static const XMLCh gStartCDATA[] = {chOpenAngle, chBang,    chOpenSquare, chLatin_C,    chLatin_D,
+                                    chLatin_A,   chLatin_T, chLatin_A,    chOpenSquare, chNull};
 
-static const XMLCh gEndCDATA[] = {chCloseSquare, chCloseSquare, chCloseAngle,
-                                  chNull};
-static const XMLCh gStartComment[] = {chOpenAngle, chBang, chDash, chDash,
-                                      chNull};
+static const XMLCh gEndCDATA[] = {chCloseSquare, chCloseSquare, chCloseAngle, chNull};
+static const XMLCh gStartComment[] = {chOpenAngle, chBang, chDash, chDash, chNull};
 
 static const XMLCh gEndComment[] = {chDash, chDash, chCloseAngle, chNull};
 
-static const XMLCh gStartDoctype[] = {
-    chOpenAngle, chBang,    chLatin_D, chLatin_O, chLatin_C, chLatin_T,
-    chLatin_Y,   chLatin_P, chLatin_E, chSpace,   chNull};
-static const XMLCh gPublic[] = {chLatin_P, chLatin_U,     chLatin_B,
-                                chLatin_L, chLatin_I,     chLatin_C,
-                                chSpace,   chDoubleQuote, chNull};
-static const XMLCh gSystem[] = {chLatin_S, chLatin_Y,     chLatin_S,
-                                chLatin_T, chLatin_E,     chLatin_M,
-                                chSpace,   chDoubleQuote, chNull};
-static const XMLCh gStartEntity[] = {
-    chOpenAngle, chBang,    chLatin_E, chLatin_N, chLatin_T,
-    chLatin_I,   chLatin_T, chLatin_Y, chSpace,   chNull};
-static const XMLCh gNotation[] = {chLatin_N,     chLatin_D, chLatin_A,
-                                  chLatin_T,     chLatin_A, chSpace,
-                                  chDoubleQuote, chNull};
+static const XMLCh gStartDoctype[] = {chOpenAngle, chBang,    chLatin_D, chLatin_O,
+                                      chLatin_C,   chLatin_T, chLatin_Y, chLatin_P,
+                                      chLatin_E,   chSpace,   chNull};
+static const XMLCh gPublic[] = {chLatin_P, chLatin_U, chLatin_B,     chLatin_L, chLatin_I,
+                                chLatin_C, chSpace,   chDoubleQuote, chNull};
+static const XMLCh gSystem[] = {chLatin_S, chLatin_Y, chLatin_S,     chLatin_T, chLatin_E,
+                                chLatin_M, chSpace,   chDoubleQuote, chNull};
+static const XMLCh gStartEntity[] = {chOpenAngle, chBang,    chLatin_E, chLatin_N, chLatin_T,
+                                     chLatin_I,   chLatin_T, chLatin_Y, chSpace,   chNull};
+static const XMLCh gNotation[] = {chLatin_N, chLatin_D, chLatin_A,     chLatin_T,
+                                  chLatin_A, chSpace,   chDoubleQuote, chNull};
 
 // ---------------------------------------------------------------------------
 //  Local classes
 // ---------------------------------------------------------------------------
 
 class DOMPrintFormatTarget : public XMLFormatTarget {
-   public:
-    DOMPrintFormatTarget(){};
-    ~DOMPrintFormatTarget(){};
+ public:
+  DOMPrintFormatTarget(){};
+  ~DOMPrintFormatTarget(){};
 
-    // -----------------------------------------------------------------------
-    //  Implementations of the format target interface
-    // -----------------------------------------------------------------------
+  // -----------------------------------------------------------------------
+  //  Implementations of the format target interface
+  // -----------------------------------------------------------------------
 
-    void writeChars(const XMLByte *const toWrite, const xsecsize_t count,
-                    XMLFormatter *const formatter) {
-        // Surprisingly, Solaris was the only platform on which
-        // required the char* cast to print out the string correctly.
-        // Without the cast, it was printing the pointer value in hex.
-        // Quite annoying, considering every other platform printed
-        // the string with the explicit cast to char* below.
-        cout.write((char *)toWrite, count);
-    };
+  void writeChars(const XMLByte *const toWrite, const xsecsize_t count,
+                  XMLFormatter *const formatter) {
+    // Surprisingly, Solaris was the only platform on which
+    // required the char* cast to print out the string correctly.
+    // Without the cast, it was printing the pointer value in hex.
+    // Quite annoying, considering every other platform printed
+    // the string with the explicit cast to char* below.
+    cout.write((char *)toWrite, count);
+  };
 
-   private:
-    // -----------------------------------------------------------------------
-    //  Unimplemented methods.
-    // -----------------------------------------------------------------------
-    DOMPrintFormatTarget(const DOMPrintFormatTarget &other);
-    void operator=(const DOMPrintFormatTarget &rhs);
+ private:
+  // -----------------------------------------------------------------------
+  //  Unimplemented methods.
+  // -----------------------------------------------------------------------
+  DOMPrintFormatTarget(const DOMPrintFormatTarget &other);
+  void operator=(const DOMPrintFormatTarget &rhs);
 };
 
 // ---------------------------------------------------------------------------
@@ -142,94 +131,90 @@ class DOMPrintFormatTarget : public XMLFormatTarget {
 //  a document node and it will do the whole thing.
 // ---------------------------------------------------------------------------
 ostream &operator<<(ostream &target, DOMNode *toWrite) {
-    // Get the name and value out for convenience
-    const XMLCh *nodeName = toWrite->getNodeName();
-    const XMLCh *nodeValue = toWrite->getNodeValue();
-    xsecsize_t lent = XMLString::stringLen(nodeValue);
+  // Get the name and value out for convenience
+  const XMLCh *nodeName = toWrite->getNodeName();
+  const XMLCh *nodeValue = toWrite->getNodeValue();
+  xsecsize_t lent = XMLString::stringLen(nodeValue);
 
-    switch (toWrite->getNodeType()) {
-        case DOMNode::TEXT_NODE: {
-            gFormatter->formatBuf(nodeValue, lent, XMLFormatter::CharEscapes);
-            break;
+  switch (toWrite->getNodeType()) {
+    case DOMNode::TEXT_NODE: {
+      gFormatter->formatBuf(nodeValue, lent, XMLFormatter::CharEscapes);
+      break;
+    }
+
+    case DOMNode::PROCESSING_INSTRUCTION_NODE: {
+      *gFormatter << XMLFormatter::NoEscapes << gStartPI << nodeName;
+      if (lent > 0) {
+        *gFormatter << chSpace << nodeValue;
+      }
+      *gFormatter << XMLFormatter::NoEscapes << gEndPI;
+      break;
+    }
+
+    case DOMNode::DOCUMENT_NODE: {
+      DOMNode *child = toWrite->getFirstChild();
+      while (child != 0) {
+        target << child;
+        // add linefeed in requested output encoding
+        *gFormatter << chLF;
+        target << flush;
+        child = child->getNextSibling();
+      }
+      break;
+    }
+
+    case DOMNode::ELEMENT_NODE: {
+      // The name has to be representable without any escapes
+      *gFormatter << XMLFormatter::NoEscapes << chOpenAngle << nodeName;
+
+      // Output the element start tag.
+
+      // Output any attributes on this element
+      DOMNamedNodeMap *attributes = toWrite->getAttributes();
+      XMLSize_t attrCount = attributes->getLength();
+      for (XMLSize_t i = 0; i < attrCount; i++) {
+        DOMNode *attribute = attributes->item(i);
+
+        //
+        //  Again the name has to be completely representable. But the
+        //  attribute can have refs and requires the attribute style
+        //  escaping.
+        //
+        *gFormatter << XMLFormatter::NoEscapes << chSpace << attribute->getNodeName() << chEqual
+                    << chDoubleQuote << XMLFormatter::AttrEscapes << attribute->getNodeValue()
+                    << XMLFormatter::NoEscapes << chDoubleQuote;
+      }
+
+      //
+      //  Test for the presence of children, which includes both
+      //  text content and nested elements.
+      //
+      DOMNode *child = toWrite->getFirstChild();
+      if (child != 0) {
+        // There are children. Close start-tag, and output children.
+        // No escapes are legal here
+        *gFormatter << XMLFormatter::NoEscapes << chCloseAngle;
+
+        while (child != 0) {
+          target << child;
+          child = child->getNextSibling();
         }
 
-        case DOMNode::PROCESSING_INSTRUCTION_NODE: {
-            *gFormatter << XMLFormatter::NoEscapes << gStartPI << nodeName;
-            if (lent > 0) {
-                *gFormatter << chSpace << nodeValue;
-            }
-            *gFormatter << XMLFormatter::NoEscapes << gEndPI;
-            break;
-        }
+        //
+        // Done with children.  Output the end tag.
+        //
+        *gFormatter << XMLFormatter::NoEscapes << gEndElement << nodeName << chCloseAngle;
+      } else {
+        //
+        //  There were no children. Output the short form close of
+        //  the element start tag, making it an empty-element tag.
+        //
+        *gFormatter << XMLFormatter::NoEscapes << chForwardSlash << chCloseAngle;
+      }
+      break;
+    }
 
-        case DOMNode::DOCUMENT_NODE: {
-            DOMNode *child = toWrite->getFirstChild();
-            while (child != 0) {
-                target << child;
-                // add linefeed in requested output encoding
-                *gFormatter << chLF;
-                target << flush;
-                child = child->getNextSibling();
-            }
-            break;
-        }
-
-        case DOMNode::ELEMENT_NODE: {
-            // The name has to be representable without any escapes
-            *gFormatter << XMLFormatter::NoEscapes << chOpenAngle << nodeName;
-
-            // Output the element start tag.
-
-            // Output any attributes on this element
-            DOMNamedNodeMap *attributes = toWrite->getAttributes();
-            XMLSize_t attrCount = attributes->getLength();
-            for (XMLSize_t i = 0; i < attrCount; i++) {
-                DOMNode *attribute = attributes->item(i);
-
-                //
-                //  Again the name has to be completely representable. But the
-                //  attribute can have refs and requires the attribute style
-                //  escaping.
-                //
-                *gFormatter << XMLFormatter::NoEscapes << chSpace
-                            << attribute->getNodeName() << chEqual
-                            << chDoubleQuote << XMLFormatter::AttrEscapes
-                            << attribute->getNodeValue()
-                            << XMLFormatter::NoEscapes << chDoubleQuote;
-            }
-
-            //
-            //  Test for the presence of children, which includes both
-            //  text content and nested elements.
-            //
-            DOMNode *child = toWrite->getFirstChild();
-            if (child != 0) {
-                // There are children. Close start-tag, and output children.
-                // No escapes are legal here
-                *gFormatter << XMLFormatter::NoEscapes << chCloseAngle;
-
-                while (child != 0) {
-                    target << child;
-                    child = child->getNextSibling();
-                }
-
-                //
-                // Done with children.  Output the end tag.
-                //
-                *gFormatter << XMLFormatter::NoEscapes << gEndElement
-                            << nodeName << chCloseAngle;
-            } else {
-                //
-                //  There were no children. Output the short form close of
-                //  the element start tag, making it an empty-element tag.
-                //
-                *gFormatter << XMLFormatter::NoEscapes << chForwardSlash
-                            << chCloseAngle;
-            }
-            break;
-        }
-
-        case DOMNode::ENTITY_REFERENCE_NODE: {
+    case DOMNode::ENTITY_REFERENCE_NODE: {
 // DOMNode *child;
 #if 0
                 for (child = toWrite.getFirstChild();
@@ -239,109 +224,94 @@ ostream &operator<<(ostream &target, DOMNode *toWrite) {
                     target << child;
                 }
 #else
-            //
-            // Instead of printing the refernece tree
-            // we'd output the actual text as it appeared in the xml file.
-            // This would be the case when -e option was chosen
-            //
-            *gFormatter << XMLFormatter::NoEscapes << chAmpersand << nodeName
-                        << chSemiColon;
+      //
+      // Instead of printing the refernece tree
+      // we'd output the actual text as it appeared in the xml file.
+      // This would be the case when -e option was chosen
+      //
+      *gFormatter << XMLFormatter::NoEscapes << chAmpersand << nodeName << chSemiColon;
 #endif
-            break;
+      break;
+    }
+
+    case DOMNode::CDATA_SECTION_NODE: {
+      *gFormatter << XMLFormatter::NoEscapes << gStartCDATA << nodeValue << gEndCDATA;
+      break;
+    }
+
+    case DOMNode::COMMENT_NODE: {
+      *gFormatter << XMLFormatter::NoEscapes << gStartComment << nodeValue << gEndComment;
+      break;
+    }
+
+    case DOMNode::DOCUMENT_TYPE_NODE: {
+      DOMDocumentType *doctype = (DOMDocumentType *)toWrite;
+      ;
+
+      *gFormatter << XMLFormatter::NoEscapes << gStartDoctype << nodeName;
+
+      const XMLCh *id = doctype->getPublicId();
+      if (id != 0) {
+        *gFormatter << XMLFormatter::NoEscapes << chSpace << gPublic << id << chDoubleQuote;
+        id = doctype->getSystemId();
+        if (id != 0) {
+          *gFormatter << XMLFormatter::NoEscapes << chSpace << chDoubleQuote << id << chDoubleQuote;
         }
-
-        case DOMNode::CDATA_SECTION_NODE: {
-            *gFormatter << XMLFormatter::NoEscapes << gStartCDATA << nodeValue
-                        << gEndCDATA;
-            break;
+      } else {
+        id = doctype->getSystemId();
+        if (id != 0) {
+          *gFormatter << XMLFormatter::NoEscapes << chSpace << gSystem << id << chDoubleQuote;
         }
+      }
 
-        case DOMNode::COMMENT_NODE: {
-            *gFormatter << XMLFormatter::NoEscapes << gStartComment << nodeValue
-                        << gEndComment;
-            break;
-        }
+      id = doctype->getInternalSubset();
+      if (id != 0) *gFormatter << XMLFormatter::NoEscapes << chOpenSquare << id << chCloseSquare;
 
-        case DOMNode::DOCUMENT_TYPE_NODE: {
-            DOMDocumentType *doctype = (DOMDocumentType *)toWrite;
-            ;
+      *gFormatter << XMLFormatter::NoEscapes << chCloseAngle;
+      break;
+    }
 
-            *gFormatter << XMLFormatter::NoEscapes << gStartDoctype << nodeName;
+    case DOMNode::ENTITY_NODE: {
+      *gFormatter << XMLFormatter::NoEscapes << gStartEntity << nodeName;
 
-            const XMLCh *id = doctype->getPublicId();
-            if (id != 0) {
-                *gFormatter << XMLFormatter::NoEscapes << chSpace << gPublic
-                            << id << chDoubleQuote;
-                id = doctype->getSystemId();
-                if (id != 0) {
-                    *gFormatter << XMLFormatter::NoEscapes << chSpace
-                                << chDoubleQuote << id << chDoubleQuote;
-                }
-            } else {
-                id = doctype->getSystemId();
-                if (id != 0) {
-                    *gFormatter << XMLFormatter::NoEscapes << chSpace << gSystem
-                                << id << chDoubleQuote;
-                }
+      const XMLCh *id = ((DOMEntity *)toWrite)->getPublicId();
+      if (id != 0) *gFormatter << XMLFormatter::NoEscapes << gPublic << id << chDoubleQuote;
+
+      id = ((DOMEntity *)toWrite)->getSystemId();
+      if (id != 0) *gFormatter << XMLFormatter::NoEscapes << gSystem << id << chDoubleQuote;
+
+      id = ((DOMEntity *)toWrite)->getNotationName();
+      if (id != 0) *gFormatter << XMLFormatter::NoEscapes << gNotation << id << chDoubleQuote;
+
+      *gFormatter << XMLFormatter::NoEscapes << chCloseAngle << chLF;
+
+      break;
+    }
+
+    /*
+            case DOMNode::NOTATION_NODE:
+            {
+                const XMLCh *  str;
+
+                *gFormatter << gXMLDecl1 << ((DOMXMLDecl
+       *)toWrite)->getVersion();
+
+                *gFormatter << gXMLDecl2 << gEncodingName;
+
+                str = ((DOMXMLDecl *)toWrite)->getStandalone();
+                if (str != 0)
+                    *gFormatter << gXMLDecl3 << str;
+
+                *gFormatter << gXMLDecl4;
+
+                break;
             }
 
-            id = doctype->getInternalSubset();
-            if (id != 0)
-                *gFormatter << XMLFormatter::NoEscapes << chOpenSquare << id
-                            << chCloseSquare;
-
-            *gFormatter << XMLFormatter::NoEscapes << chCloseAngle;
-            break;
-        }
-
-        case DOMNode::ENTITY_NODE: {
-            *gFormatter << XMLFormatter::NoEscapes << gStartEntity << nodeName;
-
-            const XMLCh *id = ((DOMEntity *)toWrite)->getPublicId();
-            if (id != 0)
-                *gFormatter << XMLFormatter::NoEscapes << gPublic << id
-                            << chDoubleQuote;
-
-            id = ((DOMEntity *)toWrite)->getSystemId();
-            if (id != 0)
-                *gFormatter << XMLFormatter::NoEscapes << gSystem << id
-                            << chDoubleQuote;
-
-            id = ((DOMEntity *)toWrite)->getNotationName();
-            if (id != 0)
-                *gFormatter << XMLFormatter::NoEscapes << gNotation << id
-                            << chDoubleQuote;
-
-            *gFormatter << XMLFormatter::NoEscapes << chCloseAngle << chLF;
-
-            break;
-        }
-
-        /*
-                case DOMNode::NOTATION_NODE:
-                {
-                    const XMLCh *  str;
-
-                    *gFormatter << gXMLDecl1 << ((DOMXMLDecl
-           *)toWrite)->getVersion();
-
-                    *gFormatter << gXMLDecl2 << gEncodingName;
-
-                    str = ((DOMXMLDecl *)toWrite)->getStandalone();
-                    if (str != 0)
-                        *gFormatter << gXMLDecl3 << str;
-
-                    *gFormatter << gXMLDecl4;
-
-                    break;
-                }
-
-        */
-        default:
-            cerr << "Unrecognized node type = " << (long)toWrite->getNodeType()
-                 << endl;
-    }
-    return target;
+    */
+    default:
+      cerr << "Unrecognized node type = " << (long)toWrite->getNodeType() << endl;
+  }
+  return target;
 }
 
 // ---------------------------------------------------------------------------
@@ -379,35 +349,35 @@ XMLFormatter& operator<< (XMLFormatter& strm, const DOMString& s)
 // --------------------------------------------------------------------------------
 
 class DOMMemFormatTarget : public XMLFormatTarget {
-   public:
-    unsigned char *buffer;  // Buffer to write to
+ public:
+  unsigned char *buffer;  // Buffer to write to
 
-    DOMMemFormatTarget(){};
-    ~DOMMemFormatTarget(){};
+  DOMMemFormatTarget(){};
+  ~DOMMemFormatTarget(){};
 
-    void setBuffer(unsigned char *toSet) { buffer = toSet; };
+  void setBuffer(unsigned char *toSet) { buffer = toSet; };
 
-    // -----------------------------------------------------------------------
-    //  Implementations of the format target interface
-    // -----------------------------------------------------------------------
+  // -----------------------------------------------------------------------
+  //  Implementations of the format target interface
+  // -----------------------------------------------------------------------
 
-    void writeChars(const XMLByte *const toWrite, const unsigned int count,
-                    XMLFormatter *const formatter) {
-        // Surprisingly, Solaris was the only platform on which
-        // required the char* cast to print out the string correctly.
-        // Without the cast, it was printing the pointer value in hex.
-        // Quite annoying, considering every other platform printed
-        // the string with the explicit cast to char* below.
-        memcpy(buffer, (char *)toWrite, (int)count);
-        buffer[count] = '\0';
-    };
+  void writeChars(const XMLByte *const toWrite, const unsigned int count,
+                  XMLFormatter *const formatter) {
+    // Surprisingly, Solaris was the only platform on which
+    // required the char* cast to print out the string correctly.
+    // Without the cast, it was printing the pointer value in hex.
+    // Quite annoying, considering every other platform printed
+    // the string with the explicit cast to char* below.
+    memcpy(buffer, (char *)toWrite, (int)count);
+    buffer[count] = '\0';
+  };
 
-   private:
-    // -----------------------------------------------------------------------
-    //  Unimplemented methods.
-    // -----------------------------------------------------------------------
-    DOMMemFormatTarget(const DOMMemFormatTarget &other);
-    void operator=(const DOMMemFormatTarget &rhs);
+ private:
+  // -----------------------------------------------------------------------
+  //  Unimplemented methods.
+  // -----------------------------------------------------------------------
+  DOMMemFormatTarget(const DOMMemFormatTarget &other);
+  void operator=(const DOMMemFormatTarget &rhs);
 };
 
 // ---------------------------------------------------------------------------
@@ -826,35 +796,34 @@ XMLFormatter& operator<< (XMLFormatter& strm, const DOMString& s)
 #endif
 
 void docSetup(DOMDocument *doc) {
-    // Print out the doc
+  // Print out the doc
 
-    DOMPrintFormatTarget *formatTarget = new DOMPrintFormatTarget();
+  DOMPrintFormatTarget *formatTarget = new DOMPrintFormatTarget();
 
-    const XMLCh *encNameStr = XMLString::transcode("UTF-8");
-    DOMNode *aNode = doc->getFirstChild();
-    if (aNode->getNodeType() == DOMNode::ENTITY_NODE) {
-        const XMLCh *aStr = ((DOMEntity *)aNode)->
+  const XMLCh *encNameStr = XMLString::transcode("UTF-8");
+  DOMNode *aNode = doc->getFirstChild();
+  if (aNode->getNodeType() == DOMNode::ENTITY_NODE) {
+    const XMLCh *aStr = ((DOMEntity *)aNode)
+                            ->
 #if defined XSEC_XERCES_DOMENTITYINPUTENCODING
-                            getInputEncoding();
+                        getInputEncoding();
 #else
-                            getEncoding();
+                        getEncoding();
 #endif
 
-        if (!strEquals(aStr, "")) {
-            encNameStr = aStr;
-        }
+    if (!strEquals(aStr, "")) {
+      encNameStr = aStr;
     }
-    xsecsize_t lent = XMLString::stringLen(encNameStr);
-    gEncodingName = new XMLCh[lent + 1];
-    XMLString::copyNString(gEncodingName, encNameStr, lent);
-    gEncodingName[lent] = 0;
+  }
+  xsecsize_t lent = XMLString::stringLen(encNameStr);
+  gEncodingName = new XMLCh[lent + 1];
+  XMLString::copyNString(gEncodingName, encNameStr, lent);
+  gEncodingName[lent] = 0;
 
 #if defined(XSEC_XERCES_FORMATTER_REQUIRES_VERSION)
-    gFormatter = new XMLFormatter("UTF-8", 0, formatTarget,
-                                  XMLFormatter::NoEscapes, gUnRepFlags);
+  gFormatter = new XMLFormatter("UTF-8", 0, formatTarget, XMLFormatter::NoEscapes, gUnRepFlags);
 #else
-    gFormatter = new XMLFormatter("UTF-8", formatTarget,
-                                  XMLFormatter::NoEscapes, gUnRepFlags);
+  gFormatter = new XMLFormatter("UTF-8", formatTarget, XMLFormatter::NoEscapes, gUnRepFlags);
 #endif
 }
 

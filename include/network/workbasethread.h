@@ -7,18 +7,18 @@
 #include "netcommon.h"
 
 class CWorkBaseThread : public CEupuThread {
-   public:
-    void reset();
-    bool start();
-    virtual bool stop();
+ public:
+  void reset();
+  bool start();
+  virtual bool stop();
 
-    CWorkBaseThread();
-    virtual ~CWorkBaseThread();
+  CWorkBaseThread();
+  virtual ~CWorkBaseThread();
 
-   protected:
-    virtual int processMessage(NET_DATA *pdata) = 0;
-    virtual void loop();
-    void run();
+ protected:
+  virtual int processMessage(NET_DATA *pdata) = 0;
+  virtual void loop();
+  void run();
 };
 
 #endif  // NETWORK_WORKBASETHREAD_H_
