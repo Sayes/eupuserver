@@ -2,6 +2,7 @@
 
 #include "common/globalconfig.h"
 #include <fstream>
+#include <memory>
 #include "common/globaldef.h"
 #include "json/json.h"
 #include "logger/eupulogger4system.h"
@@ -75,10 +76,17 @@ bool CGlobalConfig::initSysConfig(const std::string &path) {
     return false;
   }
 
-  Json::Reader r;
+  std::string tmpstr;
+  std::string jsondoc;
+  while (std::getline(f, tmpstr)) {
+    jsondoc += tmpstr;
+  }
+  Json::CharReaderBuilder b;
+  std::unique_ptr<Json::CharReader> r(b.newCharReader());
+  JSONCPP_STRING errs;
   Json::Value v;
 
-  if (!r.parse(f, v, false)) {
+  if (!r->parse(jsondoc.data(), jsondoc.data() + jsondoc.size(), &v, &errs)) {
     LOG(_ERROR_, "parse config failed");
     return false;
   }
